@@ -16,8 +16,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "HELP Loan Calculator",
   description: "Free tool to estimate your HELP loan repayment timeline and total cost. Built by Mitch Bryant",
+  verification: {
+    google: "E2_7pPm2FNWOMWO",
+  },
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
