@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: "HELP Loan Calculator",
   description: "Free tool to estimate your HELP loan repayment timeline and total cost. Built by Mitch Bryant",
   verification: {
-    google: "E2_7pPm2FNWOM",
+    google: "E2_7pPm2FNWOMWOIfQz3U",
   },
 };
 export default function RootLayout({
