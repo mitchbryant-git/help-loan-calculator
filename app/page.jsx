@@ -124,109 +124,42 @@ const Card = ({ children, className = "", noPadding = false }) => (
   </div>
 );
 
-// --- MEMOIZED CHART GRAPH COMPONENT (PERFORMANCE FIX) ---
-// This component only re-renders if data/breaks change, NOT on hover.
-const ChartGraph = React.memo(({ data, breaks, mode, onMouseMove, onMouseLeave }) => {
-  return (
-    <div className="flex-1 w-full min-h-0 relative">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart
-          data={data}
-          margin={{ top: 20, right: 10, left: -20, bottom: 5 }}
-          onMouseMove={onMouseMove}
-          onMouseLeave={onMouseLeave}
-        >
-          <defs>
-            <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#62FFDA" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#62FFDA" stopOpacity={0} />
-            </linearGradient>
-          </defs>
+// Helper component to bridge Recharts internal state to React state
+const ChartTooltipSyncer = ({ active, payload, onUpdate }) => {
+  useEffect(() => {
+    if (active && payload && payload.length) {
+      onUpdate(payload[0].payload);
+    }
+  }, [active, payload, onUpdate]);
 
-          <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} strokeOpacity={0.4} />
-          <XAxis dataKey="year" stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickLine={false} axisLine={false} />
-          <YAxis stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickFormatter={(val) => `$${val / 1000}k`} tickLine={false} axisLine={false} />
 
-          <Tooltip
-            content={() => null}
-            cursor={{
-              stroke: '#62FFDA',
-              strokeWidth: 2,
-              strokeDasharray: '0',
-              filter: 'drop-shadow(0 0 4px #62FFDA)'
-            }}
-          />
 
-          {/* Glow Layer */}
-          <Area
-            type="monotone"
-            dataKey="endBalance"
-            stroke="#62FFDA"
-            strokeWidth={10}
-            strokeOpacity={0.15}
-            fill="transparent"
-            isAnimationActive={false}
-          />
+  return null;
 
-          {/* Main Line Layer */}
-          <Area
-            type="monotone"
-            dataKey="endBalance"
-            stroke="#62FFDA"
-            strokeWidth={3}
-            fill="url(#colorBalance)"
-            dot={<CustomDot />}
-            activeDot={{
-              r: 6,
-              fill: '#fff',
-              stroke: '#62FFDA',
-              strokeWidth: 3,
-              className: "animate-pulse",
-              style: { filter: 'drop-shadow(0 0 8px #62FFDA)' }
-            }}
-          />
-
-          {breaks.map((b, i) => (
-            <ReferenceArea
-              key={i}
-              x1={parseInt(b.startYear)}
-              x2={parseInt(b.startYear) + parseInt(b.duration)}
-              fill="#fff"
-              fillOpacity={0.03}
-            />
-          ))}
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
-  );
-});
+  return null;
+};
 
 // --- SCI-FI HUD CHART SECTION ---
 const ChartSection = ({ mode, timelineData, breaks }) => {
-  const [hoverData, setHoverData] = useState(null);
+  const [hoveredData, setHoveredData] = useState(null);
 
-  // Stable handlers for the memoized child to prevent re-renders
-  const handleMouseMove = useCallback((e) => {
-    if (e.activePayload && e.activePayload.length) {
-      setHoverData(e.activePayload[0].payload);
-    }
+  // Stable callback to prevent prop thrashing
+  const handleHoverUpdate = useCallback((data) => {
+    setHoveredData(data);
   }, []);
 
-  const handleMouseLeave = useCallback(() => {
-    setHoverData(null);
-  }, []);
-
-  // Determine which data to show: Hovered data OR the final year (Summary)
-  const activeData = useMemo(() => {
-    if (hoverData) return hoverData;
+  // Determine which data to show: hoveredData (live) OR the final year (summary)
+  const displayData = useMemo(() => {
+    if (hoveredData) return hoveredData;
+    // Default to final year if available
     if (timelineData && timelineData.length > 0) return timelineData[timelineData.length - 1];
     return null;
-  }, [hoverData, timelineData]);
+  }, [hoveredData, timelineData]);
 
-  if (!activeData) return null;
+  if (!displayData) return null;
 
-  const totalRepayment = (activeData.compulsory || 0) + (activeData.voluntary || 0);
-  const hasVoluntary = activeData.voluntary > 0;
+  const totalRepayment = (displayData.compulsory || 0) + (displayData.voluntary || 0);
+  const hasVoluntary = displayData.voluntary > 0;
 
   return (
     // Fixed height h-[450px]
@@ -242,8 +175,8 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
         <div className="flex items-center justify-between pl-2">
           <SectionHeader icon={TrendingUp} title="REPAYMENT TIMELINE" mode={mode} />
           {/* Status Indicator */}
-          <div className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded border ${hoverData ? 'text-[#62FFDA] border-[#62FFDA]/30 bg-[#62FFDA]/5' : 'text-[#CFCFCF] border-white/10'}`}>
-            {hoverData ? 'LIVE TRACKING' : 'FINAL YEAR'}
+          <div className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border ${hoveredData ? 'text-[#62FFDA] border-[#62FFDA]/30 bg-[#62FFDA]/5' : 'text-[#CFCFCF] border-white/10'}`}>
+            {hoveredData ? 'LIVE TRACKING DEBUG' : 'FINAL YEAR TEST'}
           </div>
         </div>
 
@@ -254,7 +187,7 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
           <div className="flex flex-col justify-center">
             <span className="text-[10px] uppercase tracking-wider text-[#CFCFCF] font-bold mb-0.5">Timeline</span>
             <div className="font-mono text-lg font-bold flex items-baseline gap-2 text-white">
-              {activeData.year} <span className="text-xs opacity-50 font-sans">Age {activeData.age}</span>
+              {displayData.year} <span className="text-xs opacity-50 font-sans">Age {displayData.age}</span>
             </div>
           </div>
 
@@ -262,7 +195,7 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
           <div className="flex flex-col justify-center border-l border-white/5 pl-4">
             <span className="text-[10px] uppercase tracking-wider text-[#CFCFCF] font-bold mb-0.5">Income</span>
             <div className="font-mono text-lg font-bold text-white">
-              {formatCurrency(activeData.taxableIncome)}
+              {formatCurrency(displayData.taxableIncome)}
             </div>
           </div>
 
@@ -276,11 +209,11 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
                 <div className="flex flex-col w-full">
                   <div className="flex justify-between items-baseline w-full">
                     <span className="text-[10px] font-mono text-[#0081CB] opacity-80 mr-2">Compulsory:</span>
-                    <span className="font-mono text-xs font-bold text-[#0081CB]">{formatCurrency(activeData.compulsory)}</span>
+                    <span className="font-mono text-xs font-bold text-[#0081CB]">{formatCurrency(displayData.compulsory)}</span>
                   </div>
                   <div className="flex justify-between items-baseline w-full">
                     <span className="text-[10px] font-mono text-[#6A3CFF] opacity-80 mr-2">Voluntary:</span>
-                    <span className="font-mono text-xs font-bold text-[#6A3CFF]">{formatCurrency(activeData.voluntary)}</span>
+                    <span className="font-mono text-xs font-bold text-[#6A3CFF]">{formatCurrency(displayData.voluntary)}</span>
                   </div>
                 </div>
               ) : (
@@ -295,21 +228,90 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
           <div className="flex flex-col justify-center border-l border-white/5 pl-4">
             <span className="text-[10px] uppercase tracking-wider text-[#62FFDA] font-bold mb-0.5">Balance</span>
             <div className="font-mono text-xl font-black text-[#62FFDA] drop-shadow-[0_0_8px_rgba(98,255,218,0.4)]">
-              {formatCurrency(activeData.endBalance)}
+              {formatCurrency(displayData.endBalance)}
             </div>
           </div>
 
         </div>
       </div>
 
-      {/* --- MEMOIZED CHART VISUALS --- */}
-      <ChartGraph
-        data={timelineData}
-        breaks={breaks}
-        mode={mode}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      />
+      {/* --- CHART VISUALS --- */}
+      <div className="flex-1 w-full min-h-0 relative">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={timelineData}
+            margin={{ top: 20, right: 10, left: 0, bottom: 5 }}
+            onMouseMove={(e) => {
+              // No-op or custom logic if needed
+            }}
+            onMouseLeave={() => {
+              setHoveredData(null);
+            }}
+          >
+            <defs>
+              <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#62FFDA" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#62FFDA" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+
+            <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} strokeOpacity={0.4} />
+            <XAxis dataKey="year" stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickLine={false} axisLine={false} />
+            <YAxis stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickFormatter={(val) => `$${val / 1000}k`} tickLine={false} axisLine={false} />
+
+            <Tooltip
+              content={<ChartTooltipSyncer onUpdate={handleHoverUpdate} />}
+              cursor={{
+                stroke: '#62FFDA',
+                strokeWidth: 2,
+                strokeDasharray: '0',
+                filter: 'drop-shadow(0 0 4px #62FFDA)'
+              }}
+            />
+
+            {/* Glow Layer */}
+            <Area
+              type="monotone"
+              dataKey="endBalance"
+              stroke="#62FFDA"
+              strokeWidth={10}
+              strokeOpacity={0.15}
+              fill="transparent"
+              isAnimationActive={false}
+              pointerEvents="none"
+            />
+
+            {/* Main Line Layer */}
+            <Area
+              type="monotone"
+              dataKey="endBalance"
+              stroke="#62FFDA"
+              strokeWidth={3}
+              fill="url(#colorBalance)"
+              dot={<CustomDot />}
+              activeDot={{
+                r: 6,
+                fill: '#fff',
+                stroke: '#62FFDA',
+                strokeWidth: 3,
+                className: "animate-pulse",
+                style: { filter: 'drop-shadow(0 0 8px #62FFDA)' }
+              }}
+            />
+
+            {breaks.map((b, i) => (
+              <ReferenceArea
+                key={i}
+                x1={parseInt(b.startYear)}
+                x2={parseInt(b.startYear) + parseInt(b.duration)}
+                fill="#fff"
+                fillOpacity={0.03}
+                pointerEvents="none"
+              />
+            ))}
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </Card>
   );
 };
