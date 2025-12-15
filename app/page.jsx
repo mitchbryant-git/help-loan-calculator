@@ -848,7 +848,7 @@ export default function App() {
           <Card mode={mode} className="card-hover" noPadding={true}>
             <button
               onClick={() => setShowVoluntary(!showVoluntary)}
-              className="w-full p-6 flex items-center justify-between transition-colors hover:bg-white/5"
+              className="w-full p-6 flex items-center justify-between transition-colors"
             >
               <SectionHeader
                 icon={Wallet}
@@ -913,7 +913,7 @@ export default function App() {
           <Card mode={mode} className="card-hover" noPadding={true}>
             <button
               onClick={() => setShowPromotions(!showPromotions)}
-              className="w-full p-6 flex items-center justify-between transition-colors hover:bg-white/5"
+              className="w-full p-6 flex items-center justify-between transition-colors"
             >
               <SectionHeader
                 icon={TrendingUp}
@@ -977,7 +977,7 @@ export default function App() {
           <Card mode={mode} className="card-hover" noPadding={true}>
             <button
               onClick={() => setShowBreaks(!showBreaks)}
-              className="w-full p-6 flex items-center justify-between transition-colors hover:bg-white/5"
+              className="w-full p-6 flex items-center justify-between transition-colors"
             >
               <SectionHeader
                 icon={PauseCircle}
@@ -1043,7 +1043,7 @@ export default function App() {
           <Card mode={mode} className="card-hover" noPadding={true}>
             <button
               onClick={() => setShowReductions(!showReductions)}
-              className="w-full p-6 flex items-center justify-between transition-colors hover:bg-white/5"
+              className="w-full p-6 flex items-center justify-between transition-colors"
             >
               <SectionHeader
                 icon={TrendingDown}
