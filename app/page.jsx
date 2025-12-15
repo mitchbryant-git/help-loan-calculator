@@ -176,9 +176,10 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
           <SectionHeader icon={TrendingUp} title="REPAYMENT TIMELINE" mode={mode} />
           {/* Status Indicator */}
           <div className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border ${hoveredData ? 'text-[#62FFDA] border-[#62FFDA]/30 bg-[#62FFDA]/5' : 'text-[#CFCFCF] border-white/10'}`}>
-            {hoveredData ? 'LIVE TRACKING DEBUG' : 'FINAL YEAR TEST'}
+            {hoveredData ? 'LIVE TRACKING' : 'FINAL YEAR'}
           </div>
         </div>
+
 
         {/* --- THE DIGITAL READOUT --- */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 p-4 rounded-xl border transition-colors duration-200 bg-black/20 border-white/5">
@@ -312,7 +313,7 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
           </AreaChart>
         </ResponsiveContainer>
       </div>
-    </Card>
+    </Card >
   );
 };
 
