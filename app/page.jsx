@@ -164,7 +164,7 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
   return (
     // Fixed height h-[450px]
     <Card
-      className="h-[450px] relative card-hover flex flex-col outline-none ring-0"
+      className="h-[450px] relative card-hover flex flex-col outline-none ring-0 touch-pan-y"
       style={{ WebkitTapHighlightColor: 'transparent' }}
       mode={mode}
     >
@@ -241,9 +241,10 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
       </div>
 
       {/* --- CHART VISUALS --- */}
-      <div className="flex-1 w-full min-h-0 relative [&_*]:focus:outline-none [&_*]:focus:ring-0 touch-pan-y">
+      <div className="flex-1 w-full min-h-0 relative [&_*]:focus:outline-none [&_*]:focus:ring-0">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
+            throttleDelay={0}
             data={timelineData}
             margin={{ top: 20, right: 10, left: 0, bottom: 5 }}
             onMouseMove={(e) => {
