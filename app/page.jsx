@@ -267,6 +267,7 @@ const MemoizedChart = React.memo(({ timelineData, breaks, onHover, onLeave }) =>
 });
 MemoizedChart.displayName = 'MemoizedChart';
 const ChartSection = ({ mode, timelineData, breaks }) => {
+  const [hoveredData, setHoveredData] = useState(null);
   const rafRef = useRef(null);
 
   // Stable callback with RAF Throttling
