@@ -140,12 +140,157 @@ const ChartTooltipSyncer = ({ active, payload, onUpdate }) => {
 };
 
 // --- SCI-FI HUD CHART SECTION ---
-const ChartSection = ({ mode, timelineData, breaks }) => {
-  const [hoveredData, setHoveredData] = useState(null);
 
-  // Stable callback to prevent prop thrashing
+// --- MEMOIZED COMPONENTS ---
+
+// 1. Memoized Custom Dot
+const MemoizedCustomDot = React.memo((props) => {
+  const { cx, cy, payload } = props;
+  const hasPromo = payload.notes.some(n => n.includes('Promotion'));
+  const hasPayCut = payload.notes.some(n => n.includes('Income Drop'));
+  const hasVoluntary = payload.voluntary > 0;
+
+  if (hasPayCut) {
+    return (
+      <svg x={cx - 8} y={cy - 8} width={16} height={16} viewBox="0 0 24 24" fill="#FF3366" stroke="#0D0D0D" strokeWidth={2} style={{ overflow: 'visible' }}>
+        <path d="M12 21L2 4h20L12 21z" />
+      </svg>
+    );
+  }
+
+  if (hasPromo) {
+    return (
+      <svg x={cx - 8} y={cy - 8} width={16} height={16} viewBox="0 0 24 24" fill="#62FFDA" stroke="#0D0D0D" strokeWidth={2} style={{ overflow: 'visible' }}>
+        <path d="M12 2L2 12l10 10 10-10L12 2z" />
+      </svg>
+    );
+  }
+
+  if (hasVoluntary) {
+    return (
+      <svg x={cx - 8} y={cy - 8} width={16} height={16} viewBox="0 0 24 24" fill="#6A3CFF" stroke="#0D0D0D" strokeWidth={2} style={{ overflow: 'visible' }}>
+        <rect x="4" y="4" width="16" height="16" transform="rotate(45 12 12)" />
+      </svg>
+    );
+  }
+
+  return null;
+});
+MemoizedCustomDot.displayName = 'MemoizedCustomDot';
+
+// 2. Memoized Chart Component
+const MemoizedChart = React.memo(({ timelineData, breaks, onHover, onLeave }) => {
+  return (
+    <div className="flex-1 w-full min-h-0 relative [&_*]:focus:outline-none [&_*]:focus:ring-0">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart
+          throttleDelay={0}
+          data={timelineData}
+          margin={{ top: 20, right: 10, left: 0, bottom: 5 }}
+          onMouseMove={(e) => {
+            // No-op or custom logic if needed
+          }}
+          onMouseLeave={onLeave}
+        >
+          <defs>
+            <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#62FFDA" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#62FFDA" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+
+          <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} strokeOpacity={0.4} />
+          <XAxis dataKey="year" stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickLine={false} axisLine={false} />
+          <YAxis stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickFormatter={(val) => `$${val / 1000}k`} tickLine={false} axisLine={false} />
+
+          <Tooltip
+            animationDuration={0}
+            content={<ChartTooltipSyncer onUpdate={onHover} />}
+            cursor={{
+              stroke: '#62FFDA',
+              strokeWidth: 2,
+              strokeDasharray: '0',
+              filter: 'drop-shadow(0 0 4px #62FFDA)'
+            }}
+          />
+
+          {/* Glow Layer */}
+          <Area
+            type="monotone"
+            dataKey="endBalance"
+            stroke="#62FFDA"
+            strokeWidth={10}
+            strokeOpacity={0.15}
+            fill="transparent"
+            isAnimationActive={false}
+            pointerEvents="none"
+          />
+
+          {/* Main Line Layer */}
+          <Area
+            type="monotone"
+            dataKey="endBalance"
+            stroke="#62FFDA"
+            strokeWidth={3}
+            fill="url(#colorBalance)"
+            dot={<MemoizedCustomDot />}
+            activeDot={{
+              r: 6,
+              fill: '#fff',
+              stroke: '#62FFDA',
+              strokeWidth: 3,
+              className: "animate-pulse",
+              style: { filter: 'drop-shadow(0 0 8px #62FFDA)' }
+            }}
+          />
+
+          {breaks.map((b, i) => (
+            <ReferenceArea
+              key={i}
+              x1={parseInt(b.startYear)}
+              x2={parseInt(b.startYear) + parseInt(b.duration)}
+              fill="#fff"
+              fillOpacity={0.03}
+              pointerEvents="none"
+            />
+          ))}
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}, (prevProps, nextProps) => {
+  // Only re-render if data or breaks change. Ignore function prop changes if they are stable.
+  return (
+    prevProps.timelineData === nextProps.timelineData &&
+    prevProps.breaks === nextProps.breaks
+  );
+});
+MemoizedChart.displayName = 'MemoizedChart';
+const ChartSection = ({ mode, timelineData, breaks }) => {
+  const rafRef = useRef(null);
+
+  // Stable callback with RAF Throttling
   const handleHoverUpdate = useCallback((data) => {
-    setHoveredData(data);
+    if (rafRef.current) return; // Drop frame if one is pending
+    rafRef.current = requestAnimationFrame(() => {
+      setHoveredData(data);
+      rafRef.current = null;
+    });
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    setHoveredData(null);
+  }, []);
+
+  // Cleanup RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   // Determine which data to show: hoveredData (live) OR the final year (summary)
@@ -241,120 +386,18 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
       </div>
 
       {/* --- CHART VISUALS --- */}
-      <div className="flex-1 w-full min-h-0 relative [&_*]:focus:outline-none [&_*]:focus:ring-0">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            throttleDelay={0}
-            data={timelineData}
-            margin={{ top: 20, right: 10, left: 0, bottom: 5 }}
-            onMouseMove={(e) => {
-              // No-op or custom logic if needed
-            }}
-            onMouseLeave={() => {
-              setHoveredData(null);
-            }}
-          >
-            <defs>
-              <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#62FFDA" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#62FFDA" stopOpacity={0} />
-              </linearGradient>
-            </defs>
+      <MemoizedChart
+        timelineData={timelineData}
+        breaks={breaks}
+        onHover={handleHoverUpdate}
+        onLeave={handleMouseLeave}
+      />
 
-            <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} strokeOpacity={0.4} />
-            <XAxis dataKey="year" stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickLine={false} axisLine={false} />
-            <YAxis stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickFormatter={(val) => `$${val / 1000}k`} tickLine={false} axisLine={false} />
-
-            <Tooltip
-              animationDuration={0}
-              content={<ChartTooltipSyncer onUpdate={handleHoverUpdate} />}
-              cursor={{
-                stroke: '#62FFDA',
-                strokeWidth: 2,
-                strokeDasharray: '0',
-                filter: 'drop-shadow(0 0 4px #62FFDA)'
-              }}
-            />
-
-            {/* Glow Layer */}
-            <Area
-              type="monotone"
-              dataKey="endBalance"
-              stroke="#62FFDA"
-              strokeWidth={10}
-              strokeOpacity={0.15}
-              fill="transparent"
-              isAnimationActive={false}
-              pointerEvents="none"
-            />
-
-            {/* Main Line Layer */}
-            <Area
-              type="monotone"
-              dataKey="endBalance"
-              stroke="#62FFDA"
-              strokeWidth={3}
-              fill="url(#colorBalance)"
-              dot={<CustomDot />}
-              activeDot={{
-                r: 6,
-                fill: '#fff',
-                stroke: '#62FFDA',
-                strokeWidth: 3,
-                className: "animate-pulse",
-                style: { filter: 'drop-shadow(0 0 8px #62FFDA)' }
-              }}
-            />
-
-            {breaks.map((b, i) => (
-              <ReferenceArea
-                key={i}
-                x1={parseInt(b.startYear)}
-                x2={parseInt(b.startYear) + parseInt(b.duration)}
-                fill="#fff"
-                fillOpacity={0.03}
-                pointerEvents="none"
-              />
-            ))}
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
     </Card >
   );
 };
 
-const CustomDot = (props) => {
-  const { cx, cy, payload } = props;
-  const hasPromo = payload.notes.some(n => n.includes('Promotion'));
-  const hasPayCut = payload.notes.some(n => n.includes('Income Drop'));
-  const hasVoluntary = payload.voluntary > 0;
 
-  if (hasPayCut) {
-    return (
-      <svg x={cx - 8} y={cy - 8} width={16} height={16} viewBox="0 0 24 24" fill="#FF3366" stroke="#0D0D0D" strokeWidth={2} style={{ overflow: 'visible' }}>
-        <path d="M12 21L2 4h20L12 21z" />
-      </svg>
-    );
-  }
-
-  if (hasPromo) {
-    return (
-      <svg x={cx - 8} y={cy - 8} width={16} height={16} viewBox="0 0 24 24" fill="#62FFDA" stroke="#0D0D0D" strokeWidth={2} style={{ overflow: 'visible' }}>
-        <path d="M12 2L2 12l10 10 10-10L12 2z" />
-      </svg>
-    );
-  }
-
-  if (hasVoluntary) {
-    return (
-      <svg x={cx - 8} y={cy - 8} width={16} height={16} viewBox="0 0 24 24" fill="#6A3CFF" stroke="#0D0D0D" strokeWidth={2} style={{ overflow: 'visible' }}>
-        <rect x="4" y="4" width="16" height="16" transform="rotate(45 12 12)" />
-      </svg>
-    );
-  }
-
-  return null;
-};
 
 const SectionHeader = ({ icon: Icon, title, infoText }) => (
   <div className="flex items-center mb-1">
