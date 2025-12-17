@@ -241,7 +241,7 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
       </div>
 
       {/* --- CHART VISUALS --- */}
-      <div className="flex-1 w-full min-h-0 relative [&_*]:focus:outline-none [&_*]:focus:ring-0">
+      <div className="flex-1 w-full min-h-0 relative [&_*]:focus:outline-none [&_*]:focus:ring-0 touch-pan-y">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={timelineData}
@@ -265,6 +265,7 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
             <YAxis stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickFormatter={(val) => `$${val / 1000}k`} tickLine={false} axisLine={false} />
 
             <Tooltip
+              animationDuration={0}
               content={<ChartTooltipSyncer onUpdate={handleHoverUpdate} />}
               cursor={{
                 stroke: '#62FFDA',
