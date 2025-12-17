@@ -163,7 +163,11 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
 
   return (
     // Fixed height h-[450px]
-    <Card className="h-[450px] relative card-hover flex flex-col" mode={mode}>
+    <Card
+      className="h-[450px] relative card-hover flex flex-col outline-none ring-0"
+      style={{ WebkitTapHighlightColor: 'transparent' }}
+      mode={mode}
+    >
       {/* HUD Decoration Corners */}
       <div className="absolute top-4 left-4 w-2 h-2 border-l border-t border-[#62FFDA]/30 rounded-tl-sm pointer-events-none" />
       <div className="absolute top-4 right-4 w-2 h-2 border-r border-t border-[#62FFDA]/30 rounded-tr-sm pointer-events-none" />
