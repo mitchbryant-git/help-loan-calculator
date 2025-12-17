@@ -14,12 +14,35 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HELP Loan Calculator",
-  description: "Free tool to estimate your HELP loan repayment timeline and total cost. Built by Mitch Bryant",
+  // 1. Google & Browser Tab
+  title: "HELP Loan Calculator | Visualise Your Debt Free Date",
+  description: "Free tool to estimate your HELP repayment timeline. See how voluntary repayments & indexation affect your loan. Built by Mitch Bryant.",
+
+  // 2. SEO Keywords
+  keywords: [
+    'HELP debt calculator',
+    'HECS repayment',
+    'ATO loan rates',
+    'Australian student loan',
+    'student debt calculator',
+    'pay off HECS faster'
+  ],
+
+  // 3. Social Media Cards (Facebook, LinkedIn, iMessage)
+  openGraph: {
+    title: "HELP Loan Calculator",
+    description: "Stop guessing. See exactly when your HELP loan will be paid off with this free visual tool.",
+    url: 'https://www.helploancalculator.com',
+    siteName: 'HELP Loan Calculator',
+    locale: 'en_AU',
+    type: 'website',
+  },
+
+  // 4. Verification
   verification: {
     google: "E2_7pPm2FNWOMWOIfQz3U5qpcNcbMLzdshbhOLVyW-s",
   },
-};
+}
 export default function RootLayout({
   children,
 }: Readonly<{
