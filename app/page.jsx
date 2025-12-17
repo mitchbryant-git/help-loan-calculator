@@ -241,7 +241,7 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
       </div>
 
       {/* --- CHART VISUALS --- */}
-      <div className="flex-1 w-full min-h-0 relative">
+      <div className="flex-1 w-full min-h-0 relative [&_*]:focus:outline-none [&_*]:focus:ring-0">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={timelineData}
