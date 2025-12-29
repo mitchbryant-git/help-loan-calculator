@@ -413,7 +413,39 @@ const SectionHeader = ({ icon: Icon, title, infoText }) => (
 // --- NEON SLIDER ---
 const NeonSlider = ({ label, value, onChange, min, max, step, unit, color, infoText }) => {
   const [isActive, setIsActive] = useState(false);
-  const percent = ((value - min) / (max - min)) * 100;
+  const [localValue, setLocalValue] = useState(value);
+  const debounceTimerRef = useRef(null);
+
+  // Sync local value when prop changes (e.g., from external updates like reset)
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  const percent = ((localValue - min) / (max - min)) * 100;
+
+  const handleChange = (newValue) => {
+    // Update local state immediately for smooth visual feedback
+    setLocalValue(newValue);
+
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Debounce the actual state update by 150ms
+    debounceTimerRef.current = setTimeout(() => {
+      onChange(newValue);
+    }, 150);
+  };
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="mb-6">
@@ -425,7 +457,7 @@ const NeonSlider = ({ label, value, onChange, min, max, step, unit, color, infoT
           {infoText && <InfoTooltip text={infoText} />}
         </div>
         <div className="font-mono font-bold text-lg text-white">
-          {value}{unit}
+          {localValue}{unit}
         </div>
       </div>
 
@@ -455,8 +487,8 @@ const NeonSlider = ({ label, value, onChange, min, max, step, unit, color, infoT
           min={min}
           max={max}
           step={step}
-          value={value}
-          onChange={(e) => onChange(parseFloat(e.target.value))}
+          value={localValue}
+          onChange={(e) => handleChange(parseFloat(e.target.value))}
           onMouseDown={() => setIsActive(true)}
           onMouseUp={() => setIsActive(false)}
           onTouchStart={() => setIsActive(true)}
