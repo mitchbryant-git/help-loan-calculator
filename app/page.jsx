@@ -495,6 +495,11 @@ const NeonSlider = ({ label, value, onChange, min, max, step, unit, color, infoT
           onTouchEnd={() => setIsActive(false)}
           style={{ touchAction: 'none' }}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+          aria-label={`${label} slider`}
+          aria-valuetext={`${localValue}${unit}`}
+          aria-valuenow={localValue}
+          aria-valuemin={min}
+          aria-valuemax={max}
         />
       </div>
     </div>
@@ -932,6 +937,8 @@ export default function App() {
             <button
               onClick={() => setShowVoluntary(!showVoluntary)}
               className="w-full p-6 flex items-center justify-between transition-colors"
+              aria-expanded={showVoluntary}
+              aria-controls="voluntary-repayments-content"
             >
               <SectionHeader
                 icon={Wallet}
@@ -942,7 +949,7 @@ export default function App() {
             </button>
 
             {showVoluntary && (
-              <div className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
+              <div id="voluntary-repayments-content" className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex gap-3 mb-5">
                   <input
                     type="number"
@@ -997,6 +1004,8 @@ export default function App() {
             <button
               onClick={() => setShowPromotions(!showPromotions)}
               className="w-full p-6 flex items-center justify-between transition-colors"
+              aria-expanded={showPromotions}
+              aria-controls="promotions-content"
             >
               <SectionHeader
                 icon={TrendingUp}
@@ -1007,7 +1016,7 @@ export default function App() {
             </button>
 
             {showPromotions && (
-              <div className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
+              <div id="promotions-content" className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex gap-3 mb-5">
                   <input
                     type="number"
@@ -1061,6 +1070,8 @@ export default function App() {
             <button
               onClick={() => setShowBreaks(!showBreaks)}
               className="w-full p-6 flex items-center justify-between transition-colors"
+              aria-expanded={showBreaks}
+              aria-controls="gap-years-content"
             >
               <SectionHeader
                 icon={PauseCircle}
@@ -1071,7 +1082,7 @@ export default function App() {
             </button>
 
             {showBreaks && (
-              <div className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
+              <div id="gap-years-content" className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex gap-3 mb-5">
                   <input
                     type="number"
@@ -1127,6 +1138,8 @@ export default function App() {
             <button
               onClick={() => setShowReductions(!showReductions)}
               className="w-full p-6 flex items-center justify-between transition-colors"
+              aria-expanded={showReductions}
+              aria-controls="pay-cuts-content"
             >
               <SectionHeader
                 icon={TrendingDown}
@@ -1137,7 +1150,7 @@ export default function App() {
             </button>
 
             {showReductions && (
-              <div className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
+              <div id="pay-cuts-content" className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
                 <div className="flex gap-3 mb-5">
                   <input
                     type="number"
@@ -1358,176 +1371,6 @@ export default function App() {
           </div>
         </div>
       )}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;700;900&display=swap');
-        
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-        }
-        input[type=number] {
-          -moz-appearance: textfield;
-        }
-
-        /* --- GLASS MORPHISM --- */
-        .glass-dark {
-          background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-          border: 1px solid rgba(255,255,255,0.14);
-          box-shadow: 0 18px 45px rgba(0,0,0,0.85), 0 0 0 1px rgba(0,0,0,0.5) inset;
-          backdrop-filter: blur(22px);
-        }
-
-        /* --- CARD PHYSICS --- */
-        .card-hover {
-          transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .card-hover:hover {
-          transform: translateY(-4px);
-          border-color: rgba(98, 255, 218, 0.5); /* Crisp border highlight */
-          box-shadow: none; /* Removed fuzzy glow */
-        }
-
-        /* --- 3D PRIMARY BUTTON --- */
-        .btn-3d-primary {
-          position: relative;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 999px;
-          background: linear-gradient(145deg, #62FFDA, #0081CB);
-          color: #020617;
-          font-weight: 800;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.1), 0 0 0 1px rgba(15,23,42,0.1);
-          transform: translateY(0);
-          transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease;
-        }
-        .btn-3d-primary::before {
-          content: '';
-          position: absolute;
-          inset: 2px;
-          border-radius: inherit;
-          background: linear-gradient(145deg, rgba(255,255,255,0.55), rgba(255,255,255,0.05));
-          opacity: 0.9;
-          pointer-events: none;
-        }
-        .btn-3d-primary span {
-          position: relative;
-          z-index: 1;
-        }
-        .btn-3d-primary:hover {
-          transform: translateY(-2px);
-          filter: brightness(1.05);
-          box-shadow: 0 14px 24px rgba(0,129,203,0.55), 0 0 0 1px rgba(15,23,42,0.55);
-        }
-        .btn-3d-primary:active {
-          transform: translateY(1px);
-          box-shadow: 0 8px 15px rgba(0,129,203,0.55), 0 0 0 1px rgba(15,23,42,0.8) inset;
-        }
-
-        /* --- SOFT BUTTONS --- */
-        .btn-soft {
-          border-radius: 999px;
-          padding: 0.4rem 0.8rem;
-          background: rgba(15,23,42,0.5);
-          border: 1px solid rgba(255,255,255,0.18);
-          box-shadow: 0 8px 18px rgba(0,0,0,0.75);
-          backdrop-filter: blur(14px);
-          transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
-        }
-        .btn-soft:hover {
-          background: rgba(15,23,42,0.8);
-          transform: translateY(-1px);
-          box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-        }
-        .btn-soft:active {
-          transform: translateY(1px);
-          box-shadow: 0 5px 12px rgba(0,0,0,0.9) inset;
-        }
-
-        /* --- TRASH BUTTON --- */
-        .btn-trash {
-          color: #64748b;
-          border-radius: 0.5rem;
-          padding: 0.5rem;
-          transition: all 200ms ease;
-          background: transparent;
-        }
-        .btn-trash:hover {
-          color: #FF3366;
-          transform: translateY(-2px);
-          background: rgba(255, 51, 102, 0.1);
-          box-shadow: 0 0 15px rgba(255, 51, 102, 0.4);
-        }
-        .btn-trash:active {
-          transform: translateY(0);
-        }
-
-        /* --- HUD INPUTS --- */
-        .input-hud {
-          border-radius: 0.75rem;
-          background: rgba(15,23,42,0.75);
-          border: 1px solid rgba(148,163,184,0.4);
-          color: #E5E7EB;
-          box-shadow: 0 0 0 0 rgba(98,255,218,0);
-          transition: box-shadow 160ms ease, border-color 160ms ease, background 160ms ease, transform 80ms ease;
-        }
-        .input-hud:focus {
-          outline: none;
-          background: rgba(15,23,42,0.95);
-          border-color: rgba(98,255,218,0.9);
-          box-shadow: 0 0 0 1px rgba(98,255,218,0.7), 0 0 20px rgba(98,255,218,0.45);
-          transform: translateY(-1px);
-        }
-        
-        /* --- SCANLINE TABLE (Fix for shifting columns) --- */
-        .scanline-row {
-          transition: background-color 0.2s ease;
-        }
-        .scanline-row:hover {
-          background-color: rgba(255, 255, 255, 0.03);
-        }
-        .scanline-row td:first-child {
-          position: relative; /* Ensure positioning context for the bar */
-        }
-        .scanline-row td:first-child::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          width: 3px;
-          background-color: #62FFDA;
-          box-shadow: 0 0 10px #62FFDA;
-          opacity: 0;
-          transition: opacity 0.2s ease;
-        }
-        .scanline-row:hover td:first-child::before {
-          opacity: 1;
-        }
-
-        /* --- ANIMATIONS --- */
-        .app-fade-in {
-          opacity: 0;
-          transform: translateY(8px);
-          animation: appFadeIn 600ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-          animation-delay: 100ms;
-        }
-        @keyframes appFadeIn {
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        .pulse-stat {
-          animation: pulseStat 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        @keyframes pulseStat {
-          0% { transform: scale(1); text-shadow: 0 0 0 rgba(98,255,218,0); }
-          50% { transform: scale(1.04); text-shadow: 0 0 18px rgba(98,255,218,0.8); }
-          100% { transform: scale(1); text-shadow: 0 0 0 rgba(98,255,218,0); }
-        }
-      `}</style>
     </div>
   );
 }
