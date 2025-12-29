@@ -15,13 +15,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   // 1. Google & Browser Tab
-  title: "HELP Loan Calculator | Visualise Your Debt Free Date",
-  description: "Free tool to estimate your HELP repayment timeline. See how voluntary repayments & indexation affect your loan. Built by Mitch Bryant.",
+  title: "HELP Loan Calculator | HECS Debt | Student Loan",
+  description: "Free tool to estimate your loan repayment timeline. See how indexation and life events affect your loan. Built by Mitch Bryant.",
 
   // 2. SEO Keywords
   keywords: [
     'HELP debt calculator',
     'HECS repayment',
+    'HECS debt',
     'ATO loan rates',
     'Australian student loan',
     'student debt calculator',
@@ -30,8 +31,8 @@ export const metadata: Metadata = {
 
   // 3. Social Media Cards (Facebook, LinkedIn, iMessage)
   openGraph: {
-    title: "HELP Loan Calculator",
-    description: "Stop guessing. See exactly when your HELP loan will be paid off with this free visual tool.",
+    title: "HELP Loan Calculator | HECS Debt | Student Loan",
+    description: "Free tool to estimate your loan repayment timeline. See how indexation and life events affect your loan.",
     url: 'https://www.helploancalculator.com',
     siteName: 'HELP Loan Calculator',
     locale: 'en_AU',
