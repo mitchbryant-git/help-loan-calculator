@@ -429,7 +429,7 @@ const NeonSlider = ({ label, value, onChange, min, max, step, unit, color, infoT
         </div>
       </div>
 
-      <div className="relative h-6 w-full flex items-center group">
+      <div className="relative h-6 w-full flex items-center group" style={{ touchAction: 'pan-y' }}>
         <div className="absolute top-1/2 left-0 w-full h-1.5 -translate-y-1/2 rounded-full transition-colors bg-gray-800"></div>
 
         <div
@@ -461,6 +461,7 @@ const NeonSlider = ({ label, value, onChange, min, max, step, unit, color, infoT
           onMouseUp={() => setIsActive(false)}
           onTouchStart={() => setIsActive(true)}
           onTouchEnd={() => setIsActive(false)}
+          style={{ touchAction: 'none' }}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
         />
       </div>
