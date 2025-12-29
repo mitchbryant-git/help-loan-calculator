@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   // 1. Google & Browser Tab
   title: "HELP Loan Calculator | HECS Debt | Student Loan",
-  description: "Free tool to estimate your loan repayment timeline. See how indexation and life events affect your loan. Built by Mitch Bryant.",
+  description: "The #1 Australian HECS-HELP debt calculator. Estimate your loan repayment timeline. See how indexation and life events affect your loan. Built by Mitch Bryant.",
 
   // 2. SEO Keywords
   keywords: [
