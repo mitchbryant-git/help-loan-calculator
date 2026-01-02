@@ -43,6 +43,12 @@ export const metadata: Metadata = {
   verification: {
     google: "E2_7pPm2FNWOMWOIfQz3U5qpcNcbMLzdshbhOLVyW-s",
   },
+
+  // 5. Favicon
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
 }
 export default function RootLayout({
   children,

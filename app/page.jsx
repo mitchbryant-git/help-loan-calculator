@@ -830,9 +830,18 @@ export default function App() {
       <header className="sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-500 border-white/5 bg-[#0D0D0D]/70">
         <div className="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0081CB] to-[#6A3CFF] flex items-center justify-center text-white font-black text-xl shrink-0 shadow-lg shadow-[#0081CB]/30 border border-white/20">
-              M
-            </div>
+            <a
+              href="https://www.mitchbryant.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#0081CB]/30 border border-white/20 overflow-hidden transition-transform hover:scale-105 active:scale-95"
+            >
+              <img
+                src="/apple-touch-icon.png"
+                alt="MB Logo"
+                className="w-full h-full object-cover"
+              />
+            </a>
             <span className="font-bold text-sm md:text-lg tracking-tight uppercase font-['Montserrat']">
               HELP Loan Calculator
             </span>
