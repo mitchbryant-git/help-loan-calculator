@@ -37,6 +37,14 @@ export const metadata: Metadata = {
     siteName: 'HELP Loan Calculator',
     locale: 'en_AU',
     type: 'website',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 992,
+        height: 630,
+        alt: 'HELP Loan Calculator showing repayment timeline and debt payoff projections',
+      }
+    ],
   },
 
   // 4. Verification
