@@ -859,6 +859,8 @@ export default function App() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 app-fade-in">
+        {/* SEO: Visually hidden h1 for search engines */}
+        <h1 className="sr-only">HELP Loan Calculator | Australian HECS Debt Repayment Calculator</h1>
 
         {/* --- LEFT COLUMN (INPUTS) --- */}
         <div className="lg:col-span-4 space-y-6">
