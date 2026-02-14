@@ -57,6 +57,11 @@ export const metadata: Metadata = {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
+
+  // 6. Canonical URL
+  alternates: {
+    canonical: 'https://www.helploancalculator.com',
+  },
 }
 export default function RootLayout({
   children,

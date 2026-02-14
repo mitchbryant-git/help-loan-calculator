@@ -872,7 +872,7 @@ export default function App() {
         <h1 className="sr-only">HELP Loan Calculator | Australian HECS Debt Repayment Calculator</h1>
 
         {/* --- LEFT COLUMN (INPUTS) --- */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="lg:col-span-4 space-y-6" data-nosnippet>
 
           <Card className="card-hover">
             <SectionHeader icon={DollarSign} title="The Basics" />
