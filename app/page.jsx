@@ -1280,6 +1280,14 @@ export default function App() {
             )}
           </Card>
 
+          {/* ABOUT THIS CALCULATOR */}
+          <div className="text-xs text-center pb-8 px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-['Lato'] text-[#CFCFCF]/60">
+            <h4 className="font-bold uppercase tracking-widest text-[10px] opacity-70">About This Calculator</h4>
+            <p>
+              Use this free HELP Loan / HECS Debt calculator to estimate how long it will take to pay off your Australian student loan based on your income, wage growth, and indexation rate. Model voluntary repayments, promotions, gap years, and pay cuts to see how real-life events affect your repayment timeline.
+            </p>
+          </div>
+
           {/* DISCLAIMER / FOOTER */}
           <div className="text-xs text-center pb-8 px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-['Lato'] text-[#CFCFCF]/60">
             <h4 className="font-bold uppercase tracking-widest text-[10px] opacity-70">DISCLAIMER</h4>
