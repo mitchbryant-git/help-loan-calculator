@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   // 1. Google & Browser Tab
-  title: "HELP Loan Calculator | HECS Debt | Student Loan",
-  description: "The #1 Australian HECS-HELP debt calculator. Estimate your loan repayment timeline. See how indexation and life events affect your loan. Built by Mitch Bryant.",
+  title: "HELP Loan Calculator | Free HECS Debt Repayment Tool",
+  description: "Free Australian HELP Loan & HECS Debt Repayment Calculator. See how long it'll take to pay off your student debt based on your income, wage growth, and indexation.",
 
   // 2. SEO Keywords
   keywords: [
@@ -31,8 +31,8 @@ export const metadata: Metadata = {
 
   // 3. Social Media Cards (Facebook, LinkedIn, iMessage)
   openGraph: {
-    title: "HELP Loan Calculator | HECS Debt | Student Loan",
-    description: "Free tool to estimate your loan repayment timeline. See how indexation and life events affect your loan.",
+    title: "HELP Loan Calculator | Free HECS Debt Repayment Tool",
+    description: "Free Australian HELP Loan & HECS Debt Repayment Calculator. See how long it'll take to pay off your student debt based on your income, wage growth, and indexation.",
     url: 'https://www.helploancalculator.com',
     siteName: 'HELP Loan Calculator',
     locale: 'en_AU',
