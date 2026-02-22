@@ -1,12 +1,13 @@
 "use client";
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import Link from 'next/link';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea
 } from 'recharts';
 import {
   Info, RotateCcw, TrendingUp, TrendingDown,
-  PauseCircle, DollarSign, Calendar, ChevronDown, ChevronUp, AlertCircle, X, Wallet, HelpCircle, Trash2
+  PauseCircle, DollarSign, Calendar, ChevronDown, ChevronUp, AlertCircle, X, Wallet, HelpCircle, Trash2, BookOpen
 } from 'lucide-react';
 
 // --- BRAND OS THEME CONSTANTS ---
@@ -1279,6 +1280,28 @@ export default function App() {
               </div>
             )}
           </Card>
+
+          {/* GUIDES */}
+          <div className="px-4 max-w-3xl mx-auto space-y-4">
+            <h4 className="font-bold uppercase tracking-widest text-[10px] text-[#CFCFCF]/60 opacity-70 text-center">Guides</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                { href: '/hecs-repayment-thresholds-2025-26', title: 'HECS Repayment Thresholds 2025-26' },
+                { href: '/how-hecs-indexation-works', title: 'How HECS Indexation Works' },
+                { href: '/hecs-debt-and-home-loans', title: 'HECS Debt & Home Loans' },
+                { href: '/real-cost-of-starting-uni-before-youre-ready', title: 'The Real Cost of Starting Uni Early' },
+              ].map((guide) => (
+                <Link
+                  key={guide.href}
+                  href={guide.href}
+                  className="group flex items-center gap-3 p-4 rounded-xl border border-white/5 bg-white/[0.03] hover:border-[#62FFDA]/30 hover:bg-white/[0.06] transition-all"
+                >
+                  <BookOpen size={16} className="text-[#0081CB] shrink-0 group-hover:text-[#62FFDA] transition-colors" />
+                  <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-['Lato']">{guide.title}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
 
           {/* ABOUT THIS CALCULATOR */}
           <div className="text-xs text-center px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-['Lato'] text-[#CFCFCF]/60">
