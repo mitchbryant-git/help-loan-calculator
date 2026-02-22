@@ -613,6 +613,8 @@ export default function App() {
   const [showReductions, setShowReductions] = useState(true);
 
   const [showTable, setShowTable] = useState(false);
+  const [showFaq, setShowFaq] = useState(false);
+  const [openFaqItems, setOpenFaqItems] = useState({});
   const [nudge, setNudge] = useState(null);
   const [showHelpModal, setShowHelpModal] = useState(false);
 
@@ -1302,6 +1304,117 @@ export default function App() {
               ))}
             </div>
           </div>
+
+          {/* FAQ SECTION */}
+          <Card className="overflow-hidden p-0 max-w-3xl mx-auto" noPadding={true}>
+            <button onClick={() => setShowFaq(!showFaq)} className="w-full p-6 flex items-center justify-between transition-colors hover:bg-white/5">
+              <SectionHeader icon={HelpCircle} title="Frequently Asked Questions" />
+              {showFaq ? <ChevronUp size={20} className="text-[#CFCFCF]" /> : <ChevronDown size={20} className="text-[#CFCFCF]" />}
+            </button>
+            <div className={showFaq ? 'px-4 sm:px-6 pb-6' : 'sr-only'}>
+              <div className="space-y-2">
+                {[
+                  {
+                    id: 'faq-1',
+                    q: "What's the difference between HECS and HELP?",
+                    a: (
+                      <>
+                        <p className="mb-3">HELP (Higher Education Loan Program) is the Australian Government's overarching student loan system. It includes several different loan types:</p>
+                        <ul className="list-disc list-inside space-y-1 mb-3 pl-2">
+                          <li><strong className="text-white">HECS-HELP</strong> — for students in Commonwealth Supported Places (CSPs), where the government subsidises part of your tuition. This is the most common loan for undergraduate students at public universities.</li>
+                          <li><strong className="text-white">FEE-HELP</strong> — for full fee-paying students who aren't in a CSP. Tuition fees are typically higher because there's no government subsidy.</li>
+                          <li><strong className="text-white">SA-HELP</strong> — covers your Student Services and Amenities Fee.</li>
+                          <li><strong className="text-white">OS-HELP</strong> — helps with costs when studying overseas on exchange.</li>
+                        </ul>
+                        <p>All of these loans accumulate into a single HELP debt, repaid through the tax system under the same rules. When people say "HECS debt," they're usually referring to their total HELP debt. This calculator works for all HELP loan types. For the full breakdown of each loan type, visit <a href="https://www.studyassist.gov.au/helping-you-understand/how-student-loans-work" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">Study Assist — How Student Loans Work</a>.</p>
+                      </>
+                    ),
+                  },
+                  {
+                    id: 'faq-2',
+                    q: 'When do I start repaying my HECS-HELP debt?',
+                    a: (
+                      <p>You start making compulsory repayments when your repayment income exceeds <strong className="text-white">$67,000</strong> (2025-26 threshold). Repayment income includes your taxable income, reportable fringe benefits, net investment losses, and reportable super contributions. Repayments are collected automatically through the tax system — your employer withholds them from your pay if you've told them you have a HELP debt. If you earn below the threshold, you don't repay anything that year, but your debt will still be indexed. For more detail on repayment thresholds and how repayment income is calculated, see the <a href="https://www.ato.gov.au/tax-rates-and-codes/study-and-training-support-loans-rates-and-repayment-thresholds" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">ATO's repayment thresholds and rates page</a>.</p>
+                    ),
+                  },
+                  {
+                    id: 'faq-3',
+                    q: 'Does HECS-HELP have interest?',
+                    a: (
+                      <p>No. HECS-HELP loans don't charge interest. However, your debt is <strong className="text-white">indexed</strong> each year on 1 June to maintain its value in line with the cost of living. The indexation rate is the lower of CPI (Consumer Price Index) or WPI (Wage Price Index). In 2025, the rate was 3.2%. While it's not called interest, the effect is similar — your balance grows over time. <Link href="/how-hecs-indexation-works" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">Learn more about how indexation works →</Link></p>
+                    ),
+                  },
+                  {
+                    id: 'faq-4',
+                    q: 'How much will my HECS repayments be?',
+                    a: (
+                      <p>It depends on your income. Under the 2025-26 marginal system, you pay nothing on income up to $67,000, then 15 cents per dollar over that up to $125,000, increasing through further brackets up to 10% of total income above $179,286. For example, on an $85,000 salary, your annual repayment would be about $2,700. <Link href="/hecs-repayment-thresholds-2025-26" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">See the full breakdown →</Link> or enter your details into the calculator above to get your personalised estimate.</p>
+                    ),
+                  },
+                  {
+                    id: 'faq-5',
+                    q: 'Does my HECS debt affect my home loan?',
+                    a: (
+                      <p>It can. Lenders factor your HECS repayments into their borrowing capacity assessments, which can reduce how much you're able to borrow. From September 2025, updated APRA guidance allows banks to exclude HECS repayments if the debt will be fully repaid within 12 months, and some lenders like NAB now disregard debts under $20,000. But for most borrowers, a HECS balance will still reduce borrowing power. <Link href="/hecs-debt-and-home-loans" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">Read more about HECS and home loans →</Link></p>
+                    ),
+                  },
+                  {
+                    id: 'faq-6',
+                    q: 'Can I make voluntary repayments to pay off my HECS faster?',
+                    a: (
+                      <p>Yes. You can make voluntary repayments to the ATO at any time, regardless of your income. There's no longer a discount for doing so (that was removed in 2017), but voluntary repayments directly reduce your balance, which means less indexation is applied each year. You can model the impact of voluntary repayments using this calculator to see how they shorten your repayment timeline. For instructions on how to make a voluntary repayment, visit the <a href="https://www.ato.gov.au/individuals-and-families/study-and-training-support-loans/repaying-your-loan" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">ATO's HELP repayment page</a>.</p>
+                    ),
+                  },
+                  {
+                    id: 'faq-7',
+                    q: 'How do I check my HECS-HELP balance?',
+                    a: (
+                      <p>Log in to <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">myGov</a>, link to the Australian Taxation Office (ATO) if you haven't already, and your HELP debt balance will be visible under your account. You can also see a breakdown of how much has been indexed and how much you've repaid.</p>
+                    ),
+                  },
+                  {
+                    id: 'faq-8',
+                    q: "What happens to my HECS debt if I don't finish my degree?",
+                    a: (
+                      <p>Your debt doesn't disappear. Any HECS-HELP fees that were charged before you withdrew remain on your balance. They'll be indexed every year and you'll repay them through the tax system once your income is above the threshold, whether you have a degree or not. <Link href="/real-cost-of-starting-uni-before-youre-ready" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">See what this costs in real terms →</Link></p>
+                    ),
+                  },
+                  {
+                    id: 'faq-9',
+                    q: 'What happens to my HECS debt if I move overseas?',
+                    a: (
+                      <p>You're still required to repay it. If you move overseas and your worldwide income exceeds the repayment threshold, you must report your income to the ATO and make repayments. The ATO requires Australian residents living abroad to submit an overseas income declaration annually. Non-compliance can result in penalties. For full details on your obligations, see the <a href="https://www.ato.gov.au/individuals-and-families/study-and-training-support-loans/repaying-your-loan/repaying-your-loan-overseas" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">ATO's overseas repayment guide</a>.</p>
+                    ),
+                  },
+                  {
+                    id: 'faq-10',
+                    q: 'Is HECS-HELP debt written off when you die?',
+                    a: (
+                      <p>Yes. HECS-HELP debt is automatically written off upon death and is not passed on to family members or your estate. This is outlined on the <a href="https://www.studyassist.gov.au/managing-and-repaying-your-loan/loan-repayments" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">Study Assist — loan repayments page</a>.</p>
+                    ),
+                  },
+                ].map((item) => (
+                  <div key={item.id} className="rounded-xl border border-white/5 bg-white/[0.03] overflow-hidden">
+                    <button
+                      onClick={() => setOpenFaqItems(prev => ({ ...prev, [item.id]: !prev[item.id] }))}
+                      className="w-full p-4 flex items-center justify-between text-left transition-colors hover:bg-white/[0.03]"
+                    >
+                      <span className="text-sm font-medium text-[#CFCFCF] pr-4 font-['Lato']">{item.q}</span>
+                      <ChevronDown
+                        size={16}
+                        className={`text-[#CFCFCF]/50 shrink-0 transition-transform duration-200 ${openFaqItems[item.id] ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+                    <div className={openFaqItems[item.id] ? 'px-4 pb-4' : 'sr-only'}>
+                      <div className="text-sm text-[#CFCFCF]/80 leading-relaxed font-['Lato']">
+                        {item.a}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
 
           {/* ABOUT THIS CALCULATOR */}
           <div className="text-xs text-center px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-['Lato'] text-[#CFCFCF]/60">
