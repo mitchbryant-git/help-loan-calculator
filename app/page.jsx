@@ -635,6 +635,8 @@ export default function App() {
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const shareCardRef = useRef(null);
@@ -895,33 +897,11 @@ export default function App() {
     return `https://helploancalculator.com/?${params.toString()}`;
   };
 
-  const handleShareLink = async () => {
-    const url = generateShareURL();
-    try {
-      await navigator.clipboard.writeText(url);
-    } catch (_) {
-      // Fallback for browsers without clipboard API
-      const ta = document.createElement('textarea');
-      ta.value = url;
-      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-    }
-    setIsLinkCopied(true);
-    setShowToast(true);
-    setTimeout(() => setIsLinkCopied(false), 2000);
-    setTimeout(() => setShowToast(false), 2500);
-  };
-
-  const handleSaveImage = async () => {
-    if (!shareCardRef.current || isSaving) return;
-    setIsSaving(true);
-
-    // Temporarily replace gradient text with solid colour for html2canvas
+  // ── Shared: capture card as a PNG File (handles gradient-text swap internally)
+  const captureCardAsFile = async () => {
+    if (!shareCardRef.current) throw new Error('Card ref not found');
     const headlineEl = shareCardRef.current.querySelector('[data-share-headline]');
-    const savedStyles = headlineEl ? {
+    const saved = headlineEl ? {
       background: headlineEl.style.background,
       backgroundClip: headlineEl.style.backgroundClip,
       webkitBackgroundClip: headlineEl.style.webkitBackgroundClip,
@@ -935,34 +915,118 @@ export default function App() {
       headlineEl.style.webkitTextFillColor = 'unset';
       headlineEl.style.color = '#62FFDA';
     }
-
     try {
       const canvas = await html2canvas(shareCardRef.current, {
-        backgroundColor: '#111827',
-        scale: 2,
-        useCORS: true,
-        logging: false,
+        backgroundColor: '#111827', scale: 2, useCORS: true, logging: false,
       });
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
+      return await new Promise((resolve, reject) => {
+        canvas.toBlob(blob => {
+          if (!blob) { reject(new Error('toBlob failed')); return; }
+          resolve(new File([blob], 'my-help-loan.png', { type: 'image/png' }));
+        }, 'image/png');
+      });
+    } finally {
+      if (headlineEl && saved) {
+        headlineEl.style.background = saved.background;
+        headlineEl.style.backgroundClip = saved.backgroundClip;
+        headlineEl.style.webkitBackgroundClip = saved.webkitBackgroundClip;
+        headlineEl.style.webkitTextFillColor = saved.webkitTextFillColor;
+        headlineEl.style.color = saved.color;
+      }
+    }
+  };
+
+  // ── Detect mobile devices (gates Web Share API — Windows desktop also supports navigator.share)
+  const isMobileDevice = () =>
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+
+  // ── Detect whether the mobile browser can share files
+  const canShareFiles = async () => {
+    if (!navigator.share || !navigator.canShare) return false;
+    try {
+      return navigator.canShare({ files: [new File(['t'], 'test.png', { type: 'image/png' })] });
+    } catch { return false; }
+  };
+
+  // ── Share button handler
+  const handleShare = async () => {
+    if (isSharing) return;
+    setIsSharing(true);
+    try {
+      if (isMobileDevice() && navigator.share) {
+        // Mobile: use native share sheet
+        const filesOk = await canShareFiles();
+        if (filesOk) {
+          const file = await captureCardAsFile();
+          await navigator.share({
+            title: 'My HELP Loan Results',
+            text: 'See what my degree will actually cost',
+            url: generateShareURL(),
+            files: [file],
+          });
+        } else {
+          await navigator.share({
+            title: 'My HELP Loan Results',
+            text: 'See what my degree will actually cost',
+            url: generateShareURL(),
+          });
+        }
+      } else {
+        // Desktop (or any non-mobile): copy link to clipboard
+        const url = generateShareURL();
+        try {
+          await navigator.clipboard.writeText(url);
+        } catch (_) {
+          const ta = document.createElement('textarea');
+          ta.value = url;
+          ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        setIsLinkCopied(true);
+        setShowToast(true);
+        setTimeout(() => setIsLinkCopied(false), 2000);
+        setTimeout(() => setShowToast(false), 2500);
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') console.error('Share failed:', err);
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  // ── Save button handler
+  const handleSave = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
+    setSaveError(false);
+    try {
+      if (isMobileDevice() && await canShareFiles()) {
+        // Mobile: open native share sheet (user can Save to Photos from there)
+        const file = await captureCardAsFile();
+        await navigator.share({ files: [file] });
+      } else {
+        // Desktop (or mobile without file share support): direct download
+        const file = await captureCardAsFile();
+        const url = URL.createObjectURL(file);
         const a = document.createElement('a');
         a.href = url;
         a.download = 'my-help-loan.png';
         a.click();
         URL.revokeObjectURL(url);
-      }, 'image/png');
-    } catch (err) {
-      console.error('Failed to save image:', err);
-    } finally {
-      // Restore gradient text styles
-      if (headlineEl && savedStyles) {
-        headlineEl.style.background = savedStyles.background;
-        headlineEl.style.backgroundClip = savedStyles.backgroundClip;
-        headlineEl.style.webkitBackgroundClip = savedStyles.webkitBackgroundClip;
-        headlineEl.style.webkitTextFillColor = savedStyles.webkitTextFillColor;
-        headlineEl.style.color = savedStyles.color;
       }
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        // User cancelled share sheet — silently revert
+      } else {
+        console.error('Save failed:', err);
+        setSaveError(true);
+        setTimeout(() => setSaveError(false), 2000);
+      }
+    } finally {
       setIsSaving(false);
     }
   };
@@ -1847,18 +1911,24 @@ export default function App() {
 
             {/* ── ACTION BUTTONS ── */}
             <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
-              {/* Share / Copy Link */}
+              {/* Share */}
               <button
-                onClick={handleShareLink}
+                onClick={handleShare}
+                disabled={isSharing}
                 className="flex-1 flex items-center justify-center gap-2 font-['Montserrat'] font-bold text-[15px] text-white transition-all duration-200"
-                style={{ background: 'linear-gradient(135deg, #0081CB, #6A3CFF)', border: 'none', borderRadius: 14, padding: '14px 28px', boxShadow: '0 4px 24px rgba(0,129,203,0.3)', cursor: 'pointer' }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,129,203,0.45)'; }}
+                style={{ background: 'linear-gradient(135deg, #0081CB, #6A3CFF)', border: 'none', borderRadius: 14, padding: '14px 28px', boxShadow: '0 4px 24px rgba(0,129,203,0.3)', cursor: isSharing ? 'wait' : 'pointer', opacity: isSharing ? 0.8 : 1 }}
+                onMouseEnter={e => { if (!isSharing) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,129,203,0.45)'; } }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,129,203,0.3)'; }}
               >
                 {isLinkCopied ? (
                   <>
                     <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                     Link Copied!
+                  </>
+                ) : isSharing ? (
+                  <>
+                    <ShareIcon size={18} color="white" />
+                    Sharing…
                   </>
                 ) : (
                   <>
@@ -1870,19 +1940,27 @@ export default function App() {
 
               {/* Save */}
               <button
-                onClick={handleSaveImage}
+                onClick={handleSave}
                 disabled={isSaving}
                 className="flex-1 flex items-center justify-center gap-2 font-['Montserrat'] font-bold text-[15px] text-white transition-all duration-200"
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: '14px 28px', cursor: isSaving ? 'wait' : 'pointer', opacity: isSaving ? 0.7 : 1 }}
                 onMouseEnter={e => { if (!isSaving) { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; } }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
               >
-                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                {isSaving ? 'Saving…' : 'Save'}
+                {saveError ? (
+                  'Something went wrong'
+                ) : isSaving ? (
+                  'Saving…'
+                ) : (
+                  <>
+                    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Save
+                  </>
+                )}
               </button>
             </div>
 
