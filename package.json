@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@next/third-parties": "^16.0.10",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.561.0",
     "next": "^16.1.6",
     "react": "19.2.1",

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import html2canvas from 'html2canvas';
 import Link from 'next/link';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea
@@ -38,6 +39,13 @@ const calculateCompulsoryRepayment = (income) => {
 
 const formatCurrency = (val) =>
   new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 }).format(val);
+
+const formatCurrencyShort = (val) => {
+  const n = Math.round(val);
+  if (n >= 1000000) return `$${(n / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+  if (n >= 1000) return `$${Math.round(n / 1000)}k`;
+  return `$${n}`;
+};
 
 // --- VISUAL COMPONENTS ---
 
@@ -401,6 +409,14 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
 
 
 
+const ShareIcon = ({ size = 18, color = 'currentColor' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+    <polyline points="16 6 12 2 8 6"/>
+    <line x1="12" y1="2" x2="12" y2="15"/>
+  </svg>
+);
+
 const SectionHeader = ({ icon: Icon, title, infoText }) => (
   <div className="flex items-center mb-1">
     <Icon className="text-[#0081CB]" size={20} />
@@ -617,6 +633,11 @@ export default function App() {
   const [openFaqItems, setOpenFaqItems] = useState({});
   const [nudge, setNudge] = useState(null);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLinkCopied, setIsLinkCopied] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const shareCardRef = useRef(null);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -633,6 +654,40 @@ export default function App() {
     setTempBreak(prev => ({ ...prev, startYear: inputs.firstYear + 3 }));
     setTempReduction(prev => ({ ...prev, year: inputs.firstYear + 5 }));
   }, [inputs.firstYear]);
+
+  // URL param decode — runs once on mount
+  useEffect(() => {
+    if (!window.location.search) return;
+    const params = new URLSearchParams(window.location.search);
+    const safe = (val, fallback, min, max) => {
+      const n = parseFloat(val);
+      return (!isNaN(n) && n >= min && n <= max) ? n : fallback;
+    };
+    const overrides = {};
+    if (params.has('d')) overrides.startingDebt   = safe(params.get('d'), 50000, 0, 500000);
+    if (params.has('i')) overrides.startingIncome  = safe(params.get('i'), 70000, 0, 500000);
+    if (params.has('g')) overrides.wageGrowth      = safe(params.get('g'), 3.5,   0, 10);
+    if (params.has('x')) overrides.indexationRate  = safe(params.get('x'), 3.0,   0, 10);
+    if (params.has('y')) overrides.firstYear       = safe(params.get('y'), 2026,  2020, 2100);
+    if (params.has('a')) overrides.startingAge     = safe(params.get('a'), 22,    15, 80);
+    if (Object.keys(overrides).length) setInputs(prev => ({ ...prev, ...overrides }));
+    if (params.has('e')) {
+      try {
+        const evts = JSON.parse(params.get('e'));
+        if (Array.isArray(evts)) {
+          const p = evts.filter(e => e.t === 'p').map(e => ({ year: String(e.y), percent: String(e.pct) }));
+          const v = evts.filter(e => e.t === 'v').map(e => ({ year: String(e.y), amount: String(e.amt) }));
+          const b = evts.filter(e => e.t === 'b').map(e => ({ startYear: String(e.sy), duration: String(e.d) }));
+          const r = evts.filter(e => e.t === 'r').map(e => ({ year: String(e.y), percent: String(e.pct) }));
+          if (p.length) setPromotions(p);
+          if (v.length) setVoluntary(v);
+          if (b.length) setBreaks(b);
+          if (r.length) setReductions(r);
+        }
+      } catch (_) { /* ignore malformed events */ }
+    }
+    window.history.replaceState({}, '', window.location.pathname);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // --- CALCULATION ENGINE ---
   const timelineData = useMemo(() => {
@@ -808,6 +863,110 @@ export default function App() {
   const isDebtFree = timelineData.length > 0 && timelineData[timelineData.length - 1].endBalance <= 0.01;
   const finalAge = timelineData.length > 0 ? timelineData[timelineData.length - 1].age : inputs.startingAge;
 
+  const shareLifeEvents = [
+    ...promotions.map(p => ({ type: 'promotion', icon: '📈', label: `+${p.percent}% in ${p.year}` })),
+    ...voluntary.map(v => ({ type: 'voluntary', icon: '💸', label: `${formatCurrencyShort(v.amount)} in ${v.year}` })),
+    ...breaks.map(b => ({ type: 'gap-year', icon: '✈️', label: `Gap year ${b.startYear}${parseInt(b.duration) > 1 ? `–${parseInt(b.startYear) + parseInt(b.duration) - 1}` : ''}` })),
+    ...reductions.map(r => ({ type: 'pay-cut', icon: '📉', label: `-${r.percent}% in ${r.year}` })),
+  ];
+  const shareTotalYears = finalYear - inputs.firstYear;
+  const shareDotsData = shareTotalYears > 0 ? [
+    ...promotions.map(p => ({ pct: Math.min(96, Math.max(4, (parseInt(p.year) - inputs.firstYear) / shareTotalYears * 100)), color: '#62FFDA' })),
+    ...voluntary.map(v => ({ pct: Math.min(96, Math.max(4, (parseInt(v.year) - inputs.firstYear) / shareTotalYears * 100)), color: '#00A3FF' })),
+    ...breaks.map(b => ({ pct: Math.min(96, Math.max(4, (parseInt(b.startYear) - inputs.firstYear) / shareTotalYears * 100)), color: '#FFB347' })),
+    ...reductions.map(r => ({ pct: Math.min(96, Math.max(4, (parseInt(r.year) - inputs.firstYear) / shareTotalYears * 100)), color: '#FF4D6A' })),
+  ] : [];
+
+  const generateShareURL = () => {
+    const params = new URLSearchParams();
+    params.set('d', String(inputs.startingDebt));
+    params.set('i', String(inputs.startingIncome));
+    params.set('g', String(inputs.wageGrowth));
+    params.set('x', String(inputs.indexationRate));
+    params.set('y', String(inputs.firstYear));
+    params.set('a', String(inputs.startingAge));
+    const evts = [
+      ...promotions.map(p => ({ t: 'p', y: parseInt(p.year), pct: parseFloat(p.percent) })),
+      ...voluntary.map(v => ({ t: 'v', y: parseInt(v.year), amt: parseFloat(v.amount) })),
+      ...breaks.map(b => ({ t: 'b', sy: parseInt(b.startYear), d: parseInt(b.duration) })),
+      ...reductions.map(r => ({ t: 'r', y: parseInt(r.year), pct: parseFloat(r.percent) })),
+    ];
+    if (evts.length) params.set('e', JSON.stringify(evts));
+    return `https://helploancalculator.com/?${params.toString()}`;
+  };
+
+  const handleShareLink = async () => {
+    const url = generateShareURL();
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch (_) {
+      // Fallback for browsers without clipboard API
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    setIsLinkCopied(true);
+    setShowToast(true);
+    setTimeout(() => setIsLinkCopied(false), 2000);
+    setTimeout(() => setShowToast(false), 2500);
+  };
+
+  const handleSaveImage = async () => {
+    if (!shareCardRef.current || isSaving) return;
+    setIsSaving(true);
+
+    // Temporarily replace gradient text with solid colour for html2canvas
+    const headlineEl = shareCardRef.current.querySelector('[data-share-headline]');
+    const savedStyles = headlineEl ? {
+      background: headlineEl.style.background,
+      backgroundClip: headlineEl.style.backgroundClip,
+      webkitBackgroundClip: headlineEl.style.webkitBackgroundClip,
+      webkitTextFillColor: headlineEl.style.webkitTextFillColor,
+      color: headlineEl.style.color,
+    } : null;
+    if (headlineEl) {
+      headlineEl.style.background = 'none';
+      headlineEl.style.backgroundClip = 'unset';
+      headlineEl.style.webkitBackgroundClip = 'unset';
+      headlineEl.style.webkitTextFillColor = 'unset';
+      headlineEl.style.color = '#62FFDA';
+    }
+
+    try {
+      const canvas = await html2canvas(shareCardRef.current, {
+        backgroundColor: '#111827',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'my-help-loan.png';
+        a.click();
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    } catch (err) {
+      console.error('Failed to save image:', err);
+    } finally {
+      // Restore gradient text styles
+      if (headlineEl && savedStyles) {
+        headlineEl.style.background = savedStyles.background;
+        headlineEl.style.backgroundClip = savedStyles.backgroundClip;
+        headlineEl.style.webkitBackgroundClip = savedStyles.webkitBackgroundClip;
+        headlineEl.style.webkitTextFillColor = savedStyles.webkitTextFillColor;
+        headlineEl.style.color = savedStyles.color;
+      }
+      setIsSaving(false);
+    }
+  };
+
   const ActionButton = ({ onClick, children }) => (
     <button
       onClick={onClick}
@@ -852,6 +1011,14 @@ export default function App() {
 
           <div className="flex items-center gap-3">
             <button
+              onClick={() => setShowShareModal(true)}
+              className="btn-soft flex items-center gap-2 text-[#CFCFCF]"
+            >
+              <ShareIcon size={18} color="#00A3FF" />
+              <span className="hidden md:inline text-xs font-bold uppercase tracking-wider font-['Montserrat']">Share</span>
+            </button>
+
+            <button
               onClick={() => setShowHelpModal(true)}
               className="btn-soft flex items-center gap-2 text-[#CFCFCF]"
             >
@@ -881,6 +1048,25 @@ export default function App() {
           Add promotions, gap years, and pay cuts to get the full picture.{' '}
           <span className="font-normal text-[#CFCFCF]/60">Built on official 2025–26 ATO rates.</span>
         </p>
+
+        <div className="col-span-full mb-0">
+          <button
+            onClick={() => setShowHelpModal(true)}
+            className="group inline-flex items-center gap-2 font-['Lato'] text-[13px] font-bold text-[#CFCFCF] cursor-pointer transition-colors"
+            style={{
+              border: '1px dashed rgba(0,129,203,0.25)',
+              background: 'transparent',
+              borderRadius: '10px',
+              padding: '9px 16px',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,129,203,0.06)'; e.currentTarget.style.borderColor = 'rgba(0,129,203,0.4)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(0,129,203,0.25)'; }}
+          >
+            <span style={{ fontSize: '15px' }}>💡</span>
+            How to use this calculator
+            <span className="text-[#CFCFCF]/50" style={{ fontSize: '14px' }}>›</span>
+          </button>
+        </div>
 
         {/* --- LEFT COLUMN (INPUTS) --- */}
         <div className="lg:col-span-4 space-y-6" data-nosnippet>
@@ -1220,6 +1406,20 @@ export default function App() {
               </div>
             )}
           </Card>
+
+          {/* SHARE BUTTON — mobile only, between Pay Cuts and Year by Year */}
+          <div className="lg:hidden">
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="w-full flex items-center justify-center gap-2.5 py-3.5 px-5 font-['Montserrat'] font-bold text-sm text-[#CFCFCF] transition-all duration-200"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14 }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,129,203,0.3)'; e.currentTarget.style.background = 'rgba(0,129,203,0.05)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              <ShareIcon size={16} color="#00A3FF" />
+              Share my results
+            </button>
+          </div>
         </div>
 
         {/* --- RIGHT COLUMN (OUTPUTS) --- */}
@@ -1231,6 +1431,20 @@ export default function App() {
 
           <div className="hidden lg:block">
             <ChartSection timelineData={timelineData} breaks={breaks} />
+          </div>
+
+          {/* SHARE BUTTON — desktop only, between chart and Year by Year */}
+          <div className="hidden lg:flex justify-center">
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="flex items-center gap-2.5 py-3 px-6 font-['Montserrat'] font-bold text-sm text-[#CFCFCF] transition-all duration-200"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14 }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,129,203,0.3)'; e.currentTarget.style.background = 'rgba(0,129,203,0.05)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              <ShareIcon size={16} color="#00A3FF" />
+              Share my results
+            </button>
           </div>
 
           <Card className="overflow-hidden p-0" noPadding={true}>
@@ -1489,6 +1703,198 @@ export default function App() {
           </div>
         </div>
       </main>
+
+      {/* --- SHARE MODAL --- */}
+      {showShareModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto py-6 px-4"
+          style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+          onClick={() => setShowShareModal(false)}
+        >
+          <div
+            className="w-full animate-in fade-in zoom-in-95 duration-300"
+            style={{ maxWidth: 440, animationTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* ── RESULTS CARD ── */}
+            <div ref={shareCardRef} style={{ background: '#111827', borderRadius: 24, overflow: 'hidden', position: 'relative', boxShadow: '0 0 0 1px rgba(255,255,255,0.06), 0 24px 80px rgba(0,0,0,0.5)', maxWidth: 390, margin: '0 auto' }}>
+              {/* Ambient glow */}
+              <div style={{ position: 'absolute', top: '-60%', left: '-30%', width: '160%', height: '160%', background: 'radial-gradient(ellipse at 30% 20%, rgba(0,129,203,0.12) 0%, rgba(106,60,255,0.06) 40%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
+
+              <div style={{ position: 'relative', zIndex: 1, padding: '28px 24px 28px' }}>
+
+                {/* Header */}
+                <div className="animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:both] [animation-delay:60ms]"
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <img src="/apple-touch-icon.png" alt="MB Logo" style={{ width: 32, height: 32, borderRadius: 8, objectFit: 'cover', display: 'block' }} />
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(241,245,249,0.55)', letterSpacing: 0.5, fontFamily: "'Montserrat', sans-serif" }}>HELP Loan Calculator</div>
+                  </div>
+                  <div style={{ background: 'rgba(98,255,218,0.08)', border: '1px solid rgba(98,255,218,0.2)', color: '#62FFDA', fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 20, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: "'Montserrat', sans-serif", textAlign: 'center', lineHeight: '1', display: 'inline-flex', alignItems: 'center' }}>2025–26</div>
+                </div>
+
+                {/* Headline stat */}
+                <div className="animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:both] [animation-delay:120ms]"
+                  style={{ textAlign: 'center', marginBottom: 28 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 2, marginBottom: 10, fontFamily: "'Montserrat', sans-serif" }}>Your degree will actually cost</div>
+                  <div data-share-headline="true" style={{ fontFamily: 'var(--font-geist-mono, ui-monospace, monospace)', fontSize: 52, fontWeight: 700, background: 'linear-gradient(135deg, #F1F5F9 0%, #00A3FF 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1.1, marginBottom: 12 }}>
+                    {isDebtFree ? formatCurrency(totalPaid) : '50+ yrs'}
+                  </div>
+                  <div style={{ fontSize: 14, color: 'rgba(241,245,249,0.55)', fontFamily: "'Lato', sans-serif" }}>
+                    {isDebtFree
+                      ? <><>Debt free by </><strong style={{ color: '#F1F5F9', fontWeight: 700 }}>{finalYear}</strong><> · age </><strong style={{ color: '#F1F5F9', fontWeight: 700 }}>{finalAge}</strong></>
+                      : <span style={{ color: '#FF4D6A' }}>Loan not cleared in 50 years</span>}
+                  </div>
+                </div>
+
+                {/* Equation bar */}
+                <div className="animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:both] [animation-delay:180ms]"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 24, fontFamily: 'var(--font-geist-mono, ui-monospace, monospace)', fontSize: 13, fontWeight: 500 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{ color: '#F1F5F9' }}>{formatCurrencyShort(inputs.startingDebt)}</div>
+                    <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Debt</div>
+                  </div>
+                  <div style={{ color: 'rgba(241,245,249,0.35)', fontSize: 16, lineHeight: 1, alignSelf: 'center' }}>+</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{ color: '#FF4D6A', fontWeight: 700 }}>{formatCurrencyShort(totalIndexation)}</div>
+                    <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Indexation</div>
+                  </div>
+                  <div style={{ color: 'rgba(241,245,249,0.35)', fontSize: 16, lineHeight: 1, alignSelf: 'center' }}>=</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{ color: '#F1F5F9' }}>{formatCurrencyShort(totalPaid)}</div>
+                    <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Total paid</div>
+                  </div>
+                  <div style={{ color: 'rgba(241,245,249,0.35)', fontSize: 11, fontFamily: "'Lato', sans-serif", letterSpacing: 0.5, alignSelf: 'center' }}>over</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <div style={{ color: '#F1F5F9' }}>{isDebtFree ? `${timelineData.length} yrs` : '50+ yrs'}</div>
+                    <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Timeline</div>
+                  </div>
+                </div>
+
+                {/* Stats grid */}
+                <div className="animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:both] [animation-delay:240ms]"
+                  style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 2, background: 'rgba(255,255,255,0.08)', borderRadius: 14, marginBottom: 24 }}>
+                  {[
+                    { label: 'Years', value: isDebtFree ? String(timelineData.length) : '50+', color: '#F1F5F9', unit: 'to pay off' },
+                    { label: 'Indexation', value: formatCurrencyShort(totalIndexation), color: '#FF4D6A', unit: 'added to debt' },
+                    { label: 'Start salary', value: formatCurrencyShort(inputs.startingIncome), color: '#0081CB', unit: 'annual' },
+                  ].map((stat, i, arr) => (
+                    <div key={i} style={{
+                      background: '#111827',
+                      padding: '16px 10px',
+                      textAlign: 'center',
+                      borderRadius: i === 0 ? '14px 0 0 14px' : i === arr.length - 1 ? '0 14px 14px 0' : 0,
+                    }}>
+                      <div style={{ fontSize: 10, fontWeight: 600, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 7, fontFamily: "'Montserrat', sans-serif", whiteSpace: 'nowrap' }}>{stat.label}</div>
+                      <div style={{ fontFamily: 'var(--font-geist-mono, ui-monospace, monospace)', fontSize: 20, fontWeight: 700, color: stat.color }}>{stat.value}</div>
+                      <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 10, color: 'rgba(241,245,249,0.55)', marginTop: 4 }}>{stat.unit}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Life event pills — only if events exist */}
+                {shareLifeEvents.length > 0 && (
+                  <div className="animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:both] [animation-delay:300ms]"
+                    style={{ marginBottom: 24 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10, fontFamily: "'Montserrat', sans-serif" }}>Life events modelled</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                      {shareLifeEvents.map((ev, i) => {
+                        const palette = {
+                          promotion: { color: '#62FFDA', border: 'rgba(98,255,218,0.2)', bg: 'rgba(98,255,218,0.05)' },
+                          voluntary: { color: '#00A3FF', border: 'rgba(0,163,255,0.2)', bg: 'rgba(0,163,255,0.05)' },
+                          'gap-year': { color: '#FFB347', border: 'rgba(255,179,71,0.2)', bg: 'rgba(255,179,71,0.05)' },
+                          'pay-cut': { color: '#FF4D6A', border: 'rgba(255,77,106,0.2)', bg: 'rgba(255,77,106,0.05)' },
+                        };
+                        const c = palette[ev.type] || { color: 'rgba(241,245,249,0.55)', border: 'rgba(255,255,255,0.08)', bg: 'rgba(255,255,255,0.04)' };
+                        return (
+                          <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: c.bg, border: `1px solid ${c.border}`, borderRadius: 20, padding: '6px 12px', fontSize: 12, fontWeight: 600, color: c.color, fontFamily: "'Lato', sans-serif" }}>
+                            <span style={{ fontSize: 12, lineHeight: 1 }}>{ev.icon}</span>
+                            {ev.label}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Mini timeline */}
+                <div className="animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:both] [animation-delay:360ms]"
+                  style={{ marginBottom: 24 }}>
+                  <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'visible', position: 'relative' }}>
+                    <div style={{ height: '100%', borderRadius: 3, background: 'linear-gradient(90deg, #0081CB, #6A3CFF, #62FFDA)', width: '100%', position: 'relative' }}>
+                      {shareDotsData.map((dot, i) => (
+                        <div key={i} style={{ position: 'absolute', top: '50%', left: `${dot.pct}%`, transform: 'translate(-50%, -50%)', width: 11, height: 11, borderRadius: '50%', background: dot.color, border: '2px solid #111827', zIndex: 2 }} />
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 9 }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(241,245,249,0.35)', fontFamily: "'Lato', sans-serif" }}>{inputs.firstYear}{inputs.startingAge ? ` · ${inputs.startingAge}yo` : ''}</div>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: '#62FFDA', fontFamily: "'Lato', sans-serif" }}>{isDebtFree ? `${finalYear} · Debt free ✓` : 'Not cleared in 50 yrs'}</div>
+                  </div>
+                </div>
+
+                {/* Card footer */}
+                <div className="animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:both] [animation-delay:420ms]"
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 18, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 12, fontWeight: 600, color: 'rgba(241,245,249,0.35)' }}>
+                    Calculate yours →{' '}<span style={{ color: '#00A3FF', fontWeight: 700 }}>helploancalculator.com</span>
+                  </div>
+                  <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 12, fontWeight: 700, color: 'rgba(241,245,249,0.55)' }}>@itsmitchbryant</div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* ── ACTION BUTTONS ── */}
+            <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
+              {/* Share / Copy Link */}
+              <button
+                onClick={handleShareLink}
+                className="flex-1 flex items-center justify-center gap-2 font-['Montserrat'] font-bold text-[15px] text-white transition-all duration-200"
+                style={{ background: 'linear-gradient(135deg, #0081CB, #6A3CFF)', border: 'none', borderRadius: 14, padding: '14px 28px', boxShadow: '0 4px 24px rgba(0,129,203,0.3)', cursor: 'pointer' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,129,203,0.45)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,129,203,0.3)'; }}
+              >
+                {isLinkCopied ? (
+                  <>
+                    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    Link Copied!
+                  </>
+                ) : (
+                  <>
+                    <ShareIcon size={18} color="white" />
+                    Share
+                  </>
+                )}
+              </button>
+
+              {/* Save */}
+              <button
+                onClick={handleSaveImage}
+                disabled={isSaving}
+                className="flex-1 flex items-center justify-center gap-2 font-['Montserrat'] font-bold text-[15px] text-white transition-all duration-200"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: '14px 28px', cursor: isSaving ? 'wait' : 'pointer', opacity: isSaving ? 0.7 : 1 }}
+                onMouseEnter={e => { if (!isSaving) { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; } }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+              >
+                <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                {isSaving ? 'Saving…' : 'Save'}
+              </button>
+            </div>
+
+            {/* ── TOAST ── */}
+            {showToast && (
+              <div className="animate-in fade-in duration-200 text-center mt-3 font-['Lato'] font-semibold text-[13px]" style={{ color: 'rgba(241,245,249,0.55)' }}>
+                ✓ Link copied to clipboard
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* --- HELP MODAL --- */}
       {showHelpModal && (
