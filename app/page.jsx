@@ -874,6 +874,14 @@ export default function App() {
         {/* SEO: Visually hidden h1 for search engines */}
         <h1 className="sr-only">HELP Loan Calculator | Australian HECS Debt Repayment Calculator</h1>
 
+        {/* LANDING COPY — full-width above both columns on desktop, above inputs on mobile */}
+        <p className="col-span-full font-['Lato'] text-[13px] lg:text-[15px] text-[#CFCFCF] mb-0" style={{ lineHeight: '1.6' }}>
+          The only HECS calculator that shows how{' '}
+          <strong className="font-bold text-white">real life affects your student debt</strong>.{' '}
+          Add promotions, gap years, and pay cuts to get the full picture.{' '}
+          <span className="font-normal text-[#CFCFCF]/60">Built on official 2025–26 ATO rates.</span>
+        </p>
+
         {/* --- LEFT COLUMN (INPUTS) --- */}
         <div className="lg:col-span-4 space-y-6" data-nosnippet>
 

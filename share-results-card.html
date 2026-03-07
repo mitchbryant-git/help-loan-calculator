@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HELP Loan Results — Share Card</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #0081CB;
+    --primary-light: #00A3FF;
+    --coach-violet: #6A3CFF;
+    --mint: #62FFDA;
+    --bg-dark: #0A0E1A;
+    --bg-card: #111827;
+    --glass-bg: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --text-primary: #F1F5F9;
+    --text-secondary: rgba(241, 245, 249, 0.55);
+    --text-muted: rgba(241, 245, 249, 0.35);
+    --danger: #FF4D6A;
+    --warning: #FFB347;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: var(--bg-dark);
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+    color: var(--text-primary);
+  }
+
+  /* ---- DEMO CONTROLS (not part of the card) ---- */
+  .demo-controls {
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .demo-controls h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 16px;
+  }
+  .demo-controls .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .demo-controls button {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .demo-controls button:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: var(--primary);
+  }
+  .demo-controls button.active {
+    background: rgba(0, 129, 203, 0.15);
+    border-color: var(--primary);
+    color: var(--primary-light);
+  }
+
+  /* ---- THE CARD ---- */
+  .share-card {
+    width: 390px;
+    background: var(--bg-card);
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 24px 80px rgba(0,0,0,0.5),
+      0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  /* Ambient glow */
+  .share-card::before {
+    content: '';
+    position: absolute;
+    top: -60%;
+    left: -30%;
+    width: 160%;
+    height: 160%;
+    background: radial-gradient(
+      ellipse at 30% 20%,
+      rgba(0, 129, 203, 0.12) 0%,
+      rgba(106, 60, 255, 0.06) 40%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .card-inner {
+    position: relative;
+    z-index: 1;
+    padding: 28px 24px 20px;
+  }
+
+  /* ---- HEADER ---- */
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--primary), var(--coach-violet));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .brand-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+  }
+
+  .card-badge {
+    background: rgba(98, 255, 218, 0.08);
+    border: 1px solid rgba(98, 255, 218, 0.2);
+    color: var(--mint);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ---- HEADLINE STAT ---- */
+  .headline {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .headline-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .headline-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 56px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+
+  .headline-sub {
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .headline-sub strong {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  /* ---- EQUATION BAR ---- */
+  .equation-bar {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .eq-val {
+    color: var(--text-primary);
+  }
+
+  .eq-op {
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+
+  .eq-result {
+    color: var(--danger);
+    font-weight: 700;
+  }
+
+  .eq-label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .eq-group {
+    text-align: center;
+  }
+
+  /* ---- STATS GRID ---- */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+    background: var(--glass-border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .stat-cell {
+    background: var(--bg-card);
+    padding: 14px 12px;
+    text-align: center;
+  }
+
+  .stat-cell:first-child {
+    border-radius: 14px 0 0 14px;
+  }
+  .stat-cell:last-child {
+    border-radius: 0 14px 14px 0;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .stat-value.mint { color: var(--mint); }
+  .stat-value.danger { color: var(--danger); }
+  .stat-value.warning { color: var(--warning); }
+
+  .stat-unit {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* ---- LIFE EVENTS ---- */
+  .life-events {
+    margin-bottom: 20px;
+  }
+
+  .life-events-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+
+  .event-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .event-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+  }
+
+  .event-pill .pill-icon {
+    font-size: 13px;
+  }
+
+  .event-pill.promotion {
+    border-color: rgba(98, 255, 218, 0.2);
+    color: var(--mint);
+    background: rgba(98, 255, 218, 0.05);
+  }
+
+  .event-pill.voluntary {
+    border-color: rgba(0, 163, 255, 0.2);
+    color: var(--primary-light);
+    background: rgba(0, 163, 255, 0.05);
+  }
+
+  .event-pill.gap-year {
+    border-color: rgba(255, 179, 71, 0.2);
+    color: var(--warning);
+    background: rgba(255, 179, 71, 0.05);
+  }
+
+  .event-pill.pay-cut {
+    border-color: rgba(255, 77, 106, 0.2);
+    color: var(--danger);
+    background: rgba(255, 77, 106, 0.05);
+  }
+
+  /* ---- MINI TIMELINE ---- */
+  .mini-timeline {
+    margin-bottom: 22px;
+    position: relative;
+  }
+
+  .timeline-track {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: visible;
+    position: relative;
+  }
+
+  .timeline-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--coach-violet), var(--mint));
+    position: relative;
+    width: 100%;
+  }
+
+  .timeline-markers {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .timeline-marker {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  .timeline-marker.end {
+    color: var(--mint);
+  }
+
+  /* Event dots on timeline */
+  .timeline-dot {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-card);
+    z-index: 2;
+  }
+
+  .timeline-dot.promotion-dot {
+    background: var(--mint);
+  }
+
+  .timeline-dot.gap-dot {
+    background: var(--warning);
+  }
+
+  .timeline-dot.voluntary-dot {
+    background: var(--primary-light);
+  }
+
+  /* ---- FOOTER ---- */
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--glass-border);
+  }
+
+  .footer-cta {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  .footer-cta span {
+    color: var(--primary-light);
+    font-weight: 700;
+  }
+
+  .footer-handle {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+  }
+
+  /* ---- SHARE BUTTON (outside card, triggers the popup) ---- */
+  .share-trigger {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .share-btn {
+    background: linear-gradient(135deg, var(--primary), var(--coach-violet));
+    border: none;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 24px rgba(0, 129, 203, 0.3);
+  }
+
+  .share-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 129, 203, 0.4);
+  }
+
+  .share-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .download-btn {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    padding: 14px 20px;
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .download-btn:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.15);
+  }
+
+  .download-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* ---- POPUP OVERLAY ---- */
+  .popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .popup-overlay.visible {
+    display: flex;
+    opacity: 1;
+  }
+
+  .popup-content {
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+  }
+
+  .popup-overlay.visible .popup-content {
+    transform: scale(1);
+  }
+
+  .popup-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .popup-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  .share-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .share-option {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-family: inherit;
+  }
+
+  .share-option:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+  }
+
+  .share-option-icon {
+    font-size: 24px;
+  }
+
+  .share-option-label {
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .popup-close {
+    background: none;
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .popup-close:hover {
+    color: var(--text-primary);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  /* ---- ANIMATION ---- */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-inner > * {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+  }
+
+  .card-header { animation-delay: 0.05s; }
+  .headline { animation-delay: 0.12s; }
+  .equation-bar { animation-delay: 0.18s; }
+  .stats-grid { animation-delay: 0.24s; }
+  .life-events { animation-delay: 0.30s; }
+  .mini-timeline { animation-delay: 0.36s; }
+  .card-footer { animation-delay: 0.42s; }
+
+  /* ---- NO EVENTS VARIANT ---- */
+  .life-events.hidden {
+    display: none;
+  }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 420px) {
+    .share-card {
+      width: 100%;
+    }
+    .headline-value {
+      font-size: 44px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Demo toggle buttons -->
+<div class="demo-controls">
+  <h2>Preview scenarios</h2>
+  <div class="btn-row">
+    <button class="active" onclick="showScenario('base')">Basic result</button>
+    <button onclick="showScenario('events')">With life events</button>
+    <button onclick="showScenario('heavy')">High debt</button>
+  </div>
+</div>
+
+<!-- THE SHARE CARD -->
+<div class="share-card" id="shareCard">
+  <div class="card-inner">
+
+    <!-- Header -->
+    <div class="card-header">
+      <div class="brand">
+        <div class="brand-icon">H</div>
+        <div class="brand-text">HELP Loan Calculator</div>
+      </div>
+      <div class="card-badge" id="badgeText">2025–26</div>
+    </div>
+
+    <!-- Headline stat -->
+    <div class="headline">
+      <div class="headline-label">Your degree will actually cost</div>
+      <div class="headline-value" id="totalCost">$71,166</div>
+      <div class="headline-sub">Debt free by <strong id="debtFreeYear">2043</strong> · age <strong id="debtFreeAge">39</strong></div>
+    </div>
+
+    <!-- Equation bar -->
+    <div class="equation-bar">
+      <div class="eq-group">
+        <div class="eq-val" id="eqDebt">$50k</div>
+        <div class="eq-label">Debt</div>
+      </div>
+      <div class="eq-op">+</div>
+      <div class="eq-group">
+        <div class="eq-val eq-result" id="eqIndexation">$21k</div>
+        <div class="eq-label">Indexation</div>
+      </div>
+      <div class="eq-op">=</div>
+      <div class="eq-group">
+        <div class="eq-val" id="eqTotal">$71k</div>
+        <div class="eq-label">Total paid</div>
+      </div>
+      <div class="eq-op">over</div>
+      <div class="eq-group">
+        <div class="eq-val" id="eqYears">18 yrs</div>
+        <div class="eq-label">Timeline</div>
+      </div>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="stats-grid">
+      <div class="stat-cell">
+        <div class="stat-label">Years</div>
+        <div class="stat-value" id="statYears">18</div>
+        <div class="stat-unit">to pay off</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Indexation</div>
+        <div class="stat-value danger" id="statIndexation">$21k</div>
+        <div class="stat-unit">added to debt</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Start salary</div>
+        <div class="stat-value mint" id="statSalary">$55k</div>
+        <div class="stat-unit">annual</div>
+      </div>
+    </div>
+
+    <!-- Life events (conditional) -->
+    <div class="life-events hidden" id="lifeEvents">
+      <div class="life-events-label">Life events modelled</div>
+      <div class="event-pills" id="eventPills">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+
+    <!-- Mini timeline -->
+    <div class="mini-timeline">
+      <div class="timeline-track">
+        <div class="timeline-fill" id="timelineFill">
+          <!-- Event dots injected here -->
+        </div>
+      </div>
+      <div class="timeline-markers">
+        <div class="timeline-marker" id="timelineStart">2025 · 21yo</div>
+        <div class="timeline-marker end" id="timelineEnd">2043 · Debt free ✓</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <div class="footer-cta">Calculate yours → <span>helploancalculator.com</span></div>
+      <div class="footer-handle">@itsmitchbryant</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Share / Download buttons -->
+<div class="share-trigger">
+  <button class="share-btn" onclick="openSharePopup()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+    Share Results
+  </button>
+  <button class="download-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Save Image
+  </button>
+</div>
+
+<!-- Share popup -->
+<div class="popup-overlay" id="sharePopup">
+  <div class="popup-content">
+    <div class="popup-title">Share your results</div>
+    <div class="popup-subtitle">Show your mates what uni actually costs</div>
+    <div class="share-options">
+      <button class="share-option">
+        <div class="share-option-icon">💬</div>
+        <div class="share-option-label">iMessage</div>
+      </button>
+      <button class="share-option">
+        <div class="share-option-icon">📸</div>
+        <div class="share-option-label">Instagram Story</div>
+      </button>
+      <button class="share-option">
+        <div class="share-option-icon">🔗</div>
+        <div class="share-option-label">Copy Link</div>
+      </button>
+      <button class="share-option">
+        <div class="share-option-icon">📋</div>
+        <div class="share-option-label">Screenshot</div>
+      </button>
+    </div>
+    <button class="popup-close" onclick="closeSharePopup()">Close</button>
+  </div>
+</div>
+
+<script>
+  const scenarios = {
+    base: {
+      totalCost: '$71,166',
+      debtFreeYear: '2043',
+      debtFreeAge: '39',
+      eqDebt: '$50k',
+      eqIndexation: '$21k',
+      eqTotal: '$71k',
+      eqYears: '18 yrs',
+      statYears: '18',
+      statIndexation: '$21k',
+      statSalary: '$55k',
+      timelineStart: '2025 · 21yo',
+      timelineEnd: '2043 · Debt free ✓',
+      badge: '2025–26',
+      events: [],
+    },
+    events: {
+      totalCost: '$58,420',
+      debtFreeYear: '2038',
+      debtFreeAge: '34',
+      eqDebt: '$42k',
+      eqIndexation: '$16k',
+      eqTotal: '$58k',
+      eqYears: '13 yrs',
+      statYears: '13',
+      statIndexation: '$16k',
+      statSalary: '$60k',
+      timelineStart: '2025 · 21yo',
+      timelineEnd: '2038 · Debt free ✓',
+      badge: '2025–26',
+      events: [
+        { type: 'promotion', icon: '📈', label: 'Promotion yr 3 (+15%)' },
+        { type: 'voluntary', icon: '💸', label: '$2k/yr voluntary' },
+        { type: 'gap-year', icon: '✈️', label: 'Gap year 2027' },
+      ],
+      timelineDots: [
+        { position: '15%', type: 'gap-dot' },
+        { position: '23%', type: 'promotion-dot' },
+        { position: '40%', type: 'voluntary-dot' },
+      ]
+    },
+    heavy: {
+      totalCost: '$134,880',
+      debtFreeYear: '2051',
+      debtFreeAge: '45',
+      eqDebt: '$95k',
+      eqIndexation: '$40k',
+      eqTotal: '$135k',
+      eqYears: '24 yrs',
+      statYears: '24',
+      statIndexation: '$40k',
+      statSalary: '$52k',
+      timelineStart: '2027 · 21yo',
+      timelineEnd: '2051 · Debt free ✓',
+      badge: '2025–26',
+      events: [
+        { type: 'pay-cut', icon: '📉', label: 'Pay cut yr 5 (-20%)' },
+      ],
+      timelineDots: [
+        { position: '21%', type: 'promotion-dot' },
+      ]
+    }
+  };
+
+  function showScenario(key) {
+    const s = scenarios[key];
+    document.getElementById('totalCost').textContent = s.totalCost;
+    document.getElementById('debtFreeYear').textContent = s.debtFreeYear;
+    document.getElementById('debtFreeAge').textContent = s.debtFreeAge;
+    document.getElementById('eqDebt').textContent = s.eqDebt;
+    document.getElementById('eqIndexation').textContent = s.eqIndexation;
+    document.getElementById('eqTotal').textContent = s.eqTotal;
+    document.getElementById('eqYears').textContent = s.eqYears;
+    document.getElementById('statYears').textContent = s.statYears;
+    document.getElementById('statIndexation').textContent = s.statIndexation;
+    document.getElementById('statSalary').textContent = s.statSalary;
+    document.getElementById('timelineStart').textContent = s.timelineStart;
+    document.getElementById('timelineEnd').textContent = s.timelineEnd;
+    document.getElementById('badgeText').textContent = s.badge;
+
+    // Life events
+    const eventsEl = document.getElementById('lifeEvents');
+    const pillsEl = document.getElementById('eventPills');
+    if (s.events.length > 0) {
+      eventsEl.classList.remove('hidden');
+      pillsEl.innerHTML = s.events.map(e =>
+        `<div class="event-pill ${e.type}"><span class="pill-icon">${e.icon}</span>${e.label}</div>`
+      ).join('');
+    } else {
+      eventsEl.classList.add('hidden');
+    }
+
+    // Timeline dots
+    const fillEl = document.getElementById('timelineFill');
+    fillEl.querySelectorAll('.timeline-dot').forEach(d => d.remove());
+    if (s.timelineDots) {
+      s.timelineDots.forEach(dot => {
+        const el = document.createElement('div');
+        el.className = `timeline-dot ${dot.type}`;
+        el.style.left = dot.position;
+        fillEl.appendChild(el);
+      });
+    }
+
+    // Active button
+    document.querySelectorAll('.demo-controls button').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // Re-trigger animation
+    const inner = document.querySelector('.card-inner');
+    inner.style.animation = 'none';
+    inner.offsetHeight;
+    inner.style.animation = '';
+  }
+
+  function openSharePopup() {
+    const popup = document.getElementById('sharePopup');
+    popup.classList.add('visible');
+  }
+
+  function closeSharePopup() {
+    const popup = document.getElementById('sharePopup');
+    popup.classList.remove('visible');
+  }
+
+  document.getElementById('sharePopup').addEventListener('click', function(e) {
+    if (e.target === this) closeSharePopup();
+  });
+</script>
+
+</body>
+</html>
