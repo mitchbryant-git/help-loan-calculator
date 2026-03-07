@@ -1721,6 +1721,17 @@ export default function App() {
               {/* Ambient glow */}
               <div style={{ position: 'absolute', top: '-60%', left: '-30%', width: '160%', height: '160%', background: 'radial-gradient(ellipse at 30% 20%, rgba(0,129,203,0.12) 0%, rgba(106,60,255,0.06) 40%, transparent 70%)', pointerEvents: 'none', zIndex: 0 }} />
 
+              {/* Close button */}
+              <button
+                onClick={() => setShowShareModal(false)}
+                style={{ position: 'absolute', top: 16, right: 16, zIndex: 10, width: 32, height: 32, borderRadius: '50%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'rgba(241,245,249,0.35)', transition: 'all 0.2s ease' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgba(241,245,249,0.55)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(241,245,249,0.35)'; }}
+                aria-label="Close"
+              >
+                <X size={16} strokeWidth={2} />
+              </button>
+
               <div style={{ position: 'relative', zIndex: 1, padding: '28px 24px 28px' }}>
 
                 {/* Header */}
@@ -1730,7 +1741,7 @@ export default function App() {
                     <img src="/apple-touch-icon.png" alt="MB Logo" style={{ width: 32, height: 32, borderRadius: 8, objectFit: 'cover', display: 'block' }} />
                     <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(241,245,249,0.55)', letterSpacing: 0.5, fontFamily: "'Montserrat', sans-serif" }}>HELP Loan Calculator</div>
                   </div>
-                  <div style={{ background: 'rgba(98,255,218,0.08)', border: '1px solid rgba(98,255,218,0.2)', color: '#62FFDA', fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 20, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: "'Montserrat', sans-serif", textAlign: 'center', lineHeight: '1', display: 'inline-flex', alignItems: 'center' }}>2025–26</div>
+                  <div style={{ background: 'rgba(98,255,218,0.08)', border: '1px solid rgba(98,255,218,0.2)', color: '#62FFDA', fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 20, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: "'Montserrat', sans-serif", textAlign: 'center', lineHeight: '1', display: 'inline-flex', alignItems: 'center', marginRight: 36 }}>2025–26</div>
                 </div>
 
                 {/* Headline stat */}
