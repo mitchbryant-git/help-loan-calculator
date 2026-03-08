@@ -188,13 +188,13 @@ const MemoizedCustomDot = React.memo((props) => {
 MemoizedCustomDot.displayName = 'MemoizedCustomDot';
 
 // 2. Memoized Chart Component
-const MemoizedChart = React.memo(({ timelineData, breaks, onHover, onLeave }) => {
+const MemoizedChart = React.memo(({ chartData, breaks, onHover, onLeave, hasLifeEvents }) => {
   return (
     <div className="flex-1 w-full min-h-0 relative [&_*]:focus:outline-none [&_*]:focus:ring-0">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           throttleDelay={0}
-          data={timelineData}
+          data={chartData}
           margin={{ top: 20, right: 10, left: 0, bottom: 5 }}
           onMouseMove={(e) => {
             // No-op or custom logic if needed
@@ -205,6 +205,10 @@ const MemoizedChart = React.memo(({ timelineData, breaks, onHover, onLeave }) =>
             <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#62FFDA" stopOpacity={0.3} />
               <stop offset="95%" stopColor="#62FFDA" stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id="colorBase" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.08} />
+              <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
             </linearGradient>
           </defs>
 
@@ -222,6 +226,21 @@ const MemoizedChart = React.memo(({ timelineData, breaks, onHover, onLeave }) =>
               filter: 'drop-shadow(0 0 4px #62FFDA)'
             }}
           />
+
+          {/* Base projection line (purple) — only when life events exist */}
+          {hasLifeEvents && (
+            <Area
+              type="monotone"
+              dataKey="baseBalance"
+              stroke="#8B5CF6"
+              strokeWidth={2}
+              strokeDasharray="5 4"
+              fill="url(#colorBase)"
+              dot={false}
+              activeDot={{ r: 5, fill: '#fff', stroke: '#8B5CF6', strokeWidth: 2 }}
+              isAnimationActive={false}
+            />
+          )}
 
           {/* Glow Layer */}
           <Area
@@ -268,14 +287,14 @@ const MemoizedChart = React.memo(({ timelineData, breaks, onHover, onLeave }) =>
     </div>
   );
 }, (prevProps, nextProps) => {
-  // Only re-render if data or breaks change. Ignore function prop changes if they are stable.
   return (
-    prevProps.timelineData === nextProps.timelineData &&
-    prevProps.breaks === nextProps.breaks
+    prevProps.chartData === nextProps.chartData &&
+    prevProps.breaks === nextProps.breaks &&
+    prevProps.hasLifeEvents === nextProps.hasLifeEvents
   );
 });
 MemoizedChart.displayName = 'MemoizedChart';
-const ChartSection = ({ mode, timelineData, breaks }) => {
+const ChartSection = ({ mode, timelineData, baseTimelineData, breaks, hasLifeEvents }) => {
   const [hoveredData, setHoveredData] = useState(null);
   const rafRef = useRef(null);
 
@@ -303,6 +322,35 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
     };
   }, []);
 
+  // Merge active + base timelines into one dataset for the chart
+  const mergedChartData = useMemo(() => {
+    if (!hasLifeEvents || baseTimelineData.length === 0) return timelineData;
+    const baseMap = new Map(baseTimelineData.map(r => [r.year, r.endBalance]));
+    const activeByYear = new Map(timelineData.map(r => [r.year, r]));
+    const allYears = [...new Set([
+      ...timelineData.map(r => r.year),
+      ...baseTimelineData.map(r => r.year),
+    ])].sort((a, b) => a - b);
+    return allYears.map(year => {
+      const activeRow = activeByYear.get(year);
+      const baseBalance = baseMap.get(year) ?? 0;
+      if (activeRow) return { ...activeRow, baseBalance };
+      return { year, endBalance: 0, baseBalance, notes: [], voluntary: 0, compulsory: 0, indexation: 0, isBreak: false, age: null };
+    });
+  }, [timelineData, baseTimelineData, hasLifeEvents]);
+
+  // Comparison summary values
+  const yearDiff = hasLifeEvents ? baseTimelineData.length - timelineData.length : 0;
+  const dollarDiff = hasLifeEvents
+    ? baseTimelineData.reduce((acc, r) => acc + r.compulsory + r.voluntary, 0)
+      - timelineData.reduce((acc, r) => acc + r.compulsory + r.voluntary, 0)
+    : 0;
+  const saves = yearDiff > 0 || (yearDiff === 0 && dollarDiff > 0);
+  const showSummary = hasLifeEvents && (yearDiff !== 0 || dollarDiff !== 0);
+  const summaryColor = saves ? '#62FFDA' : '#FF4D6A';
+  const absYears = Math.abs(yearDiff);
+  const yearLabel = absYears === 1 ? '1 year' : `${absYears} years`;
+
   // Determine which data to show: hoveredData (live) OR the final year (summary)
   const displayData = useMemo(() => {
     if (hoveredData) return hoveredData;
@@ -317,9 +365,8 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
   const hasVoluntary = displayData.voluntary > 0;
 
   return (
-    // Fixed height h-[450px]
     <Card
-      className="h-[450px] relative card-hover flex flex-col outline-none ring-0 touch-pan-y"
+      className={`${showSummary ? 'h-[492px]' : 'h-[450px]'} relative card-hover flex flex-col outline-none ring-0 touch-pan-y`}
       style={{ WebkitTapHighlightColor: 'transparent' }}
       mode={mode}
     >
@@ -397,11 +444,42 @@ const ChartSection = ({ mode, timelineData, breaks }) => {
 
       {/* --- CHART VISUALS --- */}
       <MemoizedChart
-        timelineData={timelineData}
+        chartData={mergedChartData}
         breaks={breaks}
         onHover={handleHoverUpdate}
         onLeave={handleMouseLeave}
+        hasLifeEvents={hasLifeEvents}
       />
+
+      {/* --- LEGEND (only when base line is visible) --- */}
+      {hasLifeEvents && (
+        <div className="shrink-0 flex items-center justify-center gap-5 pb-1 text-[11px] text-[#CFCFCF]/60">
+          <div className="flex items-center gap-1.5">
+            <span className="inline-block w-5 border-t-2 border-[#62FFDA]" />
+            With life events
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="inline-block w-5 border-t-2 border-dashed border-[#8B5CF6]" />
+            Base projection
+          </div>
+        </div>
+      )}
+
+      {/* --- COMPARISON SUMMARY (only when life events exist and values differ) --- */}
+      {showSummary && (
+        <div className="shrink-0 pt-1 pb-3 text-center">
+          <p className="font-['Lato'] text-[13px] lg:text-[14px] text-[#CFCFCF]">
+            Your life events{' '}
+            <span className="font-bold" style={{ color: summaryColor }}>
+              {saves ? 'save you' : 'add'}
+            </span>{' '}
+            <span className="font-bold" style={{ color: summaryColor }}>{yearLabel}</span>
+            {' '}and{' '}
+            <span className="font-bold" style={{ color: summaryColor }}>{formatCurrency(Math.abs(dollarDiff))}</span>
+            {' '}{saves ? 'in repayments' : 'to your repayments'}
+          </p>
+        </div>
+      )}
 
     </Card >
   );
@@ -802,6 +880,51 @@ export default function App() {
 
     return data;
   }, [inputs, promotions, reductions, breaks, voluntary]);
+
+  const hasLifeEvents = promotions.length > 0 || reductions.length > 0 || voluntary.length > 0 || breaks.length > 0;
+
+  // Base projection — same engine but no life events, for dual-line chart comparison
+  const baseTimelineData = useMemo(() => {
+    if (!hasLifeEvents) return [];
+    let data = [];
+    let balance = Number(inputs.startingDebt) || 0;
+    let baselineIncome = Number(inputs.startingIncome) || 0;
+    let currentYear = Number(inputs.firstYear) || 2026;
+    const safeWageGrowth = Number(inputs.wageGrowth) || 0;
+    const safeIndexation = Number(inputs.indexationRate) || 0;
+    const startAge = Number(inputs.startingAge) || 22;
+    let isPaidOff = false;
+    const maxYears = 50;
+    let yearsElapsed = 0;
+    if (balance <= 0) isPaidOff = true;
+    while (!isPaidOff && yearsElapsed < maxYears) {
+      const yearData = {
+        year: currentYear,
+        age: startAge ? startAge + yearsElapsed : null,
+        taxableIncome: baselineIncome,
+        compulsory: 0,
+        voluntary: 0,
+        indexation: 0,
+        startBalance: balance,
+        endBalance: 0,
+      };
+      if (yearsElapsed > 0) baselineIncome = baselineIncome * (1 + safeWageGrowth / 100);
+      yearData.taxableIncome = baselineIncome;
+      let currentBalance = balance;
+      yearData.indexation = currentBalance * (safeIndexation / 100);
+      currentBalance = currentBalance + yearData.indexation;
+      const calculatedCompulsory = calculateCompulsoryRepayment(yearData.taxableIncome);
+      yearData.compulsory = Math.min(calculatedCompulsory, currentBalance);
+      currentBalance = Math.max(0, currentBalance - yearData.compulsory);
+      yearData.endBalance = currentBalance;
+      data.push(yearData);
+      if (yearData.endBalance <= 0.01) isPaidOff = true;
+      balance = yearData.endBalance;
+      currentYear++;
+      yearsElapsed++;
+    }
+    return data;
+  }, [inputs, hasLifeEvents]);
 
   const handleInputChange = (field, rawValue) => {
     if (rawValue === '') {
@@ -1263,7 +1386,7 @@ export default function App() {
           </div>
 
           <div className="lg:hidden mb-6">
-            <ChartSection timelineData={timelineData} breaks={breaks} />
+            <ChartSection timelineData={timelineData} baseTimelineData={baseTimelineData} breaks={breaks} hasLifeEvents={hasLifeEvents} />
           </div>
 
           {/* VOLUNTARY REPAYMENTS */}
@@ -1556,7 +1679,7 @@ export default function App() {
           </div>
 
           <div className="hidden lg:block">
-            <ChartSection timelineData={timelineData} breaks={breaks} />
+            <ChartSection timelineData={timelineData} baseTimelineData={baseTimelineData} breaks={breaks} hasLifeEvents={hasLifeEvents} />
           </div>
 
           {/* SHARE BUTTON — desktop only, between chart and Year by Year */}
