@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   // 1. Google & Browser Tab
-  title: "HELP Loan Calculator | Free HECS Debt Repayment Tool",
-  description: "Free Australian HELP Loan & HECS Debt Repayment Calculator. See how long it'll take to pay off your student debt based on your income, wage growth, and indexation.",
+  title: "HECS-HELP Repayment Calculator 2025-26 | Free Student Debt Tool",
+  description: "Free Australian HECS-HELP and FEE-HELP repayment calculator. Model promotions, gap years, pay cuts, and voluntary repayments to see how real life affects your student debt. Built on official 2025-26 ATO rates.",
 
   // 2. SEO Keywords
   keywords: [
@@ -31,8 +31,8 @@ export const metadata: Metadata = {
 
   // 3. Social Media Cards (Facebook, LinkedIn, iMessage)
   openGraph: {
-    title: "HELP Loan Calculator | Free HECS Debt Repayment Tool",
-    description: "Free Australian HELP Loan & HECS Debt Repayment Calculator. See how long it'll take to pay off your student debt based on your income, wage growth, and indexation.",
+    title: "HECS-HELP Repayment Calculator 2025-26 | Free Student Debt Tool",
+    description: "Free Australian HECS-HELP and FEE-HELP repayment calculator. Model promotions, gap years, pay cuts, and voluntary repayments to see how real life affects your student debt. Built on official 2025-26 ATO rates.",
     url: 'https://www.helploancalculator.com',
     siteName: 'HELP Loan Calculator',
     locale: 'en_AU',
