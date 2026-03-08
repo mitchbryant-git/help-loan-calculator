@@ -1149,7 +1149,7 @@ export default function App() {
               />
             </a>
             <span className="font-bold text-[10px] md:text-base leading-tight tracking-tight uppercase font-['Montserrat']">
-              Higher Education Loan Program Calculator
+              Higher Education Loan<br className="md:hidden" /> Program Calculator
             </span>
           </div>
 
