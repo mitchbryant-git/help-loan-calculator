@@ -622,7 +622,7 @@ export default function App() {
   const [voluntary, setVoluntary] = useState([]);
   const [breaks, setBreaks] = useState([]);
 
-  // Collapse State for Action Cards
+  // Collapse State for Action Cards (collapsed by default on mobile, open on desktop)
   const [showVoluntary, setShowVoluntary] = useState(true);
   const [showPromotions, setShowPromotions] = useState(true);
   const [showBreaks, setShowBreaks] = useState(true);
@@ -658,6 +658,15 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('theme', mode);
   }, [mode]);
+
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setShowVoluntary(false);
+      setShowPromotions(false);
+      setShowBreaks(false);
+      setShowReductions(false);
+    }
+  }, []);
 
   useEffect(() => {
     setTempVoluntary(prev => ({ ...prev, year: inputs.firstYear + 1 }));
@@ -855,11 +864,12 @@ export default function App() {
     setBreaks([]);
     setNudge(null);
 
-    // Reset Collapsible States
-    setShowVoluntary(true);
-    setShowPromotions(true);
-    setShowBreaks(true);
-    setShowReductions(true);
+    // Reset Collapsible States (collapsed on mobile, open on desktop)
+    const isDesktop = window.innerWidth >= 768;
+    setShowVoluntary(isDesktop);
+    setShowPromotions(isDesktop);
+    setShowBreaks(isDesktop);
+    setShowReductions(isDesktop);
 
     // Reset Temp Inputs
     setTempVoluntary({ year: 2027, amount: 5000 });
