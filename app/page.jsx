@@ -637,7 +637,18 @@ export default function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLinkCopied, setIsLinkCopied] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const shareCardRef = useRef(null);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!showMenu) return;
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showMenu]);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -1019,20 +1030,122 @@ export default function App() {
             </button>
 
             <button
-              onClick={() => setShowHelpModal(true)}
-              className="btn-soft flex items-center gap-2 text-[#CFCFCF]"
-            >
-              <HelpCircle size={18} />
-              <span className="hidden md:inline text-xs font-bold uppercase tracking-wider font-['Montserrat']">Help</span>
-            </button>
-
-            <button
               onClick={handleReset}
               className="btn-soft flex items-center gap-2 text-[#CFCFCF]"
             >
               <RotateCcw size={18} />
               <span className="hidden md:inline text-xs font-bold uppercase tracking-wider font-['Montserrat']">Reset</span>
             </button>
+
+            {/* HAMBURGER MENU */}
+            <div className="relative" ref={menuRef}>
+              <button
+                onClick={() => setShowMenu(v => !v)}
+                className="btn-soft flex items-center justify-center text-[#CFCFCF]"
+                aria-label="Menu"
+              >
+                <span style={{ display: 'flex', flexDirection: 'column', gap: 4, width: 16, alignItems: 'center' }}>
+                  <span style={{
+                    display: 'block', width: 16, height: 1.5, borderRadius: 2,
+                    background: 'currentColor',
+                    transformOrigin: 'center',
+                    transition: 'transform 0.22s ease, opacity 0.22s ease',
+                    transform: showMenu ? 'translateY(5.5px) rotate(45deg)' : 'none',
+                  }} />
+                  <span style={{
+                    display: 'block', width: 16, height: 1.5, borderRadius: 2,
+                    background: 'currentColor',
+                    transition: 'opacity 0.22s ease',
+                    opacity: showMenu ? 0 : 1,
+                  }} />
+                  <span style={{
+                    display: 'block', width: 16, height: 1.5, borderRadius: 2,
+                    background: 'currentColor',
+                    transformOrigin: 'center',
+                    transition: 'transform 0.22s ease, opacity 0.22s ease',
+                    transform: showMenu ? 'translateY(-5.5px) rotate(-45deg)' : 'none',
+                  }} />
+                </span>
+              </button>
+
+              {showMenu && (
+                <div style={{
+                  position: 'absolute', top: 'calc(100% + 12px)', right: 0,
+                  width: 260,
+                  background: '#151B2E',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 16,
+                  padding: 8,
+                  boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
+                  zIndex: 200,
+                  animation: 'menuFadeIn 0.25s ease forwards',
+                }}>
+                  <style>{`@keyframes menuFadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
+
+                  {/* GUIDES section */}
+                  <div style={{ padding: '12px 12px 6px', fontFamily: 'Montserrat, sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(207,207,207,0.5)' }}>
+                    Guides
+                  </div>
+                  {[
+                    { href: '/hecs-repayment-thresholds-2025-26', label: 'HECS Repayment Thresholds 2025-26', emoji: '📊', color: '#0081CB' },
+                    { href: '/how-hecs-indexation-works', label: 'How HECS Indexation Works', emoji: '📈', color: '#62FFDA' },
+                    { href: '/hecs-debt-and-home-loans', label: 'HECS Debt & Home Loans', emoji: '🏠', color: '#6A3CFF' },
+                    { href: '/real-cost-of-starting-uni-before-youre-ready', label: 'The Real Cost of Starting Uni Early', emoji: '🎓', color: '#00A3FF' },
+                  ].map(({ href, label, emoji, color }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      onClick={() => setShowMenu(false)}
+                      style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, textDecoration: 'none', transition: 'background 0.15s' }}
+                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <span style={{ width: 28, height: 28, borderRadius: 8, background: color + '1A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>{emoji}</span>
+                      <span style={{ fontFamily: 'Lato, sans-serif', fontSize: 13, fontWeight: 700, color: '#F1F5F9', lineHeight: 1.3 }}>{label}</span>
+                    </Link>
+                  ))}
+
+                  {/* Divider */}
+                  <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', margin: '6px 12px' }} />
+
+                  {/* MORE section */}
+                  <div style={{ padding: '6px 12px 6px', fontFamily: 'Montserrat, sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(207,207,207,0.5)' }}>
+                    More
+                  </div>
+                  <button
+                    onClick={() => { setShowMenu(false); setShowHelpModal(true); }}
+                    style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, width: '100%', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', transition: 'background 0.15s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <span style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(255,193,7,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>💡</span>
+                    <span style={{ fontFamily: 'Lato, sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>How to Use This Calculator</span>
+                  </button>
+                  <Link
+                    href="/privacy-policy"
+                    onClick={() => setShowMenu(false)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, textDecoration: 'none', transition: 'background 0.15s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <span style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>🔒</span>
+                    <span style={{ fontFamily: 'Lato, sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>Privacy Policy</span>
+                  </Link>
+                  <a
+                    href="https://www.mitchbryant.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setShowMenu(false)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, textDecoration: 'none', transition: 'background 0.15s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <span style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(0,163,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>🌐</span>
+                    <span style={{ fontFamily: 'Lato, sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>mitchbryant.com</span>
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -1642,7 +1755,7 @@ export default function App() {
           </Card>
 
           {/* DISCLAIMER / FOOTER */}
-          <div className="text-xs text-center pb-8 px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-['Lato'] text-[#CFCFCF]/60">
+          <div className="text-xs text-center px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-['Lato'] text-[#CFCFCF]/60">
             <h4 className="font-bold uppercase tracking-widest text-[10px] opacity-70">DISCLAIMER</h4>
             <p>
               This tool is for educational purposes only. It is not personal financial, legal, or tax advice and does not take into account your individual objectives. The model estimates compulsory repayments using the 2025–26 marginal repayment system and assumes these thresholds remain constant. Actual repayments are determined by the ATO after you lodge your tax return.
@@ -1676,23 +1789,90 @@ export default function App() {
               To the extent permitted by law, we accept no responsibility for any loss arising from reliance on this tool. You should verify figures with the ATO and seek independent professional advice before making decisions.
             </p>
 
-            {/* --- FOOTER (DESKTOP) --- */}
-            <div className="hidden md:flex justify-between items-center mt-12 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-['Montserrat'] text-[#CFCFCF]/40">
-              <div>
-                © 2025 Mitch Bryant · mitchbryant.com
-              </div>
-              <div>
-                TikTok · Instagram: @itsmitchbryant
-              </div>
-            </div>
+          </div>
 
-            {/* --- FOOTER (MOBILE) --- */}
-            <div className="md:hidden flex flex-col gap-2 mt-12 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-['Montserrat'] text-[#CFCFCF]/40 text-center">
-              <div>
-                © 2025 Mitch Bryant · mitchbryant.com
+          {/* --- STRUCTURED FOOTER --- */}
+          <div className="col-span-full px-0 md:px-4 w-full" style={{ marginTop: 24 }}>
+            <div
+              className="max-w-3xl mx-auto px-6"
+              style={{
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: 16,
+                background: 'rgba(255,255,255,0.015)',
+                paddingTop: 32,
+                paddingBottom: 24,
+              }}
+            >
+              {/* Decorative gradient line */}
+              <div style={{
+                width: '60%', height: 1, margin: '0 auto 32px',
+                background: 'linear-gradient(90deg, transparent 0%, #0081CB 25%, #6A3CFF 55%, #62FFDA 85%, transparent 100%)',
+                opacity: 0.5,
+              }} />
+
+              {/* Link columns */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px 32px', marginBottom: 24 }}>
+                {/* Column 1: Guides */}
+                <div>
+                  <div className="font-['Montserrat'] text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Guides</div>
+                  {[
+                    { href: '/hecs-repayment-thresholds-2025-26', label: 'HECS Repayment Thresholds 2025-26' },
+                    { href: '/how-hecs-indexation-works', label: 'How HECS Indexation Works' },
+                    { href: '/hecs-debt-and-home-loans', label: 'HECS Debt & Home Loans' },
+                    { href: '/real-cost-of-starting-uni-before-youre-ready', label: 'The Real Cost of Starting Uni Early' },
+                  ].map(({ href, label }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors"
+                      style={{ marginBottom: 10, lineHeight: 1.5 }}
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Column 2: Links + Connect on mobile */}
+                <div>
+                  <div className="font-['Montserrat'] text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Links</div>
+                  <Link href="/privacy-policy" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                    Privacy Policy
+                  </Link>
+                  <a href="https://www.mitchbryant.com" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                    mitchbryant.com
+                  </a>
+                  {/* Connect links shown here on mobile only */}
+                  <div className="md:hidden" style={{ marginTop: 18 }}>
+                    <div className="font-['Montserrat'] text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Connect</div>
+                    <a href="https://www.tiktok.com/@itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                      TikTok @itsmitchbryant
+                    </a>
+                    <a href="https://www.instagram.com/itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                      Instagram @itsmitchbryant
+                    </a>
+                  </div>
+                </div>
+
+                {/* Column 3: Connect (desktop only) */}
+                <div className="hidden md:block">
+                  <div className="font-['Montserrat'] text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Connect</div>
+                  <a href="https://www.tiktok.com/@itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                    TikTok @itsmitchbryant
+                  </a>
+                  <a href="https://www.instagram.com/itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                    Instagram @itsmitchbryant
+                  </a>
+                </div>
               </div>
-              <div>
-                TikTok & Instagram: @itsmitchbryant
+
+              {/* Bottom bar */}
+              <div
+                className="text-center pt-4"
+                style={{ borderTop: '1px solid rgba(255,255,255,0.04)', marginTop: 8 }}
+              >
+                <span className="font-['Lato'] text-[11px] text-[#CFCFCF]/40">
+                  © 2025 Mitch Bryant · mitchbryant.com
+                </span>
               </div>
             </div>
           </div>
