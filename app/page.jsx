@@ -1042,12 +1042,15 @@ export default function App() {
         <h1 className="sr-only">HELP Loan Calculator | Australian HECS Debt Repayment Calculator</h1>
 
         {/* LANDING COPY — full-width above both columns on desktop, above inputs on mobile */}
-        <p className="col-span-full font-['Lato'] text-[13px] lg:text-[15px] text-[#CFCFCF] mb-0" style={{ lineHeight: '1.6' }}>
-          The only HECS calculator that shows how{' '}
-          <strong className="font-bold text-white">real life affects your student debt</strong>.{' '}
-          Add promotions, gap years, and pay cuts to get the full picture.{' '}
-          <span className="font-normal text-[#CFCFCF]/60">Built on official 2025–26 ATO rates.</span>
-        </p>
+        <div className="col-span-full mb-0">
+          <p className="font-['Montserrat'] font-bold text-[15px] lg:text-[16px] text-[#00A3FF]" style={{ marginBottom: 6 }}>
+            The only HECS calculator built for real life.
+          </p>
+          <p className="font-['Lato'] font-normal text-[13px] lg:text-[14px] text-[#CFCFCF]" style={{ lineHeight: '1.6' }}>
+            See how <strong className="font-bold" style={{ color: 'rgba(241, 245, 249, 0.7)' }}>promotions, gap years, pay cuts</strong>, and <strong className="font-bold" style={{ color: 'rgba(241, 245, 249, 0.7)' }}>voluntary repayments</strong> change your student debt over time.<br />
+            <span className="text-[#CFCFCF]/60">Built on official 2025–26 ATO repayment rates and indexation data.</span>
+          </p>
+        </div>
 
         <div className="col-span-full mb-0">
           <button
@@ -1637,14 +1640,6 @@ export default function App() {
               </div>
             </div>
           </Card>
-
-          {/* ABOUT THIS CALCULATOR */}
-          <div className="text-xs text-center px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-['Lato'] text-[#CFCFCF]/60">
-            <h4 className="font-bold uppercase tracking-widest text-[10px] opacity-70">About This Calculator</h4>
-            <p>
-              This free HELP Loan / HECS Debt calculator estimates how long it will take to pay off your Australian student loan based on your income, wage growth, and indexation rate. Model voluntary repayments, promotions, gap years, and pay cuts to see how real-life events affect your repayment timeline.
-            </p>
-          </div>
 
           {/* DISCLAIMER / FOOTER */}
           <div className="text-xs text-center pb-8 px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-['Lato'] text-[#CFCFCF]/60">
