@@ -1135,7 +1135,7 @@ export default function App() {
       {/* --- HEADER --- */}
       <header className="sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-500 border-white/5 bg-[#0D0D0D]/70" data-nosnippet>
         <div className="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
             <a
               href="https://www.mitchbryant.com"
               target="_blank"
@@ -1148,8 +1148,8 @@ export default function App() {
                 className="w-full h-full object-cover"
               />
             </a>
-            <span className="font-bold text-sm md:text-lg tracking-tight uppercase font-['Montserrat']">
-              HELP Loan Calculator
+            <span className="font-bold text-[10px] md:text-base leading-tight tracking-tight uppercase font-['Montserrat']">
+              Higher Education Loan Program Calculator
             </span>
           </div>
 
