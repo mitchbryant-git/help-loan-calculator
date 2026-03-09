@@ -30,5 +30,17 @@ export default function sitemap() {
             changeFrequency: 'monthly',
             priority: 0.8,
         },
+        {
+            url: 'https://www.helploancalculator.com/hecs-help-vs-fee-help',
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.8,
+        },
+        {
+            url: 'https://www.helploancalculator.com/help-borrowing-limit',
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.8,
+        },
     ]
 }
