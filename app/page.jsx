@@ -294,9 +294,13 @@ const MemoizedChart = React.memo(({ chartData, breaks, onHover, onLeave, hasLife
   );
 });
 MemoizedChart.displayName = 'MemoizedChart';
+const TOOLTIP_WIDTH = 214;
+
 const ChartSection = ({ mode, timelineData, baseTimelineData, breaks, hasLifeEvents }) => {
   const [hoveredData, setHoveredData] = useState(null);
+  const [pointerPos, setPointerPos] = useState(null);
   const rafRef = useRef(null);
+  const ptrRafRef = useRef(null);
 
   // Stable callback with RAF Throttling
   const handleHoverUpdate = useCallback((data) => {
@@ -313,12 +317,22 @@ const ChartSection = ({ mode, timelineData, baseTimelineData, breaks, hasLifeEve
       rafRef.current = null;
     }
     setHoveredData(null);
+    setPointerPos(null);
+  }, []);
+
+  const handlePointerMove = useCallback((x, y) => {
+    if (ptrRafRef.current) return;
+    ptrRafRef.current = requestAnimationFrame(() => {
+      setPointerPos({ x, y });
+      ptrRafRef.current = null;
+    });
   }, []);
 
   // Cleanup RAF on unmount
   useEffect(() => {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (ptrRafRef.current) cancelAnimationFrame(ptrRafRef.current);
     };
   }, []);
 
@@ -443,13 +457,75 @@ const ChartSection = ({ mode, timelineData, baseTimelineData, breaks, hasLifeEve
       </div>
 
       {/* --- CHART VISUALS --- */}
-      <MemoizedChart
-        chartData={mergedChartData}
-        breaks={breaks}
-        onHover={handleHoverUpdate}
-        onLeave={handleMouseLeave}
-        hasLifeEvents={hasLifeEvents}
-      />
+      <div
+        className="flex-1 min-h-0 flex flex-col"
+        onMouseMove={hasLifeEvents ? (e) => handlePointerMove(e.clientX, e.clientY) : undefined}
+        onTouchMove={hasLifeEvents ? (e) => { const t = e.touches[0]; if (t) handlePointerMove(t.clientX, t.clientY); } : undefined}
+        onMouseLeave={handleMouseLeave}
+        onTouchEnd={hasLifeEvents ? () => setPointerPos(null) : undefined}
+      >
+        <MemoizedChart
+          chartData={mergedChartData}
+          breaks={breaks}
+          onHover={handleHoverUpdate}
+          onLeave={handleMouseLeave}
+          hasLifeEvents={hasLifeEvents}
+        />
+      </div>
+
+      {/* --- LIFE EVENTS HOVER TOOLTIP --- */}
+      {hasLifeEvents && hoveredData && pointerPos && typeof document !== 'undefined' &&
+        (hoveredData.baseBalance ?? 0) !== (hoveredData.endBalance ?? 0) &&
+        createPortal(
+        (() => {
+          const diff = (hoveredData.baseBalance ?? 0) - (hoveredData.endBalance ?? 0);
+          const saving = diff > 0;
+          const ESTIMATED_W = 170;
+          const flipLeft = pointerPos.x + 20 + ESTIMATED_W > window.innerWidth - 8;
+          return (
+            <div
+              style={{
+                position: 'fixed',
+                top: Math.max(8, pointerPos.y - 64),
+                left: flipLeft ? pointerPos.x - 12 - ESTIMATED_W : pointerPos.x + 20,
+                zIndex: 9999,
+                background: 'rgba(12, 16, 32, 0.85)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: '1px solid rgba(98, 255, 218, 0.15)',
+                borderRadius: '12px',
+                padding: '10px 14px',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                pointerEvents: 'none',
+                width: 'max-content',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '16px', marginBottom: '6px' }}>
+                <span style={{ fontSize: '11px', color: '#6b7a99', letterSpacing: '0.02em' }}>{hoveredData.year} · Age {hoveredData.age}</span>
+                <span style={{ fontSize: '10px', color: '#6b7a99' }}>Balance</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '10px', marginBottom: '3px' }}>
+                <span style={{ fontSize: '11px', color: '#6b7a99' }}>With life events</span>
+                <span style={{ fontSize: '14px', fontWeight: 600, color: '#62FFDA' }}>{formatCurrency(hoveredData.endBalance ?? 0)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '10px' }}>
+                <span style={{ fontSize: '11px', color: '#6b7a99' }}>Original path</span>
+                <span style={{ fontSize: '14px', fontWeight: 600, color: '#8B7AFF' }}>{formatCurrency(hoveredData.baseBalance ?? 0)}</span>
+              </div>
+              {diff !== 0 && (
+                <>
+                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', margin: '7px 0 5px' }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '10px' }}>
+                    <span style={{ fontSize: '11px', color: '#6b7a99' }}>Difference</span>
+                    <span style={{ fontSize: '15px', fontWeight: 700, color: saving ? '#62FFDA' : '#FF3366' }}>{formatCurrency(Math.abs(diff))}</span>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })(),
+        document.body
+      )}
 
       {/* --- LEGEND (only when base line is visible) --- */}
       {hasLifeEvents && (
@@ -460,7 +536,7 @@ const ChartSection = ({ mode, timelineData, baseTimelineData, breaks, hasLifeEve
           </div>
           <div className="flex items-center gap-1.5">
             <span className="inline-block w-5 border-t-2 border-dashed border-[#8B5CF6]" />
-            Base projection
+            Original path
           </div>
         </div>
       )}
