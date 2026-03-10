@@ -1,4 +1,4 @@
-import { GoogleAnalytics } from '@next/third-parties/google'
+import Script from 'next/script';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Montserrat, Lato } from "next/font/google";
 import "./globals.css";
@@ -197,7 +197,22 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${lato.variable} antialiased`}
       >
         {children}
-        <GoogleAnalytics gaId="G-FWVMDBHJFK" />
+        <Script
+          strategy="lazyOnload"
+          src={`https://www.googletagmanager.com/gtag/js?id=G-FWVMDBHJFK`}
+        />
+        <Script
+          id="ga-script"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-FWVMDBHJFK');
+            `,
+          }}
+        />
       </body>
     </html>
   );
