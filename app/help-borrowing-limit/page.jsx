@@ -21,7 +21,7 @@ export default function GuideBorrowingLimit() {
   return (
     <div
       className="min-h-screen font-sans selection:bg-[#0081CB] selection:text-white pb-20 transition-colors duration-500 relative overflow-x-hidden text-white bg-[#0D0D0D]"
-      style={{ fontFamily: 'Lato, sans-serif' }}
+      style={{ fontFamily: 'var(--font-lato), sans-serif' }}
     >
       {/* GLOBAL NOISE & GRADIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -41,7 +41,7 @@ export default function GuideBorrowingLimit() {
             >
               <img src="/apple-touch-icon.png" alt="MB Logo" className="w-full h-full object-cover" />
             </Link>
-            <span className="font-bold text-sm md:text-lg tracking-tight uppercase font-['Montserrat']">
+            <span className="font-bold text-sm md:text-lg tracking-tight uppercase font-montserrat">
               HELP Loan Calculator
             </span>
           </div>
@@ -50,20 +50,20 @@ export default function GuideBorrowingLimit() {
 
       <main className="max-w-3xl mx-auto px-4 py-8 relative z-10 app-fade-in">
         {/* Back Link */}
-        <Link href="/" className="inline-flex items-center gap-2 text-[#0081CB] hover:text-[#62FFDA] transition-colors text-sm font-bold font-['Montserrat'] uppercase tracking-wider mb-8">
+        <Link href="/" className="inline-flex items-center gap-2 text-[#0081CB] hover:text-[#62FFDA] transition-colors text-sm font-bold font-montserrat uppercase tracking-wider mb-8">
           <ArrowLeft size={16} />
           Back to Calculator
         </Link>
 
         {/* Article */}
         <article className="space-y-8">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-['Montserrat'] text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-montserrat text-white leading-tight">
             The HELP Borrowing Limit: How Much Can You Actually Borrow?
           </h1>
 
           {/* Section: There's a Cap */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">There's a Cap on How Much You Can Borrow</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">There's a Cap on How Much You Can Borrow</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               A lot of students assume they can borrow whatever their degree costs. That's not always true. The Australian Government sets a <strong className="text-white">lifetime HELP loan limit</strong>, and once you hit it, you can't borrow any more.
             </p>
@@ -79,7 +79,7 @@ export default function GuideBorrowingLimit() {
 
           {/* Section: What Happens When the Degree Costs More */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">What Happens When the Degree Costs More</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">What Happens When the Degree Costs More</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               Some degrees, particularly at private universities, cost more than the limit. When that happens, you need to pay the difference out of pocket during the course.
             </p>
@@ -93,7 +93,7 @@ export default function GuideBorrowingLimit() {
 
           {/* Section: Your Limit Is Renewable */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">Your Limit Is Renewable</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Your Limit Is Renewable</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               One thing most people don't realise: the HELP loan limit is <strong className="text-white">renewable</strong>. When you make repayments (compulsory or voluntary) toward your HELP debt, that amount gets added back to your available balance.
             </p>
@@ -107,7 +107,7 @@ export default function GuideBorrowingLimit() {
 
           {/* Section: How to Check */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">How to Check Your Available Balance</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">How to Check Your Available Balance</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               You can check your current HELP loan limit and available balance through{' '}
               <a href="https://myhelpbalance.gov.au" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
@@ -119,7 +119,7 @@ export default function GuideBorrowingLimit() {
 
           {/* Section: Sources */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">Where This Info Comes From</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Where This Info Comes From</h3>
             <ul className="list-disc list-inside text-[#CFCFCF] leading-relaxed space-y-2 pl-2">
               <li>
                 <a href="https://www.studyassist.gov.au/financial-and-study-support/how-student-loans-work/help-loan-limit" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
@@ -158,14 +158,14 @@ export default function GuideBorrowingLimit() {
                 className="group flex items-center gap-3 p-4 rounded-xl border border-white/5 bg-white/[0.03] hover:border-[#62FFDA]/30 hover:bg-white/[0.06] transition-all"
               >
                 <BookOpen size={16} className="text-[#0081CB] shrink-0 group-hover:text-[#62FFDA] transition-colors" />
-                <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-['Lato']">{guide.title}</span>
+                <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-lato">{guide.title}</span>
               </Link>
             ))}
           </div>
         </div>
 
         {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-['Montserrat'] text-[#CFCFCF]/40 text-center">
+        <div className="mt-16 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-montserrat text-[#CFCFCF]/40 text-center">
           <div>&copy; 2025 Mitch Bryant &middot; mitchbryant.com</div>
         </div>
       </main>

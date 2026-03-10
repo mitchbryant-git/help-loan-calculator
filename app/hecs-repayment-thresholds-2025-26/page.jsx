@@ -21,7 +21,7 @@ export default function GuideRepaymentThresholds() {
   return (
     <div
       className="min-h-screen font-sans selection:bg-[#0081CB] selection:text-white pb-20 transition-colors duration-500 relative overflow-x-hidden text-white bg-[#0D0D0D]"
-      style={{ fontFamily: 'Lato, sans-serif' }}
+      style={{ fontFamily: 'var(--font-lato), sans-serif' }}
     >
       {/* GLOBAL NOISE & GRADIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -41,7 +41,7 @@ export default function GuideRepaymentThresholds() {
             >
               <img src="/apple-touch-icon.png" alt="MB Logo" className="w-full h-full object-cover" />
             </Link>
-            <span className="font-bold text-sm md:text-lg tracking-tight uppercase font-['Montserrat']">
+            <span className="font-bold text-sm md:text-lg tracking-tight uppercase font-montserrat">
               HELP Loan Calculator
             </span>
           </div>
@@ -50,20 +50,20 @@ export default function GuideRepaymentThresholds() {
 
       <main className="max-w-3xl mx-auto px-4 py-8 relative z-10 app-fade-in">
         {/* Back Link */}
-        <Link href="/" className="inline-flex items-center gap-2 text-[#0081CB] hover:text-[#62FFDA] transition-colors text-sm font-bold font-['Montserrat'] uppercase tracking-wider mb-8">
+        <Link href="/" className="inline-flex items-center gap-2 text-[#0081CB] hover:text-[#62FFDA] transition-colors text-sm font-bold font-montserrat uppercase tracking-wider mb-8">
           <ArrowLeft size={16} />
           Back to Calculator
         </Link>
 
         {/* Article */}
         <article className="space-y-8">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-['Montserrat'] text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-montserrat text-white leading-tight">
             HECS-HELP Repayment Thresholds 2025-26: How the New System Works
           </h1>
 
           {/* Section: How HECS Repayments Work Now */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">How HECS Repayments Work Now</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">How HECS Repayments Work Now</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               If you've heard horror stories about someone getting a small pay rise and suddenly owing thousands more in HECS repayments, that was the old system. It's gone.
             </p>
@@ -77,7 +77,7 @@ export default function GuideRepaymentThresholds() {
 
           {/* Section: The 2025-26 Repayment Rates */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">The 2025-26 Repayment Rates</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">The 2025-26 Repayment Rates</h3>
             <p className="text-[#CFCFCF] leading-relaxed">Here's the full breakdown:</p>
 
             <div className="rounded-xl overflow-hidden border glass-dark border-white/5">
@@ -110,7 +110,7 @@ export default function GuideRepaymentThresholds() {
 
           {/* Section: What This Actually Looks Like */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">What This Actually Looks Like</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">What This Actually Looks Like</h3>
             <p className="text-[#CFCFCF] leading-relaxed">Let's make it real with some examples.</p>
             <p className="text-[#CFCFCF] leading-relaxed">
               <strong className="text-white">Earning $70,000:</strong> You're $3,000 over the $67,000 threshold. You pay 15c per dollar on that $3,000 = <strong className="text-white">$450 per year</strong>. That's about $37 per month.
@@ -128,7 +128,7 @@ export default function GuideRepaymentThresholds() {
 
           {/* Section: The Part Nobody Talks About */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">The Part Nobody Talks About</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">The Part Nobody Talks About</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               A $67,000 threshold sounds like great news. And in the short term, it is — more money stays in your pocket while you're getting started in your career.
             </p>
@@ -155,7 +155,7 @@ export default function GuideRepaymentThresholds() {
 
           {/* Section: Where This Info Comes From */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">Where This Info Comes From</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Where This Info Comes From</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               All repayment rates in this guide are sourced from the{' '}
               <a href="https://www.ato.gov.au/tax-rates-and-codes/study-and-training-support-loans-rates-and-repayment-thresholds" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
@@ -187,14 +187,14 @@ export default function GuideRepaymentThresholds() {
                 className="group flex items-center gap-3 p-4 rounded-xl border border-white/5 bg-white/[0.03] hover:border-[#62FFDA]/30 hover:bg-white/[0.06] transition-all"
               >
                 <BookOpen size={16} className="text-[#0081CB] shrink-0 group-hover:text-[#62FFDA] transition-colors" />
-                <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-['Lato']">{guide.title}</span>
+                <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-lato">{guide.title}</span>
               </Link>
             ))}
           </div>
         </div>
 
         {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-['Montserrat'] text-[#CFCFCF]/40 text-center">
+        <div className="mt-16 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-montserrat text-[#CFCFCF]/40 text-center">
           <div>&copy; 2025 Mitch Bryant &middot; mitchbryant.com</div>
         </div>
       </main>

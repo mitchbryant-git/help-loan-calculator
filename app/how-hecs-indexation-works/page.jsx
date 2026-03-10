@@ -21,7 +21,7 @@ export default function GuideIndexation() {
   return (
     <div
       className="min-h-screen font-sans selection:bg-[#0081CB] selection:text-white pb-20 transition-colors duration-500 relative overflow-x-hidden text-white bg-[#0D0D0D]"
-      style={{ fontFamily: 'Lato, sans-serif' }}
+      style={{ fontFamily: 'var(--font-lato), sans-serif' }}
     >
       {/* GLOBAL NOISE & GRADIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -41,7 +41,7 @@ export default function GuideIndexation() {
             >
               <img src="/apple-touch-icon.png" alt="MB Logo" className="w-full h-full object-cover" />
             </Link>
-            <span className="font-bold text-sm md:text-lg tracking-tight uppercase font-['Montserrat']">
+            <span className="font-bold text-sm md:text-lg tracking-tight uppercase font-montserrat">
               HELP Loan Calculator
             </span>
           </div>
@@ -50,20 +50,20 @@ export default function GuideIndexation() {
 
       <main className="max-w-3xl mx-auto px-4 py-8 relative z-10 app-fade-in">
         {/* Back Link */}
-        <Link href="/" className="inline-flex items-center gap-2 text-[#0081CB] hover:text-[#62FFDA] transition-colors text-sm font-bold font-['Montserrat'] uppercase tracking-wider mb-8">
+        <Link href="/" className="inline-flex items-center gap-2 text-[#0081CB] hover:text-[#62FFDA] transition-colors text-sm font-bold font-montserrat uppercase tracking-wider mb-8">
           <ArrowLeft size={16} />
           Back to Calculator
         </Link>
 
         {/* Article */}
         <article className="space-y-8">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-['Montserrat'] text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-montserrat text-white leading-tight">
             How HECS Indexation Works: What It Is, Why It Matters, and What's Changed
           </h1>
 
           {/* Section: HECS Doesn't Charge Interest */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">HECS Doesn't Charge Interest. But Your Debt Still Grows.</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">HECS Doesn't Charge Interest. But Your Debt Still Grows.</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               This is the part that catches people off guard. HECS-HELP loans are technically "interest-free," but they're not cost-free. Every year on 1 June, your remaining debt is <strong className="text-white">indexed</strong>, which means it gets adjusted upward to keep pace with the cost of living.
             </p>
@@ -74,7 +74,7 @@ export default function GuideIndexation() {
 
           {/* Section: Why This Hits Harder */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">Why This Hits Harder Than You Think</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Why This Hits Harder Than You Think</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               Here's where it gets real. The repayment threshold is currently $67,000. That's often framed as a positive — "you don't pay anything until you earn $67k!" And in the short term, it's true. Less pressure on your pay while you're getting established.
             </p>
@@ -114,7 +114,7 @@ export default function GuideIndexation() {
 
           {/* Section: How the Rate Is Calculated */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">How the Rate Is Calculated</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">How the Rate Is Calculated</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               Indexation used to be based purely on the <strong className="text-white">Consumer Price Index (CPI)</strong>, which measures how much everyday prices have gone up. When inflation spiked in 2022-23, HECS indexation spiked with it, and a lot of people saw their debt jump by thousands of dollars overnight.
             </p>
@@ -128,7 +128,7 @@ export default function GuideIndexation() {
 
           {/* Section: "Your Debt Won't Outgrow Your Wages" */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">"Your Debt Won't Outgrow Your Wages" — Not Quite</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">"Your Debt Won't Outgrow Your Wages" — Not Quite</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               You'll hear this line a lot now that the WPI cap is in place. And on paper, it sounds reassuring. But it deserves a closer look.
             </p>
@@ -154,7 +154,7 @@ export default function GuideIndexation() {
 
           {/* Section: Historical Indexation Rates */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">Historical Indexation Rates</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Historical Indexation Rates</h3>
             <p className="text-[#CFCFCF] leading-relaxed">Here's what indexation has looked like over the past decade:</p>
 
             <div className="rounded-xl overflow-hidden border glass-dark border-white/5">
@@ -197,7 +197,7 @@ export default function GuideIndexation() {
 
           {/* Section: What You Can Actually Do About It */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">What You Can Actually Do About It</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">What You Can Actually Do About It</h3>
             <p className="text-[#CFCFCF] leading-relaxed">Understanding indexation isn't about stressing over it. It's about making informed decisions:</p>
             <ul className="list-disc list-inside text-[#CFCFCF] leading-relaxed space-y-2 pl-2">
               <li><strong className="text-white">Know what your degree will cost</strong> — not just the sticker price, but the real cost after years of indexation before and during repayment.</li>
@@ -216,7 +216,7 @@ export default function GuideIndexation() {
 
           {/* Section: Where This Info Comes From */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">Where This Info Comes From</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Where This Info Comes From</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               Indexation rates are published by the{' '}
               <a href="https://www.ato.gov.au/tax-rates-and-codes/study-and-training-support-loans-indexation-rates" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
@@ -253,14 +253,14 @@ export default function GuideIndexation() {
                 className="group flex items-center gap-3 p-4 rounded-xl border border-white/5 bg-white/[0.03] hover:border-[#62FFDA]/30 hover:bg-white/[0.06] transition-all"
               >
                 <BookOpen size={16} className="text-[#0081CB] shrink-0 group-hover:text-[#62FFDA] transition-colors" />
-                <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-['Lato']">{guide.title}</span>
+                <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-lato">{guide.title}</span>
               </Link>
             ))}
           </div>
         </div>
 
         {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-['Montserrat'] text-[#CFCFCF]/40 text-center">
+        <div className="mt-16 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-montserrat text-[#CFCFCF]/40 text-center">
           <div>&copy; 2025 Mitch Bryant &middot; mitchbryant.com</div>
         </div>
       </main>

@@ -544,7 +544,7 @@ const ChartSection = ({ mode, timelineData, baseTimelineData, breaks, hasLifeEve
       {/* --- COMPARISON SUMMARY (only when life events exist and values differ) --- */}
       {showSummary && (
         <div className="shrink-0 pt-1 pb-3 text-center">
-          <p className="font-['Lato'] text-[13px] lg:text-[14px] text-[#CFCFCF]">
+          <p className="font-lato text-[13px] lg:text-[14px] text-[#CFCFCF]">
             Your life events{' '}
             <span className="font-bold" style={{ color: summaryColor }}>
               {saves ? 'save you' : 'add'}
@@ -574,7 +574,7 @@ const ShareIcon = ({ size = 18, color = 'currentColor' }) => (
 const SectionHeader = ({ icon: Icon, title, infoText }) => (
   <div className="flex items-center mb-1">
     <Icon className="text-[#0081CB]" size={20} />
-    <h3 className="font-['Montserrat'] font-bold uppercase tracking-wider text-sm ml-3 text-white">
+    <h3 className="font-montserrat font-bold uppercase tracking-wider text-sm ml-3 text-white">
       {title}
     </h3>
     {infoText && <InfoTooltip text={infoText} />}
@@ -622,7 +622,7 @@ const NeonSlider = ({ label, value, onChange, min, max, step, unit, color, infoT
     <div className="mb-6">
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center">
-          <label className="block text-xs font-bold uppercase tracking-wide font-['Montserrat'] text-[#CFCFCF]">
+          <label className="block text-xs font-bold uppercase tracking-wide font-montserrat text-[#CFCFCF]">
             {label}
           </label>
           {infoText && <InfoTooltip text={infoText} />}
@@ -681,7 +681,7 @@ const NeonSlider = ({ label, value, onChange, min, max, step, unit, color, infoT
 const InputField = ({ label, value, onChange, unit, type = "number", step = 1, infoText, nudge }) => (
   <div className="mb-5">
     <div className="flex items-center mb-2">
-      <label className="block text-xs font-bold uppercase tracking-wide font-['Montserrat'] text-[#CFCFCF]">
+      <label className="block text-xs font-bold uppercase tracking-wide font-montserrat text-[#CFCFCF]">
         {label}
       </label>
       {infoText && <InfoTooltip text={infoText} />}
@@ -723,18 +723,18 @@ const HeroSection = ({ isDebtFree, finalYear, firstYear, finalAge, totalPaid, to
     <div className="relative p-6 sm:p-8 text-white h-full flex flex-col justify-between">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h2 className="text-xs font-bold uppercase tracking-[0.2em] opacity-80 mb-2 font-['Montserrat']">Loan Paid Off In</h2>
+          <h2 className="text-xs font-bold uppercase tracking-[0.2em] opacity-80 mb-2 font-montserrat">Loan Paid Off In</h2>
           <div
             key={`${isDebtFree}-${finalYear}-${firstYear}`}
-            className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter font-['Montserrat'] pulse-stat drop-shadow-xl"
+            className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter font-montserrat pulse-stat drop-shadow-xl"
           >
             {isDebtFree ? `${finalYear - firstYear + 1} Years` : '50+ Years'}
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-3 font-medium opacity-90">
             {isDebtFree ? (
               <>
-                <span className="bg-white/10 border border-white/20 px-3 py-1.5 rounded-lg text-sm font-['Lato'] backdrop-blur-md">Debt Free in {finalYear}</span>
-                {finalAge && <span className="bg-white/10 border border-white/20 px-3 py-1.5 rounded-lg text-sm font-['Lato'] backdrop-blur-md">Age: {finalAge}</span>}
+                <span className="bg-white/10 border border-white/20 px-3 py-1.5 rounded-lg text-sm font-lato backdrop-blur-md">Debt Free in {finalYear}</span>
+                {finalAge && <span className="bg-white/10 border border-white/20 px-3 py-1.5 rounded-lg text-sm font-lato backdrop-blur-md">Age: {finalAge}</span>}
               </>
             ) : (
               <span className="text-[#FF3366] bg-black/40 px-3 py-1.5 rounded-lg flex items-center gap-2 border border-[#FF3366]/30 backdrop-blur-md"><AlertCircle size={16} /> Loan not cleared in 50 years</span>
@@ -742,10 +742,10 @@ const HeroSection = ({ isDebtFree, finalYear, firstYear, finalAge, totalPaid, to
           </div>
         </div>
         <div className="bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl p-5 w-full md:w-auto min-w-[200px] shadow-lg mt-2 md:mt-0">
-          <div className="text-[10px] uppercase tracking-wider opacity-70 mb-1 font-['Montserrat']">Total Repaid</div>
+          <div className="text-[10px] uppercase tracking-wider opacity-70 mb-1 font-montserrat">Total Repaid</div>
           <div className="text-2xl font-bold text-[#62FFDA] font-mono">{formatCurrency(totalPaid)}</div>
           <div className="w-full h-px bg-white/10 my-3"></div>
-          <div className="text-[10px] uppercase tracking-wider opacity-70 mb-1 font-['Montserrat']">Total Indexation</div>
+          <div className="text-[10px] uppercase tracking-wider opacity-70 mb-1 font-montserrat">Total Indexation</div>
           <div className="text-2xl font-bold text-[#FF3366] font-mono">{formatCurrency(totalIndexation)}</div>
         </div>
       </div>
@@ -1198,7 +1198,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen font-sans selection:bg-[#0081CB] selection:text-white pb-20 transition-colors duration-500 relative overflow-x-hidden text-white bg-[#0D0D0D]"
-      style={{ fontFamily: 'Lato, sans-serif' }}
+      style={{ fontFamily: 'var(--font-lato), sans-serif' }}
     >
       {/* GLOBAL NOISE & GRADIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -1224,7 +1224,7 @@ export default function App() {
                 className="w-full h-full object-cover"
               />
             </a>
-            <span className="font-bold text-[10px] md:text-base leading-tight tracking-tight uppercase font-['Montserrat']">
+            <span className="font-bold text-[10px] md:text-base leading-tight tracking-tight uppercase font-montserrat">
               Higher Education Loan<br className="md:hidden" /> Program Calculator
             </span>
           </div>
@@ -1235,7 +1235,7 @@ export default function App() {
               className="btn-soft flex items-center gap-2 text-[#CFCFCF]"
             >
               <ShareIcon size={18} color="#00A3FF" />
-              <span className="hidden md:inline text-xs font-bold uppercase tracking-wider font-['Montserrat']">Share</span>
+              <span className="hidden md:inline text-xs font-bold uppercase tracking-wider font-montserrat">Share</span>
             </button>
 
             <button
@@ -1243,7 +1243,7 @@ export default function App() {
               className="btn-soft flex items-center gap-2 text-[#CFCFCF]"
             >
               <RotateCcw size={18} />
-              <span className="hidden md:inline text-xs font-bold uppercase tracking-wider font-['Montserrat']">Reset</span>
+              <span className="hidden md:inline text-xs font-bold uppercase tracking-wider font-montserrat">Reset</span>
             </button>
 
             {/* HAMBURGER MENU */}
@@ -1292,7 +1292,7 @@ export default function App() {
                   <style>{`@keyframes menuFadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
 
                   {/* GUIDES section */}
-                  <div style={{ padding: '12px 12px 6px', fontFamily: 'Montserrat, sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(207,207,207,0.5)' }}>
+                  <div style={{ padding: '12px 12px 6px', fontFamily: 'var(--font-montserrat), sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(207,207,207,0.5)' }}>
                     Guides
                   </div>
                   {[
@@ -1312,7 +1312,7 @@ export default function App() {
                       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                     >
                       <span style={{ width: 28, height: 28, borderRadius: 8, background: color + '1A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>{emoji}</span>
-                      <span style={{ fontFamily: 'Lato, sans-serif', fontSize: 13, fontWeight: 700, color: '#F1F5F9', lineHeight: 1.3 }}>{label}</span>
+                      <span style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 13, fontWeight: 700, color: '#F1F5F9', lineHeight: 1.3 }}>{label}</span>
                     </Link>
                   ))}
 
@@ -1320,7 +1320,7 @@ export default function App() {
                   <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', margin: '6px 12px' }} />
 
                   {/* MORE section */}
-                  <div style={{ padding: '6px 12px 6px', fontFamily: 'Montserrat, sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(207,207,207,0.5)' }}>
+                  <div style={{ padding: '6px 12px 6px', fontFamily: 'var(--font-montserrat), sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(207,207,207,0.5)' }}>
                     More
                   </div>
                   <button
@@ -1330,7 +1330,7 @@ export default function App() {
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
                     <span style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(255,193,7,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>💡</span>
-                    <span style={{ fontFamily: 'Lato, sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>How to Use This Calculator</span>
+                    <span style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>How to Use This Calculator</span>
                   </button>
                   <Link
                     href="/privacy-policy"
@@ -1340,7 +1340,7 @@ export default function App() {
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
                     <span style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>🔒</span>
-                    <span style={{ fontFamily: 'Lato, sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>Privacy Policy</span>
+                    <span style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>Privacy Policy</span>
                   </Link>
                   <a
                     href="https://www.mitchbryant.com"
@@ -1352,7 +1352,7 @@ export default function App() {
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
                     <span style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(0,163,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>🌐</span>
-                    <span style={{ fontFamily: 'Lato, sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>mitchbryant.com</span>
+                    <span style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>mitchbryant.com</span>
                   </a>
                 </div>
               )}
@@ -1367,10 +1367,10 @@ export default function App() {
 
         {/* LANDING COPY — full-width above both columns on desktop, above inputs on mobile */}
         <div className="col-span-full mb-0">
-          <p className="font-['Montserrat'] font-bold text-[15px] lg:text-[16px] text-[#00A3FF]" style={{ marginBottom: 6 }}>
+          <p className="font-montserrat font-bold text-[15px] lg:text-[16px] text-[#00A3FF]" style={{ marginBottom: 6 }}>
             Australia's most advanced HECS-HELP<br className="lg:hidden" /> & FEE-HELP repayment calculator.
           </p>
-          <p className="font-['Lato'] font-normal text-[13px] lg:text-[14px] text-[#CFCFCF]" style={{ lineHeight: '1.6' }}>
+          <p className="font-lato font-normal text-[13px] lg:text-[14px] text-[#CFCFCF]" style={{ lineHeight: '1.6' }}>
             See how <strong className="font-bold" style={{ color: 'rgba(241, 245, 249, 0.7)' }}>indexation, wage growth, promotions, gap years, pay cuts</strong>, and <strong className="font-bold" style={{ color: 'rgba(241, 245, 249, 0.7)' }}>voluntary repayments</strong> affect your student debt over time.<br />
             <span className="text-[#CFCFCF]/60">Built on official 2025-26 ATO repayment rates.</span>
           </p>
@@ -1379,7 +1379,7 @@ export default function App() {
         <div className="col-span-full mb-0">
           <button
             onClick={() => setShowHelpModal(true)}
-            className="group inline-flex items-center gap-2 font-['Lato'] text-[13px] font-bold text-[#CFCFCF] cursor-pointer transition-colors"
+            className="group inline-flex items-center gap-2 font-lato text-[13px] font-bold text-[#CFCFCF] cursor-pointer transition-colors"
             style={{
               border: '1px dashed rgba(0,129,203,0.25)',
               background: 'transparent',
@@ -1738,7 +1738,7 @@ export default function App() {
           <div className="lg:hidden">
             <button
               onClick={() => setShowShareModal(true)}
-              className="w-full flex items-center justify-center gap-2.5 py-3.5 px-5 font-['Montserrat'] font-bold text-sm text-[#CFCFCF] transition-all duration-200"
+              className="w-full flex items-center justify-center gap-2.5 py-3.5 px-5 font-montserrat font-bold text-sm text-[#CFCFCF] transition-all duration-200"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14 }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,129,203,0.3)'; e.currentTarget.style.background = 'rgba(0,129,203,0.05)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}
@@ -1764,7 +1764,7 @@ export default function App() {
           <div className="hidden lg:flex justify-center">
             <button
               onClick={() => setShowShareModal(true)}
-              className="flex items-center gap-2.5 py-3 px-6 font-['Montserrat'] font-bold text-sm text-[#CFCFCF] transition-all duration-200"
+              className="flex items-center gap-2.5 py-3 px-6 font-montserrat font-bold text-sm text-[#CFCFCF] transition-all duration-200"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14 }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,129,203,0.3)'; e.currentTarget.style.background = 'rgba(0,129,203,0.05)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}
@@ -1782,7 +1782,7 @@ export default function App() {
             {showTable && (
               <div className="overflow-x-auto">
                 <table className="w-full text-[10px] sm:text-sm text-left font-mono">
-                  <thead className="uppercase text-[9px] sm:text-xs font-['Montserrat'] bg-white/5 text-[#CFCFCF]">
+                  <thead className="uppercase text-[9px] sm:text-xs font-montserrat bg-white/5 text-[#CFCFCF]">
                     <tr>
                       <th className="px-2 py-3 sm:px-6 sm:py-4">Year</th>
                       <th className="px-2 py-3 sm:px-6 sm:py-4 text-right">Income</th>
@@ -1794,7 +1794,7 @@ export default function App() {
                   <tbody className="divide-y divide-gray-800/50">
                     {timelineData.map((row) => (
                       <tr key={row.year} className={`scanline-row ${row.isBreak ? 'opacity-50 italic' : ''}`}>
-                        <td className="px-2 py-3 sm:px-6 sm:py-4 font-bold relative z-10">{row.year}{row.age && <span className="block text-[9px] sm:text-xs font-['Lato'] font-normal opacity-60 text-[#CFCFCF]">{row.age} yo</span>}</td>
+                        <td className="px-2 py-3 sm:px-6 sm:py-4 font-bold relative z-10">{row.year}{row.age && <span className="block text-[9px] sm:text-xs font-lato font-normal opacity-60 text-[#CFCFCF]">{row.age} yo</span>}</td>
                         <td className="px-2 py-3 sm:px-6 sm:py-4 text-right relative z-10">
                           {formatCurrency(row.taxableIncome)}
                           {row.notes.length > 0 && (
@@ -1850,7 +1850,7 @@ export default function App() {
                   className="group flex items-center gap-3 p-4 rounded-xl border border-white/5 bg-white/[0.03] hover:border-[#62FFDA]/30 hover:bg-white/[0.06] transition-all"
                 >
                   <BookOpen size={16} className="text-[#0081CB] shrink-0 group-hover:text-[#62FFDA] transition-colors" />
-                  <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-['Lato']">{guide.title}</span>
+                  <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-lato">{guide.title}</span>
                 </Link>
               ))}
             </div>
@@ -1950,14 +1950,14 @@ export default function App() {
                       onClick={() => setOpenFaqItems(prev => ({ ...prev, [item.id]: !prev[item.id] }))}
                       className="w-full p-4 flex items-center justify-between text-left transition-colors hover:bg-white/[0.03]"
                     >
-                      <span className="text-sm font-medium text-[#CFCFCF] pr-4 font-['Lato']">{item.q}</span>
+                      <span className="text-sm font-medium text-[#CFCFCF] pr-4 font-lato">{item.q}</span>
                       <ChevronDown
                         size={16}
                         className={`text-[#CFCFCF]/50 shrink-0 transition-transform duration-200 ${openFaqItems[item.id] ? 'rotate-180' : ''}`}
                       />
                     </button>
                     <div className={openFaqItems[item.id] ? 'px-4 pb-4' : 'sr-only'}>
-                      <div className="text-sm text-[#CFCFCF]/80 leading-relaxed font-['Lato']">
+                      <div className="text-sm text-[#CFCFCF]/80 leading-relaxed font-lato">
                         {item.a}
                       </div>
                     </div>
@@ -1968,7 +1968,7 @@ export default function App() {
           </Card>
 
           {/* DISCLAIMER / FOOTER */}
-          <div className="text-xs text-center px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-['Lato'] text-[#CFCFCF]/60">
+          <div className="text-xs text-center px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-lato text-[#CFCFCF]/60">
             <h4 className="font-bold uppercase tracking-widest text-[10px] opacity-70">DISCLAIMER</h4>
             <p>
               This tool is for educational purposes only. It is not personal financial, legal, or tax advice and does not take into account your individual objectives. The model estimates compulsory repayments using the 2025–26 marginal repayment system and assumes these thresholds remain constant. Actual repayments are determined by the ATO after you lodge your tax return.
@@ -2027,7 +2027,7 @@ export default function App() {
               <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-x-8 gap-y-5" style={{ marginBottom: 16 }}>
                 {/* Column 1: Guides */}
                 <div>
-                  <div className="font-['Montserrat'] text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Guides</div>
+                  <div className="font-montserrat text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Guides</div>
                   {[
                     { href: '/hecs-repayment-thresholds-2025-26', label: 'HECS Repayment Thresholds 2025-26' },
                     { href: '/how-hecs-indexation-works', label: 'How HECS Indexation Works' },
@@ -2039,7 +2039,7 @@ export default function App() {
                     <Link
                       key={href}
                       href={href}
-                      className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors"
+                      className="block font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors"
                       style={{ marginBottom: 10, lineHeight: 1.5 }}
                     >
                       {label}
@@ -2049,23 +2049,23 @@ export default function App() {
 
                 {/* Column 2: Links + Connect stacked */}
                 <div>
-                  <div className="font-['Montserrat'] text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Links</div>
-                  <Link href="/privacy-policy" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                  <div className="font-montserrat text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Links</div>
+                  <Link href="/privacy-policy" className="block font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                     Privacy Policy
                   </Link>
-                  <a href="https://www.mitchbryant.com" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                  <a href="https://www.mitchbryant.com" target="_blank" rel="noopener noreferrer" className="block font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                     mitchbryant.com
                   </a>
 
                   <div style={{ marginTop: 24 }}>
-                    <div className="font-['Montserrat'] text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Connect</div>
-                    <a href="https://www.tiktok.com/@itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                    <div className="font-montserrat text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Connect</div>
+                    <a href="https://www.tiktok.com/@itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                       TikTok @itsmitchbryant
                     </a>
-                    <a href="https://www.instagram.com/itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                    <a href="https://www.instagram.com/itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                       Instagram @itsmitchbryant
                     </a>
-                    <a href="mailto:hello@mitchbryant.com" className="flex items-center gap-1.5 font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                    <a href="mailto:hello@mitchbryant.com" className="flex items-center gap-1.5 font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                       hello@mitchbryant.com
                     </a>
@@ -2078,7 +2078,7 @@ export default function App() {
                 className="text-center pt-4"
                 style={{ borderTop: '1px solid rgba(255,255,255,0.04)', marginTop: 8 }}
               >
-                <span className="font-['Lato'] text-[11px] text-[#CFCFCF]/40">
+                <span className="font-lato text-[11px] text-[#CFCFCF]/40">
                   © 2025 Mitch Bryant · mitchbryant.com
                 </span>
               </div>
@@ -2122,19 +2122,19 @@ export default function App() {
                   style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <img src="/apple-touch-icon.png" alt="MB Logo" style={{ width: 32, height: 32, borderRadius: 8, objectFit: 'cover', display: 'block' }} />
-                    <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(241,245,249,0.55)', letterSpacing: 0.5, fontFamily: "'Montserrat', sans-serif" }}>HELP Loan Calculator</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(241,245,249,0.55)', letterSpacing: 0.5, fontFamily: 'var(--font-montserrat), sans-serif' }}>HELP Loan Calculator</div>
                   </div>
-                  <div style={{ background: 'rgba(98,255,218,0.08)', border: '1px solid rgba(98,255,218,0.2)', color: '#62FFDA', fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 20, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: "'Montserrat', sans-serif", textAlign: 'center', lineHeight: '1', display: 'inline-flex', alignItems: 'center', marginRight: 36 }}>2025–26</div>
+                  <div style={{ background: 'rgba(98,255,218,0.08)', border: '1px solid rgba(98,255,218,0.2)', color: '#62FFDA', fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 20, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: 'var(--font-montserrat), sans-serif', textAlign: 'center', lineHeight: '1', display: 'inline-flex', alignItems: 'center', marginRight: 36 }}>2025–26</div>
                 </div>
 
                 {/* Headline stat */}
                 <div className="animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:both] [animation-delay:120ms]"
                   style={{ textAlign: 'center', marginBottom: 28 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 2, marginBottom: 10, fontFamily: "'Montserrat', sans-serif" }}>Your degree will actually cost</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 2, marginBottom: 10, fontFamily: 'var(--font-montserrat), sans-serif' }}>Your degree will actually cost</div>
                   <div data-share-headline="true" style={{ fontFamily: 'var(--font-geist-mono, ui-monospace, monospace)', fontSize: 52, fontWeight: 700, background: 'linear-gradient(135deg, #F1F5F9 0%, #00A3FF 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1.1, marginBottom: 12 }}>
                     {isDebtFree ? formatCurrency(totalPaid) : '50+ yrs'}
                   </div>
-                  <div style={{ fontSize: 14, color: 'rgba(241,245,249,0.55)', fontFamily: "'Lato', sans-serif" }}>
+                  <div style={{ fontSize: 14, color: 'rgba(241,245,249,0.55)', fontFamily: 'var(--font-lato), sans-serif' }}>
                     {isDebtFree
                       ? <><>Debt free by </><strong style={{ color: '#F1F5F9', fontWeight: 700 }}>{finalYear}</strong><> · age </><strong style={{ color: '#F1F5F9', fontWeight: 700 }}>{finalAge}</strong></>
                       : <span style={{ color: '#FF4D6A' }}>Loan not cleared in 50 years</span>}
@@ -2146,22 +2146,22 @@ export default function App() {
                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 24, fontFamily: 'var(--font-geist-mono, ui-monospace, monospace)', fontSize: 13, fontWeight: 500 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <div style={{ color: '#F1F5F9' }}>{formatCurrencyShort(inputs.startingDebt)}</div>
-                    <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Debt</div>
+                    <div style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Debt</div>
                   </div>
                   <div style={{ color: 'rgba(241,245,249,0.35)', fontSize: 16, lineHeight: 1, alignSelf: 'center' }}>+</div>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <div style={{ color: '#FF4D6A', fontWeight: 700 }}>{formatCurrencyShort(totalIndexation)}</div>
-                    <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Indexation</div>
+                    <div style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Indexation</div>
                   </div>
                   <div style={{ color: 'rgba(241,245,249,0.35)', fontSize: 16, lineHeight: 1, alignSelf: 'center' }}>=</div>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <div style={{ color: '#F1F5F9' }}>{formatCurrencyShort(totalPaid)}</div>
-                    <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Total paid</div>
+                    <div style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Total paid</div>
                   </div>
-                  <div style={{ color: 'rgba(241,245,249,0.35)', fontSize: 11, fontFamily: "'Lato', sans-serif", letterSpacing: 0.5, alignSelf: 'center' }}>over</div>
+                  <div style={{ color: 'rgba(241,245,249,0.35)', fontSize: 11, fontFamily: 'var(--font-lato), sans-serif', letterSpacing: 0.5, alignSelf: 'center' }}>over</div>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <div style={{ color: '#F1F5F9' }}>{isDebtFree ? `${timelineData.length} yrs` : '50+ yrs'}</div>
-                    <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Timeline</div>
+                    <div style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 10, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1, marginTop: 3 }}>Timeline</div>
                   </div>
                 </div>
 
@@ -2179,9 +2179,9 @@ export default function App() {
                       textAlign: 'center',
                       borderRadius: i === 0 ? '14px 0 0 14px' : i === arr.length - 1 ? '0 14px 14px 0' : 0,
                     }}>
-                      <div style={{ fontSize: 10, fontWeight: 600, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 7, fontFamily: "'Montserrat', sans-serif", whiteSpace: 'nowrap' }}>{stat.label}</div>
+                      <div style={{ fontSize: 10, fontWeight: 600, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 7, fontFamily: 'var(--font-montserrat), sans-serif', whiteSpace: 'nowrap' }}>{stat.label}</div>
                       <div style={{ fontFamily: 'var(--font-geist-mono, ui-monospace, monospace)', fontSize: 20, fontWeight: 700, color: stat.color }}>{stat.value}</div>
-                      <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 10, color: 'rgba(241,245,249,0.55)', marginTop: 4 }}>{stat.unit}</div>
+                      <div style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 10, color: 'rgba(241,245,249,0.55)', marginTop: 4 }}>{stat.unit}</div>
                     </div>
                   ))}
                 </div>
@@ -2190,7 +2190,7 @@ export default function App() {
                 {shareLifeEvents.length > 0 && (
                   <div className="animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:both] [animation-delay:300ms]"
                     style={{ marginBottom: 24 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10, fontFamily: "'Montserrat', sans-serif" }}>Life events modelled</div>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(241,245,249,0.35)', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10, fontFamily: 'var(--font-montserrat), sans-serif' }}>Life events modelled</div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {shareLifeEvents.map((ev, i) => {
                         const palette = {
@@ -2201,7 +2201,7 @@ export default function App() {
                         };
                         const c = palette[ev.type] || { color: 'rgba(241,245,249,0.55)', border: 'rgba(255,255,255,0.08)', bg: 'rgba(255,255,255,0.04)' };
                         return (
-                          <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: c.bg, border: `1px solid ${c.border}`, borderRadius: 20, padding: '6px 12px', fontSize: 12, fontWeight: 600, color: c.color, fontFamily: "'Lato', sans-serif" }}>
+                          <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: c.bg, border: `1px solid ${c.border}`, borderRadius: 20, padding: '6px 12px', fontSize: 12, fontWeight: 600, color: c.color, fontFamily: 'var(--font-lato), sans-serif' }}>
                             <span style={{ fontSize: 12, lineHeight: 1 }}>{ev.icon}</span>
                             {ev.label}
                           </div>
@@ -2222,18 +2222,18 @@ export default function App() {
                     </div>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 9 }}>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(241,245,249,0.35)', fontFamily: "'Lato', sans-serif" }}>{inputs.firstYear}{inputs.startingAge ? ` · ${inputs.startingAge}yo` : ''}</div>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: '#62FFDA', fontFamily: "'Lato', sans-serif" }}>{isDebtFree ? `${finalYear} · Debt free ✓` : 'Not cleared in 50 yrs'}</div>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(241,245,249,0.35)', fontFamily: 'var(--font-lato), sans-serif' }}>{inputs.firstYear}{inputs.startingAge ? ` · ${inputs.startingAge}yo` : ''}</div>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: '#62FFDA', fontFamily: 'var(--font-lato), sans-serif' }}>{isDebtFree ? `${finalYear} · Debt free ✓` : 'Not cleared in 50 yrs'}</div>
                   </div>
                 </div>
 
                 {/* Card footer */}
                 <div className="animate-in fade-in slide-in-from-bottom-1 duration-300 [animation-fill-mode:both] [animation-delay:420ms]"
                   style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 18, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                  <div style={{ fontFamily: "'Lato', sans-serif", fontSize: 12, fontWeight: 600, color: 'rgba(241,245,249,0.35)' }}>
+                  <div style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 12, fontWeight: 600, color: 'rgba(241,245,249,0.35)' }}>
                     Calculate yours →{' '}<span style={{ color: '#00A3FF', fontWeight: 700 }}>helploancalculator.com</span>
                   </div>
-                  <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 12, fontWeight: 700, color: 'rgba(241,245,249,0.55)' }}>@itsmitchbryant</div>
+                  <div style={{ fontFamily: 'var(--font-montserrat), sans-serif', fontSize: 12, fontWeight: 700, color: 'rgba(241,245,249,0.55)' }}>@itsmitchbryant</div>
                 </div>
 
               </div>
@@ -2244,7 +2244,7 @@ export default function App() {
               {/* Share / Copy Link */}
               <button
                 onClick={handleShareLink}
-                className="flex-1 flex items-center justify-center gap-2 font-['Montserrat'] font-bold text-[15px] text-white transition-all duration-200"
+                className="flex-1 flex items-center justify-center gap-2 font-montserrat font-bold text-[15px] text-white transition-all duration-200"
                 style={{ background: 'linear-gradient(135deg, #0081CB, #6A3CFF)', border: 'none', borderRadius: 14, padding: '14px 28px', boxShadow: '0 4px 24px rgba(0,129,203,0.3)', cursor: 'pointer' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,129,203,0.45)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,129,203,0.3)'; }}
@@ -2266,7 +2266,7 @@ export default function App() {
               <button
                 onClick={handleSaveImage}
                 disabled={isSaving}
-                className="flex-1 flex items-center justify-center gap-2 font-['Montserrat'] font-bold text-[15px] text-white transition-all duration-200"
+                className="flex-1 flex items-center justify-center gap-2 font-montserrat font-bold text-[15px] text-white transition-all duration-200"
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14, padding: '14px 28px', cursor: isSaving ? 'wait' : 'pointer', opacity: isSaving ? 0.7 : 1 }}
                 onMouseEnter={e => { if (!isSaving) { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; } }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
@@ -2282,7 +2282,7 @@ export default function App() {
 
             {/* ── TOAST ── */}
             {showToast && (
-              <div className="animate-in fade-in duration-200 text-center mt-3 font-['Lato'] font-semibold text-[13px]" style={{ color: 'rgba(241,245,249,0.55)' }}>
+              <div className="animate-in fade-in duration-200 text-center mt-3 font-lato font-semibold text-[13px]" style={{ color: 'rgba(241,245,249,0.55)' }}>
                 ✓ Link copied to clipboard
               </div>
             )}
@@ -2296,34 +2296,34 @@ export default function App() {
           <div className="w-full max-w-lg rounded-3xl p-8 relative border shadow-2xl glass-dark max-h-[90vh] overflow-y-auto">
             <button onClick={() => setShowHelpModal(false)} className="absolute top-4 right-4 p-2 text-gray-500 hover:text-white"><X size={20} /></button>
 
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 font-['Montserrat'] text-white">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2 font-montserrat text-white">
               <HelpCircle className="text-[#0081CB]" size={24} />
               How To Use This Calculator
             </h3>
 
-            <div className="space-y-5 text-sm font-['Lato'] text-[#CFCFCF]">
+            <div className="space-y-5 text-sm font-lato text-[#CFCFCF]">
               <div>
-                <h4 className="font-bold text-[#0081CB] mb-1 font-['Montserrat']">Step 1: Input Your Financial Data</h4>
+                <h4 className="font-bold text-[#0081CB] mb-1 font-montserrat">Step 1: Input Your Financial Data</h4>
                 <p>Enter your starting debt, income, growth projections, first year, and age.</p>
               </div>
               <div>
-                <h4 className="font-bold text-[#6A3CFF] mb-1 font-['Montserrat']">Step 2: View Projected Summary</h4>
+                <h4 className="font-bold text-[#6A3CFF] mb-1 font-montserrat">Step 2: View Projected Summary</h4>
                 <p>Review your estimated time to pay off and total costs.</p>
               </div>
               <div>
-                <h4 className="font-bold text-[#62FFDA] mb-1 font-['Montserrat']">Step 3: Analyse Repayment Timeline</h4>
+                <h4 className="font-bold text-[#62FFDA] mb-1 font-montserrat">Step 3: Analyse Repayment Timeline</h4>
                 <p>Use the chart to visualise your loan balance changing year by year.</p>
               </div>
               <div>
-                <h4 className="font-bold text-[#0081CB] mb-1 font-['Montserrat']">Step 4: Explore Voluntary Contributions</h4>
+                <h4 className="font-bold text-[#0081CB] mb-1 font-montserrat">Step 4: Explore Voluntary Contributions</h4>
                 <p>Visualise how extra repayments can shorten your timeline.</p>
               </div>
               <div>
-                <h4 className="font-bold text-[#6A3CFF] mb-1 font-['Montserrat']">Step 5: Incorporate Life Events</h4>
+                <h4 className="font-bold text-[#6A3CFF] mb-1 font-montserrat">Step 5: Incorporate Life Events</h4>
                 <p>Factor in potential income changes or pauses. Use Promotions, Gap Years, and Pay Cuts to see how real life affects your loan.</p>
               </div>
               <div>
-                <h4 className="font-bold text-[#62FFDA] mb-1 font-['Montserrat']">Step 6: Review Year By Year Breakdown</h4>
+                <h4 className="font-bold text-[#62FFDA] mb-1 font-montserrat">Step 6: Review Year By Year Breakdown</h4>
                 <p>Examine the annual impact of indexation and compulsory repayments using the dropdown to show the full table.</p>
               </div>
             </div>

@@ -21,7 +21,7 @@ export default function GuideStartingEarly() {
   return (
     <div
       className="min-h-screen font-sans selection:bg-[#0081CB] selection:text-white pb-20 transition-colors duration-500 relative overflow-x-hidden text-white bg-[#0D0D0D]"
-      style={{ fontFamily: 'Lato, sans-serif' }}
+      style={{ fontFamily: 'var(--font-lato), sans-serif' }}
     >
       {/* GLOBAL NOISE & GRADIENT BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -41,7 +41,7 @@ export default function GuideStartingEarly() {
             >
               <img src="/apple-touch-icon.png" alt="MB Logo" className="w-full h-full object-cover" />
             </Link>
-            <span className="font-bold text-sm md:text-lg tracking-tight uppercase font-['Montserrat']">
+            <span className="font-bold text-sm md:text-lg tracking-tight uppercase font-montserrat">
               HELP Loan Calculator
             </span>
           </div>
@@ -50,20 +50,20 @@ export default function GuideStartingEarly() {
 
       <main className="max-w-3xl mx-auto px-4 py-8 relative z-10 app-fade-in">
         {/* Back Link */}
-        <Link href="/" className="inline-flex items-center gap-2 text-[#0081CB] hover:text-[#62FFDA] transition-colors text-sm font-bold font-['Montserrat'] uppercase tracking-wider mb-8">
+        <Link href="/" className="inline-flex items-center gap-2 text-[#0081CB] hover:text-[#62FFDA] transition-colors text-sm font-bold font-montserrat uppercase tracking-wider mb-8">
           <ArrowLeft size={16} />
           Back to Calculator
         </Link>
 
         {/* Article */}
         <article className="space-y-8">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-['Montserrat'] text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-montserrat text-white leading-tight">
             The Real Cost of Starting Uni Before You're Ready
           </h1>
 
           {/* Section: Nobody Tells You This in Year 12 */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">Nobody Tells You This in Year 12</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Nobody Tells You This in Year 12</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               Every year, thousands of students accept a uni offer because it feels like the next logical step. The pressure to "figure it out" at 17 is real, whether it's coming from school, parents, or just the fear of being left behind while everyone else moves on.
             </p>
@@ -80,7 +80,7 @@ export default function GuideStartingEarly() {
 
           {/* Section: How Much Does a Degree Actually Cost? */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">How Much Does a Degree Actually Cost?</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">How Much Does a Degree Actually Cost?</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               For Australian students in a Commonwealth Supported Place (CSP), the government covers a portion of your tuition. You pay the rest, known as the "student contribution." This amount depends on what you study.
             </p>
@@ -104,7 +104,7 @@ export default function GuideStartingEarly() {
 
           {/* Scenario 1 */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">Scenario 1: You Start, Switch, and Finish</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Scenario 1: You Start, Switch, and Finish</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               This is one of the most common outcomes. You start a degree, do a year, realise it's not for you, and switch to something else.
             </p>
@@ -125,7 +125,7 @@ export default function GuideStartingEarly() {
 
           {/* Scenario 2 */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">Scenario 2: You Start and Drop Out</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Scenario 2: You Start and Drop Out</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               Some students don't switch. They stop entirely. According to government data, around 1 in 5 domestic students don't complete their degree. That doesn't make them failures. It means the degree wasn't right, or the timing wasn't right. But the HECS debt from the subjects they completed doesn't disappear.
             </p>
@@ -136,7 +136,7 @@ export default function GuideStartingEarly() {
 
           {/* Scenario 3 */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">Scenario 3: You Take a Year to Work, Then Start</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Scenario 3: You Take a Year to Work, Then Start</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               What if you took a gap year, worked, saved some money, and figured out what you actually wanted to study? There's no financial penalty for starting uni at 19 instead of 18. Your HECS access doesn't expire. Your CSP eligibility doesn't change.
             </p>
@@ -159,7 +159,7 @@ export default function GuideStartingEarly() {
 
           {/* Section: Run Your Own Numbers */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">Run Your Own Numbers</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Run Your Own Numbers</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               These scenarios are generalisations. Your degree, your income path, and your timeline will be different. That's exactly why we built the calculator.
             </p>
@@ -182,7 +182,7 @@ export default function GuideStartingEarly() {
 
           {/* Section: This Is Your Call */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-['Montserrat'] text-[#62FFDA]">This Is Your Call</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">This Is Your Call</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               Going to uni straight out of school is the right move for a lot of people. So is taking time to figure things out first. Neither path is wrong. The wrong move is making a $30,000-$50,000 decision without understanding the numbers behind it.
             </p>
@@ -210,14 +210,14 @@ export default function GuideStartingEarly() {
                 className="group flex items-center gap-3 p-4 rounded-xl border border-white/5 bg-white/[0.03] hover:border-[#62FFDA]/30 hover:bg-white/[0.06] transition-all"
               >
                 <BookOpen size={16} className="text-[#0081CB] shrink-0 group-hover:text-[#62FFDA] transition-colors" />
-                <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-['Lato']">{guide.title}</span>
+                <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-lato">{guide.title}</span>
               </Link>
             ))}
           </div>
         </div>
 
         {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-['Montserrat'] text-[#CFCFCF]/40 text-center">
+        <div className="mt-16 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-montserrat text-[#CFCFCF]/40 text-center">
           <div>&copy; 2025 Mitch Bryant &middot; mitchbryant.com</div>
         </div>
       </main>
