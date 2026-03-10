@@ -2007,24 +2007,24 @@ export default function App() {
           {/* --- STRUCTURED FOOTER --- */}
           <div className="col-span-full px-0 md:px-4 w-full" style={{ marginTop: 24 }}>
             <div
-              className="max-w-3xl mx-auto px-6"
+              className="max-w-[640px] mx-auto px-6"
               style={{
                 border: '1px solid rgba(255,255,255,0.06)',
                 borderRadius: 16,
                 background: 'rgba(255,255,255,0.015)',
-                paddingTop: 32,
-                paddingBottom: 24,
+                paddingTop: 20,
+                paddingBottom: 16,
               }}
             >
               {/* Decorative gradient line */}
               <div style={{
-                width: '60%', height: 1, margin: '0 auto 32px',
+                width: '60%', height: 1, margin: '0 auto 20px',
                 background: 'linear-gradient(90deg, transparent 0%, #0081CB 25%, #6A3CFF 55%, #62FFDA 85%, transparent 100%)',
                 opacity: 0.5,
               }} />
 
               {/* Link columns */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px 32px', marginBottom: 24 }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-x-8 gap-y-5" style={{ marginBottom: 16 }}>
                 {/* Column 1: Guides */}
                 <div>
                   <div className="font-['Montserrat'] text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Guides</div>
@@ -2047,7 +2047,7 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* Column 2: Links + Connect on mobile */}
+                {/* Column 2: Links + Connect stacked */}
                 <div>
                   <div className="font-['Montserrat'] text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Links</div>
                   <Link href="/privacy-policy" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
@@ -2056,8 +2056,8 @@ export default function App() {
                   <a href="https://www.mitchbryant.com" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                     mitchbryant.com
                   </a>
-                  {/* Connect links shown here on mobile only */}
-                  <div className="md:hidden" style={{ marginTop: 18 }}>
+
+                  <div style={{ marginTop: 24 }}>
                     <div className="font-['Montserrat'] text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Connect</div>
                     <a href="https://www.tiktok.com/@itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                       TikTok @itsmitchbryant
@@ -2065,18 +2065,11 @@ export default function App() {
                     <a href="https://www.instagram.com/itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                       Instagram @itsmitchbryant
                     </a>
+                    <a href="mailto:hello@mitchbryant.com" className="flex items-center gap-1.5 font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                      hello@mitchbryant.com
+                    </a>
                   </div>
-                </div>
-
-                {/* Column 3: Connect (desktop only) */}
-                <div className="hidden md:block">
-                  <div className="font-['Montserrat'] text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Connect</div>
-                  <a href="https://www.tiktok.com/@itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
-                    TikTok @itsmitchbryant
-                  </a>
-                  <a href="https://www.instagram.com/itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-['Lato'] text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
-                    Instagram @itsmitchbryant
-                  </a>
                 </div>
               </div>
 
