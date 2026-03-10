@@ -1,11 +1,8 @@
 "use client";
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import html2canvas from 'html2canvas';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea
-} from 'recharts';
 import {
   Info, RotateCcw, TrendingUp, TrendingDown,
   PauseCircle, DollarSign, Calendar, ChevronDown, ChevronUp, AlertCircle, X, Wallet, HelpCircle, Trash2, BookOpen
@@ -187,113 +184,123 @@ const MemoizedCustomDot = React.memo((props) => {
 });
 MemoizedCustomDot.displayName = 'MemoizedCustomDot';
 
-// 2. Memoized Chart Component
-const MemoizedChart = React.memo(({ chartData, breaks, onHover, onLeave, hasLifeEvents }) => {
-  return (
-    <div className="flex-1 w-full min-h-0 relative [&_*]:focus:outline-none [&_*]:focus:ring-0">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart
-          throttleDelay={0}
-          data={chartData}
-          margin={{ top: 20, right: 10, left: 0, bottom: 5 }}
-          onMouseMove={(e) => {
-            // No-op or custom logic if needed
-          }}
-          onMouseLeave={onLeave}
-        >
-          <defs>
-            <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#62FFDA" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#62FFDA" stopOpacity={0} />
-            </linearGradient>
-            <linearGradient id="colorBase" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.08} />
-              <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
-            </linearGradient>
-          </defs>
+// 2. Memoized Chart Component (dynamically imported — recharts excluded from initial bundle)
+const MemoizedChart = dynamic(
+  async () => {
+    const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea } = await import('recharts');
+    const Chart = React.memo(({ chartData, breaks, onHover, onLeave, hasLifeEvents }) => {
+      return (
+        <div className="flex-1 w-full min-h-0 relative [&_*]:focus:outline-none [&_*]:focus:ring-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart
+              throttleDelay={0}
+              data={chartData}
+              margin={{ top: 20, right: 10, left: 0, bottom: 5 }}
+              onMouseMove={(e) => {
+                // No-op or custom logic if needed
+              }}
+              onMouseLeave={onLeave}
+            >
+              <defs>
+                <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#62FFDA" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#62FFDA" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="colorBase" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.08} />
+                  <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
+                </linearGradient>
+              </defs>
 
-          <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} strokeOpacity={0.4} />
-          <XAxis dataKey="year" stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickLine={false} axisLine={false} />
-          <YAxis stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickFormatter={(val) => `$${val / 1000}k`} tickLine={false} axisLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} strokeOpacity={0.4} />
+              <XAxis dataKey="year" stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickLine={false} axisLine={false} />
+              <YAxis stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickFormatter={(val) => `$${val / 1000}k`} tickLine={false} axisLine={false} />
 
-          <Tooltip
-            animationDuration={0}
-            content={<ChartTooltipSyncer onUpdate={onHover} />}
-            cursor={{
-              stroke: '#62FFDA',
-              strokeWidth: 2,
-              strokeDasharray: '0',
-              filter: 'drop-shadow(0 0 4px #62FFDA)'
-            }}
-          />
+              <Tooltip
+                animationDuration={0}
+                content={<ChartTooltipSyncer onUpdate={onHover} />}
+                cursor={{
+                  stroke: '#62FFDA',
+                  strokeWidth: 2,
+                  strokeDasharray: '0',
+                  filter: 'drop-shadow(0 0 4px #62FFDA)'
+                }}
+              />
 
-          {/* Base projection line (purple) — only when life events exist */}
-          {hasLifeEvents && (
-            <Area
-              type="monotone"
-              dataKey="baseBalance"
-              stroke="#8B5CF6"
-              strokeWidth={2}
-              strokeDasharray="5 4"
-              fill="url(#colorBase)"
-              dot={false}
-              activeDot={{ r: 5, fill: '#fff', stroke: '#8B5CF6', strokeWidth: 2 }}
-              isAnimationActive={false}
-            />
-          )}
+              {/* Base projection line (purple) — only when life events exist */}
+              {hasLifeEvents && (
+                <Area
+                  type="monotone"
+                  dataKey="baseBalance"
+                  stroke="#8B5CF6"
+                  strokeWidth={2}
+                  strokeDasharray="5 4"
+                  fill="url(#colorBase)"
+                  dot={false}
+                  activeDot={{ r: 5, fill: '#fff', stroke: '#8B5CF6', strokeWidth: 2 }}
+                  isAnimationActive={false}
+                />
+              )}
 
-          {/* Glow Layer */}
-          <Area
-            type="monotone"
-            dataKey="endBalance"
-            stroke="#62FFDA"
-            strokeWidth={10}
-            strokeOpacity={0.15}
-            fill="transparent"
-            isAnimationActive={false}
-            pointerEvents="none"
-          />
+              {/* Glow Layer */}
+              <Area
+                type="monotone"
+                dataKey="endBalance"
+                stroke="#62FFDA"
+                strokeWidth={10}
+                strokeOpacity={0.15}
+                fill="transparent"
+                isAnimationActive={false}
+                pointerEvents="none"
+              />
 
-          {/* Main Line Layer */}
-          <Area
-            type="monotone"
-            dataKey="endBalance"
-            stroke="#62FFDA"
-            strokeWidth={3}
-            fill="url(#colorBalance)"
-            dot={<MemoizedCustomDot />}
-            activeDot={{
-              r: 6,
-              fill: '#fff',
-              stroke: '#62FFDA',
-              strokeWidth: 3,
-              className: "animate-pulse",
-              style: { filter: 'drop-shadow(0 0 8px #62FFDA)' }
-            }}
-          />
+              {/* Main Line Layer */}
+              <Area
+                type="monotone"
+                dataKey="endBalance"
+                stroke="#62FFDA"
+                strokeWidth={3}
+                fill="url(#colorBalance)"
+                dot={<MemoizedCustomDot />}
+                activeDot={{
+                  r: 6,
+                  fill: '#fff',
+                  stroke: '#62FFDA',
+                  strokeWidth: 3,
+                  className: "animate-pulse",
+                  style: { filter: 'drop-shadow(0 0 8px #62FFDA)' }
+                }}
+              />
 
-          {breaks.map((b, i) => (
-            <ReferenceArea
-              key={i}
-              x1={parseInt(b.startYear)}
-              x2={parseInt(b.startYear) + parseInt(b.duration)}
-              fill="#fff"
-              fillOpacity={0.03}
-              pointerEvents="none"
-            />
-          ))}
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}, (prevProps, nextProps) => {
-  return (
-    prevProps.chartData === nextProps.chartData &&
-    prevProps.breaks === nextProps.breaks &&
-    prevProps.hasLifeEvents === nextProps.hasLifeEvents
-  );
-});
-MemoizedChart.displayName = 'MemoizedChart';
+              {breaks.map((b, i) => (
+                <ReferenceArea
+                  key={i}
+                  x1={parseInt(b.startYear)}
+                  x2={parseInt(b.startYear) + parseInt(b.duration)}
+                  fill="#fff"
+                  fillOpacity={0.03}
+                  pointerEvents="none"
+                />
+              ))}
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      );
+    }, (prevProps, nextProps) => {
+      return (
+        prevProps.chartData === nextProps.chartData &&
+        prevProps.breaks === nextProps.breaks &&
+        prevProps.hasLifeEvents === nextProps.hasLifeEvents
+      );
+    });
+    Chart.displayName = 'MemoizedChart';
+    return { default: Chart };
+  },
+  {
+    ssr: false,
+    loading: () => <div className="flex-1 w-full min-h-0 relative" style={{ minHeight: 260 }} />,
+  }
+);
 const TOOLTIP_WIDTH = 214;
 
 const ChartSection = ({ mode, timelineData, baseTimelineData, breaks, hasLifeEvents }) => {
@@ -1157,6 +1164,7 @@ export default function App() {
     }
 
     try {
+      const html2canvas = (await import('html2canvas')).default;
       const canvas = await html2canvas(shareCardRef.current, {
         backgroundColor: '#111827',
         scale: 2,
