@@ -95,7 +95,7 @@ export default function GuideHecsVsFeeHelp() {
           <section className="space-y-4">
             <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Same Degree, Very Different Debt</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
-              Here's where it hits home. A law degree at a public university like the University of Queensland in a CSP would cost roughly <strong className="text-white">$40,000–$50,000</strong> in student contributions through HECS-HELP.
+              Here's where it hits home. A law degree at a public university like the University of Queensland in a CSP would cost roughly <strong className="text-white">$40,000 to $50,000</strong> in student contributions through HECS-HELP.
             </p>
             <p className="text-[#CFCFCF] leading-relaxed">
               A law degree at Bond University costs approximately <strong className="text-white">$142,720</strong> through FEE-HELP.
@@ -131,7 +131,7 @@ export default function GuideHecsVsFeeHelp() {
                     { label: 'Who it\'s for', hecs: 'Students in Commonwealth Supported Places', fee: 'Full fee-paying students (no CSP)' },
                     { label: 'Where', hecs: 'Most undergrad degrees at public unis', fee: 'Private unis, most postgrad degrees' },
                     { label: 'Government subsidy', hecs: 'Yes', fee: 'No' },
-                    { label: 'Typical debt (3-year degree)', hecs: '$16,000 – $55,000', fee: '$60,000 – $150,000+' },
+                    { label: 'Typical debt (3-year degree)', hecs: '$16,000 to $55,000', fee: '$60,000 to $150,000+' },
                     { label: 'Repayment rules', hecs: 'Same', fee: 'Same' },
                     { label: 'Indexation', hecs: 'Same', fee: 'Same' },
                   ].map((row) => (
@@ -165,7 +165,7 @@ export default function GuideHecsVsFeeHelp() {
               <a href="https://www.helploancalculator.com" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
                 Use the HELP Loan Calculator →
               </a>{' '}
-              — try $45,000 (public uni, HECS-HELP) vs $130,000 (private uni, FEE-HELP) and see how the repayment timeline changes.
+              Try $45,000 (public uni, HECS-HELP) vs $130,000 (private uni, FEE-HELP) and see how the repayment timeline changes.
             </p>
           </section>
 
@@ -175,17 +175,17 @@ export default function GuideHecsVsFeeHelp() {
             <ul className="list-disc list-inside text-[#CFCFCF] leading-relaxed space-y-2 pl-2">
               <li>
                 <a href="https://www.studyassist.gov.au/financial-and-study-support/hecs-help" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
-                  Study Assist — HECS-HELP
+                  Study Assist: HECS-HELP
                 </a>
               </li>
               <li>
                 <a href="https://www.studyassist.gov.au/financial-and-study-support/fee-help" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
-                  Study Assist — FEE-HELP
+                  Study Assist: FEE-HELP
                 </a>
               </li>
               <li>
                 <a href="https://bond.edu.au/program/bachelor-of-laws/fees" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
-                  Bond University — Bachelor of Laws Fees
+                  Bond University: Bachelor of Laws Fees
                 </a>
               </li>
             </ul>
@@ -201,7 +201,7 @@ export default function GuideHecsVsFeeHelp() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               { href: '/help-borrowing-limit', title: 'The HELP Borrowing Limit 2026' },
-              { href: '/hecs-repayment-thresholds-2025-26', title: 'HECS Repayment Thresholds 2025-26' },
+              { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026-27' },
               { href: '/hecs-debt-and-home-loans', title: 'HECS Debt & Home Loans' },
             ].map((guide) => (
               <Link

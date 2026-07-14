@@ -101,7 +101,7 @@ export default function GuideBorrowingLimit() {
               So if you've borrowed $50,000 and repaid $10,000, your available balance goes back up to $89,883. This means if you want to study again later in life, you can re-access that borrowing capacity.
             </p>
             <p className="text-[#CFCFCF] leading-relaxed">
-              This only applies to repayments made from the 2019–20 income year onward.
+              This only applies to repayments made from the 2019-20 income year onward.
             </p>
           </section>
 
@@ -123,7 +123,7 @@ export default function GuideBorrowingLimit() {
             <ul className="list-disc list-inside text-[#CFCFCF] leading-relaxed space-y-2 pl-2">
               <li>
                 <a href="https://www.studyassist.gov.au/financial-and-study-support/how-student-loans-work/help-loan-limit" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
-                  Study Assist — HELP Loan Limit
+                  Study Assist: HELP Loan Limit
                 </a>
               </li>
               <li>
@@ -133,7 +133,7 @@ export default function GuideBorrowingLimit() {
               </li>
               <li>
                 <a href="https://bond.edu.au/program/bachelor-of-laws/fees" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
-                  Bond University — Bachelor of Laws Fees
+                  Bond University: Bachelor of Laws Fees
                 </a>
               </li>
             </ul>
@@ -149,7 +149,7 @@ export default function GuideBorrowingLimit() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               { href: '/hecs-help-vs-fee-help', title: 'HECS-HELP vs FEE-HELP' },
-              { href: '/hecs-repayment-thresholds-2025-26', title: 'HECS Repayment Thresholds 2025-26' },
+              { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026-27' },
               { href: '/how-hecs-indexation-works', title: 'How HECS Indexation Works' },
             ].map((guide) => (
               <Link

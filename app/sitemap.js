@@ -7,7 +7,13 @@ export default function sitemap() {
             priority: 1,
         },
         {
-            url: 'https://www.helploancalculator.com/hecs-repayment-thresholds-2025-26',
+            url: 'https://www.helploancalculator.com/hecs-repayment-thresholds-2026-27',
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.8,
+        },
+        {
+            url: 'https://www.helploancalculator.com/hecs-indexation-2026',
             lastModified: new Date(),
             changeFrequency: 'monthly',
             priority: 0.8,

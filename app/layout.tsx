@@ -27,8 +27,8 @@ const lato = Lato({
 
 export const metadata: Metadata = {
   // 1. Google & Browser Tab
-  title: "HECS-HELP Repayment Calculator 2025-26 | Free Student Debt Tool",
-  description: "Free Australian HECS-HELP and FEE-HELP repayment calculator. Model promotions, gap years, pay cuts, and voluntary repayments to see how real life affects your student debt. Built on official 2025-26 ATO rates.",
+  title: "HECS-HELP Repayment Calculator Australia | 2026-27 Rates ($69,528 Threshold)",
+  description: "Free Australian HECS-HELP and FEE-HELP repayment calculator, updated for the 2026-27 threshold of $69,528 and the 2.8% June 2026 indexation. Model promotions, gap years, and voluntary repayments to see your real payoff date.",
 
   // 2. SEO Keywords
   keywords: [
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
 
   // 3. Social Media Cards (Facebook, LinkedIn, iMessage)
   openGraph: {
-    title: "HECS-HELP Repayment Calculator 2025-26 | Free Student Debt Tool",
-    description: "Free Australian HECS-HELP and FEE-HELP repayment calculator. Model promotions, gap years, pay cuts, and voluntary repayments to see how real life affects your student debt. Built on official 2025-26 ATO rates.",
+    title: "HECS-HELP Repayment Calculator Australia | 2026-27 Rates ($69,528 Threshold)",
+    description: "Free Australian HECS-HELP and FEE-HELP repayment calculator, updated for the 2026-27 threshold of $69,528 and the 2.8% June 2026 indexation. Model promotions, gap years, and voluntary repayments to see your real payoff date.",
     url: 'https://www.helploancalculator.com',
     siteName: 'HELP Loan Calculator',
     locale: 'en_AU',
@@ -121,7 +121,7 @@ export default function RootLayout({
                   "name": "When do I start repaying my HECS-HELP debt?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "You start making compulsory repayments when your repayment income exceeds $67,000 (2025-26 threshold). Repayment income includes your taxable income, reportable fringe benefits, net investment losses, and reportable super contributions. Repayments are collected automatically through the tax system. If you earn below the threshold, you don't repay anything that year, but your debt will still be indexed."
+                    "text": "You start making compulsory repayments when your repayment income exceeds $69,528. Repayment income includes your taxable income, reportable fringe benefits, net investment losses, and reportable super contributions. Repayments are collected automatically through the tax system: your employer withholds them from your pay if you've told them you have a HELP debt. If you earn below the threshold, you don't repay anything that year, but your debt will still be indexed. For more detail on repayment thresholds and how repayment income is calculated, see the ATO's repayment thresholds and rates page."
                   }
                 },
                 {
@@ -129,7 +129,7 @@ export default function RootLayout({
                   "name": "Does HECS-HELP have interest?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "No. HECS-HELP loans don't charge interest. However, your debt is indexed each year on 1 June to maintain its value in line with the cost of living. The indexation rate is the lower of CPI (Consumer Price Index) or WPI (Wage Price Index). In 2025, the rate was 3.2%. While it's not called interest, the effect is similar — your balance grows over time."
+                    "text": "No. HECS-HELP loans don't charge interest. However, your debt is indexed each year on 1 June to maintain its value in line with the cost of living. The indexation rate is the lower of CPI (Consumer Price Index) or WPI (Wage Price Index). In 2026, the rate was 2.8%, the lowest since 2021. While it's not called interest, the effect is similar: your balance grows over time. Learn more about how indexation works."
                   }
                 },
                 {
@@ -137,7 +137,7 @@ export default function RootLayout({
                   "name": "How much will my HECS repayments be?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "It depends on your income. Under the 2025-26 marginal system, you pay nothing on income up to $67,000, then 15 cents per dollar over that up to $125,000, increasing through further brackets up to 10% of total income above $179,286. For example, on an $85,000 salary, your annual repayment would be about $2,700."
+                    "text": "It depends on your income. Under the 2026-27 marginal system, you pay nothing on income up to $69,528, then 15 cents per dollar over that up to $129,717, increasing through further brackets up to 10% of total income above $186,050. For example, on an $85,000 salary, your annual repayment would be about $2,321. See the full breakdown, or enter your details into the calculator above to get your personalised estimate."
                   }
                 },
                 {

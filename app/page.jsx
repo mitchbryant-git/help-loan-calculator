@@ -7,6 +7,16 @@ import {
   Info, RotateCcw, TrendingUp, TrendingDown,
   PauseCircle, DollarSign, Calendar, ChevronDown, ChevronUp, AlertCircle, X, Wallet, HelpCircle, Trash2, BookOpen
 } from 'lucide-react';
+import {
+  REPAYMENT_BANDS,
+  REPAYMENT_THRESHOLD,
+  FINANCIAL_YEAR,
+  DEFAULT_WAGE_GROWTH,
+  CURRENT_INDEXATION_RATE,
+  CURRENT_INDEXATION_TOOLTIP,
+  calculateCompulsoryRepayment,
+  getQuickAnswer,
+} from '../lib/hecsRates';
 
 // --- BRAND OS THEME CONSTANTS ---
 const THEME = {
@@ -21,21 +31,16 @@ const THEME = {
   }
 };
 
-// --- REPAYMENT LOGIC (2025-2026) ---
-const calculateCompulsoryRepayment = (income) => {
-  if (income <= 67000) {
-    return 0;
-  } else if (income <= 125000) {
-    return (income - 67000) * 0.15;
-  } else if (income <= 179285) {
-    return 8700 + ((income - 125000) * 0.17);
-  } else {
-    return income * 0.10;
-  }
-};
-
 const formatCurrency = (val) =>
   new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 }).format(val);
+
+// Static Quick Answer example, computed at build/render time from config so it
+// can never go stale. Server-rendered (not behind interaction) for crawlability.
+const QUICK_ANSWER_EXAMPLE_INCOME = 80000;
+const QUICK_ANSWER_EXAMPLE = getQuickAnswer(QUICK_ANSWER_EXAMPLE_INCOME);
+const formatCurrencyCentsWithCommas = (val) =>
+  new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val);
+const QUICK_ANSWER_EXAMPLE_SENTENCE = `Example: on ${formatCurrency(QUICK_ANSWER_EXAMPLE_INCOME)}, your compulsory repayment is ${formatCurrencyCentsWithCommas(QUICK_ANSWER_EXAMPLE.annual)} for the year, about $${Math.round(QUICK_ANSWER_EXAMPLE.monthly)} a month.`;
 
 const formatCurrencyShort = (val) => {
   const n = Math.round(val);
@@ -767,8 +772,8 @@ export default function App() {
   const [inputs, setInputs] = useState({
     startingDebt: 50000,
     startingIncome: 70000,
-    indexationRate: 3.0,
-    wageGrowth: 3.5,
+    indexationRate: CURRENT_INDEXATION_RATE,
+    wageGrowth: DEFAULT_WAGE_GROWTH,
     firstYear: 2026,
     startingAge: 22
   });
@@ -790,7 +795,7 @@ export default function App() {
   const [showReductions, setShowReductions] = useState(true);
 
   const [showTable, setShowTable] = useState(false);
-  const [showFaq, setShowFaq] = useState(false);
+  const [showFaq, setShowFaq] = useState(true);
   const [openFaqItems, setOpenFaqItems] = useState({});
   const [nudge, setNudge] = useState(null);
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -801,6 +806,8 @@ export default function App() {
   const [showMenu, setShowMenu] = useState(false);
   const shareCardRef = useRef(null);
   const menuRef = useRef(null);
+  const plannerRef = useRef(null);
+  const [quickIncome, setQuickIncome] = useState(80000);
 
   useEffect(() => {
     if (!showMenu) return;
@@ -847,8 +854,8 @@ export default function App() {
     const overrides = {};
     if (params.has('d')) overrides.startingDebt   = safe(params.get('d'), 50000, 0, 500000);
     if (params.has('i')) overrides.startingIncome  = safe(params.get('i'), 70000, 0, 500000);
-    if (params.has('g')) overrides.wageGrowth      = safe(params.get('g'), 3.5,   0, 10);
-    if (params.has('x')) overrides.indexationRate  = safe(params.get('x'), 3.0,   0, 10);
+    if (params.has('g')) overrides.wageGrowth      = safe(params.get('g'), DEFAULT_WAGE_GROWTH,   0, 10);
+    if (params.has('x')) overrides.indexationRate  = safe(params.get('x'), CURRENT_INDEXATION_RATE,   0, 10);
     if (params.has('y')) overrides.firstYear       = safe(params.get('y'), 2026,  2020, 2100);
     if (params.has('a')) overrides.startingAge     = safe(params.get('a'), 22,    15, 80);
     if (Object.keys(overrides).length) setInputs(prev => ({ ...prev, ...overrides }));
@@ -1059,8 +1066,8 @@ export default function App() {
     setInputs({
       startingDebt: 50000,
       startingIncome: 70000,
-      indexationRate: 3.0,
-      wageGrowth: 3.5,
+      indexationRate: CURRENT_INDEXATION_RATE,
+      wageGrowth: DEFAULT_WAGE_GROWTH,
       firstYear: 2026,
       startingAge: 22
     });
@@ -1084,6 +1091,15 @@ export default function App() {
     setTempReduction({ year: 2031, percent: 20 });
   };
 
+  // --- QUICK ANSWER MODULE ---
+  const quickAnswer = useMemo(() => getQuickAnswer(quickIncome), [quickIncome]);
+  const handleSeeFullTimeline = () => {
+    handleInputChange('startingIncome', quickIncome);
+    if (plannerRef.current) {
+      plannerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const finalYear = timelineData.length > 0 ? timelineData[timelineData.length - 1].year : inputs.firstYear;
   const totalPaid = timelineData.reduce((acc, curr) => acc + curr.compulsory + curr.voluntary, 0);
   const totalIndexation = timelineData.reduce((acc, curr) => acc + curr.indexation, 0);
@@ -1093,7 +1109,7 @@ export default function App() {
   const shareLifeEvents = [
     ...promotions.map(p => ({ type: 'promotion', icon: '📈', label: `+${p.percent}% in ${p.year}` })),
     ...voluntary.map(v => ({ type: 'voluntary', icon: '💸', label: `${formatCurrencyShort(v.amount)} in ${v.year}` })),
-    ...breaks.map(b => ({ type: 'gap-year', icon: '✈️', label: `Gap year ${b.startYear}${parseInt(b.duration) > 1 ? `–${parseInt(b.startYear) + parseInt(b.duration) - 1}` : ''}` })),
+    ...breaks.map(b => ({ type: 'gap-year', icon: '✈️', label: `Gap year ${b.startYear}${parseInt(b.duration) > 1 ? ` to ${parseInt(b.startYear) + parseInt(b.duration) - 1}` : ''}` })),
     ...reductions.map(r => ({ type: 'pay-cut', icon: '📉', label: `-${r.percent}% in ${r.year}` })),
   ];
   const shareTotalYears = finalYear - inputs.firstYear;
@@ -1304,7 +1320,8 @@ export default function App() {
                     Guides
                   </div>
                   {[
-                    { href: '/hecs-repayment-thresholds-2025-26', label: 'HECS Repayment Thresholds 2025-26', emoji: '📊', color: '#0081CB' },
+                    { href: '/hecs-repayment-thresholds-2026-27', label: 'HECS Repayment Thresholds 2026-27', emoji: '📊', color: '#0081CB' },
+                    { href: '/hecs-indexation-2026', label: 'HECS Indexation 2026', emoji: '📉', color: '#FF9F0A' },
                     { href: '/how-hecs-indexation-works', label: 'How HECS Indexation Works', emoji: '📈', color: '#62FFDA' },
                     { href: '/hecs-debt-and-home-loans', label: 'HECS Debt & Home Loans', emoji: '🏠', color: '#6A3CFF' },
                     { href: '/real-cost-of-starting-uni-before-youre-ready', label: 'The Real Cost of Starting Uni Early', emoji: '🎓', color: '#00A3FF' },
@@ -1380,8 +1397,58 @@ export default function App() {
           </p>
           <p className="font-lato font-normal text-[13px] lg:text-[14px] text-[#CFCFCF]" style={{ lineHeight: '1.6' }}>
             See how <strong className="font-bold" style={{ color: 'rgba(241, 245, 249, 0.7)' }}>indexation, wage growth, promotions, gap years, pay cuts</strong>, and <strong className="font-bold" style={{ color: 'rgba(241, 245, 249, 0.7)' }}>voluntary repayments</strong> affect your student debt over time.<br />
-            <span className="text-[#CFCFCF]/60">Built on official 2025-26 ATO repayment rates.</span>
+            <span className="text-[#CFCFCF]/60">Built on official 2026-27 ATO repayment rates.</span>
           </p>
+        </div>
+
+        {/* QUICK ANSWER MODULE — instant "what do I pay this year" answer, above the planner */}
+        <div className="col-span-full mb-2">
+          <Card className="card-hover">
+            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+              <SectionHeader icon={DollarSign} title="Quick Answer" />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#62FFDA]/80 font-montserrat">{FINANCIAL_YEAR}</span>
+            </div>
+
+            <InputField
+              label="Your Annual Income"
+              value={quickIncome}
+              onChange={(v) => setQuickIncome(v === '' ? 0 : v)}
+              unit="$"
+              infoText="Enter your expected annual income to see your compulsory HECS-HELP repayment instantly."
+            />
+
+            <div className="grid grid-cols-3 gap-3 mt-2 mb-4">
+              <div className="text-center">
+                <div className="text-[10px] uppercase tracking-wider text-[#CFCFCF]/60 font-montserrat mb-1">Per Year</div>
+                <div className="font-mono font-bold text-base sm:text-lg text-white">{formatCurrency(quickAnswer.annual)}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-[10px] uppercase tracking-wider text-[#CFCFCF]/60 font-montserrat mb-1">Per Month</div>
+                <div className="font-mono font-bold text-base sm:text-lg text-white">{formatCurrency(quickAnswer.monthly)}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-[10px] uppercase tracking-wider text-[#CFCFCF]/60 font-montserrat mb-1">Per Week</div>
+                <div className="font-mono font-bold text-base sm:text-lg text-white">{formatCurrency(quickAnswer.weekly)}</div>
+              </div>
+            </div>
+
+            <div className="mb-5">
+              <span className="text-xs text-[#CFCFCF] font-lato leading-relaxed">
+                You're in <strong className="text-[#62FFDA]">{quickAnswer.band.shortLabel}</strong>, an effective rate of <strong className="text-white">{quickAnswer.effectiveRate.toFixed(1)}%</strong> of your income.
+              </span>
+            </div>
+
+            <button
+              onClick={handleSeeFullTimeline}
+              className="w-full btn-3d-primary py-3.5 text-white font-bold tracking-wide"
+            >
+              See your full payoff timeline
+            </button>
+
+            <p className="text-[11px] text-[#CFCFCF]/50 mt-3 leading-relaxed">
+              {QUICK_ANSWER_EXAMPLE_SENTENCE}
+            </p>
+          </Card>
         </div>
 
         <div className="col-span-full mb-0">
@@ -1404,7 +1471,7 @@ export default function App() {
         </div>
 
         {/* --- LEFT COLUMN (INPUTS) --- */}
-        <div className="lg:col-span-4 space-y-6" data-nosnippet>
+        <div ref={plannerRef} className="lg:col-span-4 space-y-6" data-nosnippet>
 
           <Card className="card-hover">
             <SectionHeader icon={DollarSign} title="The Basics" />
@@ -1448,7 +1515,7 @@ export default function App() {
               step={0.1}
               unit="%"
               color={THEME.colors.coachViolet}
-              infoText="Yearly increase added to your loan on 1 June to account for inflation. Not interest, but it grows your loan if your repayments are low."
+              infoText={CURRENT_INDEXATION_TOOLTIP}
             />
 
             <div className="grid grid-cols-2 gap-4">
@@ -1845,7 +1912,8 @@ export default function App() {
             <h4 className="font-bold uppercase tracking-widest text-[10px] text-[#CFCFCF]/60 opacity-70 text-center">Guides</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                { href: '/hecs-repayment-thresholds-2025-26', title: 'HECS Repayment Thresholds 2025-26' },
+                { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026-27' },
+                { href: '/hecs-indexation-2026', title: 'HECS Indexation 2026' },
                 { href: '/how-hecs-indexation-works', title: 'How HECS Indexation Works' },
                 { href: '/hecs-debt-and-home-loans', title: 'HECS Debt & Home Loans' },
                 { href: '/real-cost-of-starting-uni-before-youre-ready', title: 'The Real Cost of Starting Uni Early' },
@@ -1880,12 +1948,12 @@ export default function App() {
                       <>
                         <p className="mb-3">HELP (Higher Education Loan Program) is the Australian Government's overarching student loan system. It includes several different loan types:</p>
                         <ul className="list-disc list-inside space-y-1 mb-3 pl-2">
-                          <li><strong className="text-white">HECS-HELP</strong> — for students in Commonwealth Supported Places (CSPs), where the government subsidises part of your tuition. This is the most common loan for undergraduate students at public universities.</li>
-                          <li><strong className="text-white">FEE-HELP</strong> — for full fee-paying students who aren't in a CSP. Tuition fees are typically higher because there's no government subsidy.</li>
-                          <li><strong className="text-white">SA-HELP</strong> — covers your Student Services and Amenities Fee.</li>
-                          <li><strong className="text-white">OS-HELP</strong> — helps with costs when studying overseas on exchange.</li>
+                          <li><strong className="text-white">HECS-HELP</strong>: for students in Commonwealth Supported Places (CSPs), where the government subsidises part of your tuition. This is the most common loan for undergraduate students at public universities.</li>
+                          <li><strong className="text-white">FEE-HELP</strong>: for full fee-paying students who aren't in a CSP. Tuition fees are typically higher because there's no government subsidy.</li>
+                          <li><strong className="text-white">SA-HELP</strong>: covers your Student Services and Amenities Fee.</li>
+                          <li><strong className="text-white">OS-HELP</strong>: helps with costs when studying overseas on exchange.</li>
                         </ul>
-                        <p>All of these loans accumulate into a single HELP debt, repaid through the tax system under the same rules. When people say "HECS debt," they're usually referring to their total HELP debt. This calculator works for all HELP loan types. For the full breakdown of each loan type, visit <a href="https://www.studyassist.gov.au/helping-you-understand/how-student-loans-work" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">Study Assist — How Student Loans Work</a>.</p>
+                        <p>All of these loans accumulate into a single HELP debt, repaid through the tax system under the same rules. When people say "HECS debt," they're usually referring to their total HELP debt. This calculator works for all HELP loan types. For the full breakdown of each loan type, visit <a href="https://www.studyassist.gov.au/helping-you-understand/how-student-loans-work" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">Study Assist: How Student Loans Work</a>.</p>
                       </>
                     ),
                   },
@@ -1893,21 +1961,21 @@ export default function App() {
                     id: 'faq-2',
                     q: 'When do I start repaying my HECS-HELP debt?',
                     a: (
-                      <p>You start making compulsory repayments when your repayment income exceeds <strong className="text-white">$67,000</strong> (2025-26 threshold). Repayment income includes your taxable income, reportable fringe benefits, net investment losses, and reportable super contributions. Repayments are collected automatically through the tax system — your employer withholds them from your pay if you've told them you have a HELP debt. If you earn below the threshold, you don't repay anything that year, but your debt will still be indexed. For more detail on repayment thresholds and how repayment income is calculated, see the <a href="https://www.ato.gov.au/tax-rates-and-codes/study-and-training-support-loans-rates-and-repayment-thresholds" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">ATO's repayment thresholds and rates page</a>.</p>
+                      <p>You start making compulsory repayments when your repayment income exceeds <strong className="text-white">${REPAYMENT_THRESHOLD.toLocaleString('en-AU')}</strong>. Repayment income includes your taxable income, reportable fringe benefits, net investment losses, and reportable super contributions. Repayments are collected automatically through the tax system: your employer withholds them from your pay if you've told them you have a HELP debt. If you earn below the threshold, you don't repay anything that year, but your debt will still be indexed. For more detail on repayment thresholds and how repayment income is calculated, see the <a href="https://www.ato.gov.au/tax-rates-and-codes/study-and-training-support-loans-rates-and-repayment-thresholds" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">ATO's repayment thresholds and rates page</a>.</p>
                     ),
                   },
                   {
                     id: 'faq-3',
                     q: 'Does HECS-HELP have interest?',
                     a: (
-                      <p>No. HECS-HELP loans don't charge interest. However, your debt is <strong className="text-white">indexed</strong> each year on 1 June to maintain its value in line with the cost of living. The indexation rate is the lower of CPI (Consumer Price Index) or WPI (Wage Price Index). In 2025, the rate was 3.2%. While it's not called interest, the effect is similar — your balance grows over time. <Link href="/how-hecs-indexation-works" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">Learn more about how indexation works →</Link></p>
+                      <p>No. HECS-HELP loans don't charge interest. However, your debt is <strong className="text-white">indexed</strong> each year on 1 June to maintain its value in line with the cost of living. The indexation rate is the lower of CPI (Consumer Price Index) or WPI (Wage Price Index). In 2026, the rate was 2.8%, the lowest since 2021. While it's not called interest, the effect is similar: your balance grows over time. <Link href="/how-hecs-indexation-works" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">Learn more about how indexation works →</Link></p>
                     ),
                   },
                   {
                     id: 'faq-4',
                     q: 'How much will my HECS repayments be?',
                     a: (
-                      <p>It depends on your income. Under the 2025-26 marginal system, you pay nothing on income up to $67,000, then 15 cents per dollar over that up to $125,000, increasing through further brackets up to 10% of total income above $179,286. For example, on an $85,000 salary, your annual repayment would be about $2,700. <Link href="/hecs-repayment-thresholds-2025-26" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">See the full breakdown →</Link> or enter your details into the calculator above to get your personalised estimate.</p>
+                      <p>It depends on your income. Under the {FINANCIAL_YEAR} marginal system, you pay nothing on income up to ${REPAYMENT_BANDS[0].max.toLocaleString('en-AU')}, then 15 cents per dollar over that up to ${REPAYMENT_BANDS[1].max.toLocaleString('en-AU')}, increasing through further brackets up to 10% of total income above ${REPAYMENT_BANDS[2].max.toLocaleString('en-AU')}. For example, on an $85,000 salary, your annual repayment would be about {formatCurrency(calculateCompulsoryRepayment(85000))}. <Link href="/hecs-repayment-thresholds-2026-27" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">See the full breakdown →</Link> or enter your details into the calculator above to get your personalised estimate.</p>
                     ),
                   },
                   {
@@ -1949,7 +2017,7 @@ export default function App() {
                     id: 'faq-10',
                     q: 'Is HECS-HELP debt written off when you die?',
                     a: (
-                      <p>Yes. HECS-HELP debt is automatically written off upon death and is not passed on to family members or your estate. This is outlined on the <a href="https://www.studyassist.gov.au/managing-and-repaying-your-loan/loan-repayments" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">Study Assist — loan repayments page</a>.</p>
+                      <p>Yes. HECS-HELP debt is automatically written off upon death and is not passed on to family members or your estate. This is outlined on the <a href="https://www.studyassist.gov.au/managing-and-repaying-your-loan/loan-repayments" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">Study Assist: loan repayments page</a>.</p>
                     ),
                   },
                 ].map((item) => (
@@ -1979,7 +2047,7 @@ export default function App() {
           <div className="text-xs text-center px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-lato text-[#CFCFCF]/60">
             <h4 className="font-bold uppercase tracking-widest text-[10px] opacity-70">DISCLAIMER</h4>
             <p>
-              This tool is for educational purposes only. It is not personal financial, legal, or tax advice and does not take into account your individual objectives. The model estimates compulsory repayments using the 2025–26 marginal repayment system and assumes these thresholds remain constant. Actual repayments are determined by the ATO after you lodge your tax return.
+              This tool is for educational purposes only. It is not personal financial, legal, or tax advice and does not take into account your individual objectives. The model estimates compulsory repayments using the {FINANCIAL_YEAR} marginal repayment system and assumes these thresholds remain constant. Actual repayments are determined by the ATO after you lodge your tax return.
             </p>
 
             <div className="rounded-xl overflow-hidden my-6 max-w-lg mx-auto border glass-dark border-white/5">
@@ -1987,22 +2055,12 @@ export default function App() {
                 <div className="text-left">Repayment Income</div>
                 <div className="text-right">Rate / Calculation</div>
               </div>
-              <div className="grid grid-cols-2 text-[11px] p-3 border-b border-[#333]">
-                <div className="text-left font-mono text-[#CFCFCF]">$0 – $67,000</div>
-                <div className="text-right text-[#CFCFCF]">Nil</div>
-              </div>
-              <div className="grid grid-cols-2 text-[11px] p-3 border-b border-[#333]">
-                <div className="text-left font-mono text-[#CFCFCF]">$67,001 – $125,000</div>
-                <div className="text-right text-[#CFCFCF]">15c per $1 over $67k</div>
-              </div>
-              <div className="grid grid-cols-2 text-[11px] p-3 border-b border-[#333]">
-                <div className="text-left font-mono text-[#CFCFCF]">$125,001 – $179,285</div>
-                <div className="text-right text-[#CFCFCF]">$8,700 + 17c per $1 over $125k</div>
-              </div>
-              <div className="grid grid-cols-2 text-[11px] p-3">
-                <div className="text-left font-mono text-[#CFCFCF]">$179,286+</div>
-                <div className="text-right text-[#CFCFCF]">10% of total income</div>
-              </div>
+              {REPAYMENT_BANDS.map((band, i, arr) => (
+                <div key={band.id} className={`grid grid-cols-2 text-[11px] p-3 ${i < arr.length - 1 ? 'border-b border-[#333]' : ''}`}>
+                  <div className="text-left font-mono text-[#CFCFCF]">{band.rangeLabel}</div>
+                  <div className="text-right text-[#CFCFCF]">{band.calcLabel}</div>
+                </div>
+              ))}
             </div>
 
             <h4 className="font-bold uppercase tracking-widest text-[10px] opacity-70 mt-6">LIMITATION OF LIABILITY</h4>
@@ -2037,7 +2095,8 @@ export default function App() {
                 <div>
                   <div className="font-montserrat text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Guides</div>
                   {[
-                    { href: '/hecs-repayment-thresholds-2025-26', label: 'HECS Repayment Thresholds 2025-26' },
+                    { href: '/hecs-repayment-thresholds-2026-27', label: 'HECS Repayment Thresholds 2026-27' },
+                    { href: '/hecs-indexation-2026', label: 'HECS Indexation 2026' },
                     { href: '/how-hecs-indexation-works', label: 'How HECS Indexation Works' },
                     { href: '/hecs-debt-and-home-loans', label: 'HECS Debt & Home Loans' },
                     { href: '/real-cost-of-starting-uni-before-youre-ready', label: 'The Real Cost of Starting Uni Early' },
@@ -2132,7 +2191,7 @@ export default function App() {
                     <img src="/apple-touch-icon.png" alt="MB Logo" style={{ width: 32, height: 32, borderRadius: 8, objectFit: 'cover', display: 'block' }} />
                     <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(241,245,249,0.55)', letterSpacing: 0.5, fontFamily: 'var(--font-montserrat), sans-serif' }}>HELP Loan Calculator</div>
                   </div>
-                  <div style={{ background: 'rgba(98,255,218,0.08)', border: '1px solid rgba(98,255,218,0.2)', color: '#62FFDA', fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 20, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: 'var(--font-montserrat), sans-serif', textAlign: 'center', lineHeight: '1', display: 'inline-flex', alignItems: 'center', marginRight: 36 }}>2025–26</div>
+                  <div style={{ background: 'rgba(98,255,218,0.08)', border: '1px solid rgba(98,255,218,0.2)', color: '#62FFDA', fontSize: 11, fontWeight: 700, padding: '5px 10px', borderRadius: 20, letterSpacing: 0.5, textTransform: 'uppercase', fontFamily: 'var(--font-montserrat), sans-serif', textAlign: 'center', lineHeight: '1', display: 'inline-flex', alignItems: 'center', marginRight: 36 }}>{FINANCIAL_YEAR}</div>
                 </div>
 
                 {/* Headline stat */}

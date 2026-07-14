@@ -127,8 +127,8 @@ export default function GuideHomeLoans() {
               If you're still deciding whether to go to uni, or how much debt to take on, this is worth thinking about:
             </p>
             <ul className="list-disc list-inside text-[#CFCFCF] leading-relaxed space-y-2 pl-2">
-              <li>A <strong className="text-white">$25,000 HECS debt</strong> with a $70,000 salary means annual repayments of about $450 — relatively small impact on borrowing.</li>
-              <li>A <strong className="text-white">$50,000 HECS debt</strong> with a $90,000 salary means annual repayments of about $3,450 — that could reduce your borrowing power by $30,000-$40,000 or more.</li>
+              <li>A <strong className="text-white">$25,000 HECS debt</strong> with a $70,000 salary means annual repayments of about $71, a relatively small impact on borrowing.</li>
+              <li>A <strong className="text-white">$50,000 HECS debt</strong> with a $90,000 salary means annual repayments of about $3,071, which could reduce your borrowing power by $30,000 to $40,000 or more.</li>
               <li>The <strong className="text-white">longer your debt takes to pay off</strong>, the longer it sits on your borrowing assessment as a liability.</li>
             </ul>
             <p className="text-[#CFCFCF] leading-relaxed">
@@ -152,17 +152,17 @@ export default function GuideHomeLoans() {
             <ul className="list-disc list-inside text-[#CFCFCF] leading-relaxed space-y-2 pl-2">
               <li>
                 <a href="https://www.nab.com.au/personal/life-moments/home-property/buy-first-home/hecs-home-loan" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
-                  NAB — HECS and Home Loans
+                  NAB: HECS and Home Loans
                 </a>
               </li>
               <li>
                 <a href="https://www.aussie.com.au/insights/articles/hecs-home-loan-changes/" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
-                  Aussie — HECS Home Loan Changes 2025
+                  Aussie: HECS Home Loan Changes 2025
                 </a>
               </li>
               <li>
                 <a href="https://www.sbs.com.au/news/article/how-does-a-hecs-debt-affect-your-home-loan-borrowing-power/htrpoqtpk" target="_blank" rel="noopener noreferrer" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
-                  SBS News — How HECS Affects Borrowing Power
+                  SBS News: How HECS Affects Borrowing Power
                 </a>
               </li>
               <li>
@@ -182,7 +182,7 @@ export default function GuideHomeLoans() {
           <h4 className="font-bold uppercase tracking-widest text-[10px] text-[#CFCFCF]/60 opacity-70 text-center">More Guides</h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
-              { href: '/hecs-repayment-thresholds-2025-26', title: 'HECS Repayment Thresholds 2025-26' },
+              { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026-27' },
               { href: '/how-hecs-indexation-works', title: 'How HECS Indexation Works' },
               { href: '/real-cost-of-starting-uni-before-youre-ready', title: 'The Real Cost of Starting Uni Early' },
             ].map((guide) => (

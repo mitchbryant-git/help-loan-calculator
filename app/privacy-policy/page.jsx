@@ -155,7 +155,7 @@ export default function PrivacyPolicy() {
           <h4 className="font-bold uppercase tracking-widest text-[10px] text-[#CFCFCF]/60 opacity-70 text-center">More Guides</h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
-              { href: '/hecs-repayment-thresholds-2025-26', title: 'HECS Repayment Thresholds 2025-26' },
+              { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026-27' },
               { href: '/hecs-debt-and-home-loans', title: 'HECS Debt & Home Loans' },
               { href: '/how-hecs-indexation-works', title: 'How HECS Indexation Works' },
             ].map((guide) => (

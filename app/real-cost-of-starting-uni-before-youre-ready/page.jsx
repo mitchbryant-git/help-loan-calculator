@@ -130,7 +130,7 @@ export default function GuideStartingEarly() {
               Some students don't switch. They stop entirely. According to government data, around 1 in 5 domestic students don't complete their degree. That doesn't make them failures. It means the degree wasn't right, or the timing wasn't right. But the HECS debt from the subjects they completed doesn't disappear.
             </p>
             <p className="text-[#CFCFCF] leading-relaxed">
-              If you complete one year of a Commerce degree and leave, you still owe ~$14,000. That debt gets indexed annually and you'll start repaying it once you earn above $67,000, regardless of whether you have a degree or not.
+              If you complete one year of a Commerce degree and leave, you still owe ~$14,000. That debt gets indexed annually and you'll start repaying it once you earn above $69,528, regardless of whether you have a degree or not.
             </p>
           </section>
 
@@ -200,7 +200,7 @@ export default function GuideStartingEarly() {
           <h4 className="font-bold uppercase tracking-widest text-[10px] text-[#CFCFCF]/60 opacity-70 text-center">More Guides</h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
-              { href: '/hecs-repayment-thresholds-2025-26', title: 'HECS Repayment Thresholds 2025-26' },
+              { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026-27' },
               { href: '/how-hecs-indexation-works', title: 'How HECS Indexation Works' },
               { href: '/hecs-debt-and-home-loans', title: 'HECS Debt & Home Loans' },
             ].map((guide) => (

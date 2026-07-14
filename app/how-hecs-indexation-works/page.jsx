@@ -1,5 +1,22 @@
 import Link from 'next/link';
 import { ArrowLeft, BookOpen } from 'lucide-react';
+import { INDEXATION_HISTORY, REPAYMENT_THRESHOLD, ATO_INDEXATION_URL } from '../../lib/hecsRates';
+
+const RECENT_HISTORY = [...INDEXATION_HISTORY].reverse().map((row) => [
+  String(row.year),
+  row.appliedRate !== row.finalRate ? `${row.finalRate}% (reduced from ${row.appliedRate}%)` : `${row.finalRate}%`,
+]);
+const OLDER_HISTORY = [
+  ['2020', '1.8%'],
+  ['2019', '1.8%'],
+  ['2018', '1.9%'],
+  ['2017', '1.5%'],
+  ['2016', '1.5%'],
+  ['2015', '2.1%'],
+  ['2014', '2.6%'],
+  ['2013', '2.0%'],
+];
+const FULL_HISTORY = [...RECENT_HISTORY, ...OLDER_HISTORY];
 
 export const metadata = {
   title: 'How HECS Indexation Works | CPI, WPI Cap & Historical Rates',
@@ -61,6 +78,14 @@ export default function GuideIndexation() {
             How HECS Indexation Works: What It Is, Why It Matters, and What's Changed
           </h1>
 
+          {/* Dated callout */}
+          <div className="rounded-xl border border-[#62FFDA]/20 bg-[#62FFDA]/5 p-4 text-sm text-[#CFCFCF] leading-relaxed">
+            <strong className="text-white">1 June 2026 update:</strong> this year's rate was 2.8%.{' '}
+            <Link href="/hecs-indexation-2026" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
+              Full breakdown →
+            </Link>
+          </div>
+
           {/* Section: HECS Doesn't Charge Interest */}
           <section className="space-y-4">
             <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">HECS Doesn't Charge Interest. But Your Debt Still Grows.</h3>
@@ -68,7 +93,7 @@ export default function GuideIndexation() {
               This is the part that catches people off guard. HECS-HELP loans are technically "interest-free," but they're not cost-free. Every year on 1 June, your remaining debt is <strong className="text-white">indexed</strong>, which means it gets adjusted upward to keep pace with the cost of living.
             </p>
             <p className="text-[#CFCFCF] leading-relaxed">
-              Think of it this way: if you owe $30,000 and the indexation rate is 3.2%, your debt grows by $960 that year, even if you haven't spent a cent more on uni. If you're not earning enough to make compulsory repayments yet, your balance just keeps climbing.
+              Think of it this way: if you owe $30,000 and the indexation rate is 2.8% (the confirmed 1 June 2026 rate), your debt grows by $840 that year, even if you haven't spent a cent more on uni. If you're not earning enough to make compulsory repayments yet, your balance just keeps climbing.
             </p>
           </section>
 
@@ -76,7 +101,7 @@ export default function GuideIndexation() {
           <section className="space-y-4">
             <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Why This Hits Harder Than You Think</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
-              Here's where it gets real. The repayment threshold is currently $67,000. That's often framed as a positive — "you don't pay anything until you earn $67k!" And in the short term, it's true. Less pressure on your pay while you're getting established.
+              Here's where it gets real. The repayment threshold is currently ${REPAYMENT_THRESHOLD.toLocaleString('en-AU')}. That's often framed as a positive: "you don't pay anything until you earn about $70k!" And in the short term, it's true. Less pressure on your pay while you're getting established.
             </p>
             <p className="text-[#CFCFCF] leading-relaxed">
               But every year you earn below that threshold, <strong className="text-white">your debt grows and nothing is being paid off</strong>. Indexation doesn't wait for you to start earning.
@@ -128,7 +153,7 @@ export default function GuideIndexation() {
 
           {/* Section: "Your Debt Won't Outgrow Your Wages" */}
           <section className="space-y-4">
-            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">"Your Debt Won't Outgrow Your Wages" — Not Quite</h3>
+            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">"Your Debt Won't Outgrow Your Wages": Not Quite</h3>
             <p className="text-[#CFCFCF] leading-relaxed">
               You'll hear this line a lot now that the WPI cap is in place. And on paper, it sounds reassuring. But it deserves a closer look.
             </p>
@@ -162,21 +187,7 @@ export default function GuideIndexation() {
                 <div className="text-left">Year</div>
                 <div className="text-right">Rate</div>
               </div>
-              {[
-                ['2025', '3.2%'],
-                ['2024', '4.0% (reduced from 4.7%)'],
-                ['2023', '3.2% (reduced from 7.1%)'],
-                ['2022', '3.9%'],
-                ['2021', '0.6%'],
-                ['2020', '1.8%'],
-                ['2019', '1.8%'],
-                ['2018', '1.9%'],
-                ['2017', '1.5%'],
-                ['2016', '1.5%'],
-                ['2015', '2.1%'],
-                ['2014', '2.6%'],
-                ['2013', '2.0%'],
-              ].map(([year, rate], i, arr) => (
+              {FULL_HISTORY.map(([year, rate], i, arr) => (
                 <div key={year} className={`grid grid-cols-2 text-[11px] sm:text-sm p-3 ${i < arr.length - 1 ? 'border-b border-[#333]' : ''}`}>
                   <div className="text-left font-mono text-[#CFCFCF]">{year}</div>
                   <div className="text-right text-[#CFCFCF]">{rate}</div>
@@ -200,17 +211,17 @@ export default function GuideIndexation() {
             <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">What You Can Actually Do About It</h3>
             <p className="text-[#CFCFCF] leading-relaxed">Understanding indexation isn't about stressing over it. It's about making informed decisions:</p>
             <ul className="list-disc list-inside text-[#CFCFCF] leading-relaxed space-y-2 pl-2">
-              <li><strong className="text-white">Know what your degree will cost</strong> — not just the sticker price, but the real cost after years of indexation before and during repayment.</li>
-              <li><strong className="text-white">Understand that time below the threshold has a price</strong> — the longer your debt sits without repayments, the more it grows.</li>
-              <li><strong className="text-white">Don't take the "won't outgrow wages" line at face value</strong> — it's based on a national average, not your personal situation.</li>
-              <li><strong className="text-white">Model your own scenario</strong> — your income path, your debt size, and your repayment timeline are unique to you.</li>
+              <li><strong className="text-white">Know what your degree will cost</strong>, not just the sticker price, but the real cost after years of indexation before and during repayment.</li>
+              <li><strong className="text-white">Understand that time below the threshold has a price</strong>: the longer your debt sits without repayments, the more it grows.</li>
+              <li><strong className="text-white">Don't take the "won't outgrow wages" line at face value</strong>: it's based on a national average, not your personal situation.</li>
+              <li><strong className="text-white">Model your own scenario</strong>: your income path, your debt size, and your repayment timeline are unique to you.</li>
             </ul>
             <p className="text-[#CFCFCF] leading-relaxed">
               <strong className="text-white">See how indexation affects your specific debt over time:</strong>{' '}
               <a href="https://www.helploancalculator.com" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
                 Use the HELP Loan Calculator →
               </a>{' '}
-              — adjust the indexation rate, change your starting salary, and watch how the numbers shift year by year.
+              Adjust the indexation rate, change your starting salary, and watch how the numbers shift year by year.
             </p>
           </section>
 
@@ -243,9 +254,9 @@ export default function GuideIndexation() {
           <h4 className="font-bold uppercase tracking-widest text-[10px] text-[#CFCFCF]/60 opacity-70 text-center">More Guides</h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
-              { href: '/hecs-repayment-thresholds-2025-26', title: 'HECS Repayment Thresholds 2025-26' },
+              { href: '/hecs-indexation-2026', title: 'HECS Indexation 2026' },
+              { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026-27' },
               { href: '/hecs-debt-and-home-loans', title: 'HECS Debt & Home Loans' },
-              { href: '/real-cost-of-starting-uni-before-youre-ready', title: 'The Real Cost of Starting Uni Early' },
             ].map((guide) => (
               <Link
                 key={guide.href}
