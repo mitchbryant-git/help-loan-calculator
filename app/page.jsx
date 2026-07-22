@@ -15,9 +15,9 @@ import {
   CURRENT_INDEXATION_RATE,
   CURRENT_INDEXATION_TOOLTIP,
   calculateCompulsoryRepayment,
-  getQuickAnswer,
 } from '../lib/hecsRates';
 import { buildProjection } from '../lib/help/projection-engine.mjs';
+import QuickFigures from '../components/help/QuickFigures';
 
 // --- BRAND OS THEME CONSTANTS ---
 const THEME = {
@@ -34,12 +34,6 @@ const THEME = {
 
 const formatCurrency = (val) =>
   new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 }).format(val);
-
-// Static Quick Answer example, computed at build/render time from config so it
-// can never go stale. Server-rendered (not behind interaction) for crawlability.
-const QUICK_ANSWER_EXAMPLE_INCOME = 80000;
-const QUICK_ANSWER_EXAMPLE = getQuickAnswer(QUICK_ANSWER_EXAMPLE_INCOME);
-const QUICK_ANSWER_EXAMPLE_SENTENCE = `Example: on ${formatCurrency(QUICK_ANSWER_EXAMPLE_INCOME)}, your compulsory repayment is ${formatCurrency(QUICK_ANSWER_EXAMPLE.annual)} for the year, about ${formatCurrency(QUICK_ANSWER_EXAMPLE.monthly)} a month.`;
 
 const formatCurrencyShort = (val) => {
   const n = Math.round(val);
@@ -805,8 +799,6 @@ export default function App() {
   const [showMenu, setShowMenu] = useState(false);
   const shareCardRef = useRef(null);
   const menuRef = useRef(null);
-  const plannerRef = useRef(null);
-  const [quickIncome, setQuickIncome] = useState(80000);
 
   useEffect(() => {
     if (!showMenu) return;
@@ -965,15 +957,6 @@ export default function App() {
     setTempPromo({ year: 2028, percent: 20 });
     setTempBreak({ startYear: 2029, duration: 1 });
     setTempReduction({ year: 2031, percent: 20 });
-  };
-
-  // --- QUICK ANSWER MODULE ---
-  const quickAnswer = useMemo(() => getQuickAnswer(quickIncome), [quickIncome]);
-  const handleSeeFullTimeline = () => {
-    handleInputChange('startingIncome', quickIncome);
-    if (plannerRef.current) {
-      plannerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
   };
 
   const finalYear = timelineData.length > 0 ? timelineData[timelineData.length - 1].year : inputs.firstYear;
@@ -1277,56 +1260,6 @@ export default function App() {
           </p>
         </div>
 
-        {/* QUICK ANSWER MODULE — instant "what do I pay this year" answer, above the planner */}
-        <div className="col-span-full mb-2">
-          <Card className="card-hover">
-            <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-              <SectionHeader icon={DollarSign} title="Quick Answer" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#62FFDA]/80 font-montserrat">{FINANCIAL_YEAR}</span>
-            </div>
-
-            <InputField
-              label="Your Annual Income"
-              value={quickIncome}
-              onChange={(v) => setQuickIncome(v === '' ? 0 : v)}
-              unit="$"
-              infoText="Enter your expected annual income to see your compulsory HECS-HELP repayment instantly."
-            />
-
-            <div className="grid grid-cols-3 gap-3 mt-2 mb-4">
-              <div className="text-center">
-                <div className="text-[10px] uppercase tracking-wider text-[#CFCFCF]/60 font-montserrat mb-1">Per Year</div>
-                <div className="font-mono font-bold text-base sm:text-lg text-white">{formatCurrency(quickAnswer.annual)}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-[10px] uppercase tracking-wider text-[#CFCFCF]/60 font-montserrat mb-1">Per Month</div>
-                <div className="font-mono font-bold text-base sm:text-lg text-white">{formatCurrency(quickAnswer.monthly)}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-[10px] uppercase tracking-wider text-[#CFCFCF]/60 font-montserrat mb-1">Per Week</div>
-                <div className="font-mono font-bold text-base sm:text-lg text-white">{formatCurrency(quickAnswer.weekly)}</div>
-              </div>
-            </div>
-
-            <div className="mb-5">
-              <span className="text-xs text-[#CFCFCF] font-lato leading-relaxed">
-                You're in <strong className="text-[#62FFDA]">{quickAnswer.band.shortLabel}</strong>, an effective rate of <strong className="text-white">{quickAnswer.effectiveRate.toFixed(1)}%</strong> of your income.
-              </span>
-            </div>
-
-            <button
-              onClick={handleSeeFullTimeline}
-              className="w-full btn-3d-primary py-3.5 text-white font-bold tracking-wide"
-            >
-              See your full payoff timeline
-            </button>
-
-            <p className="text-[11px] text-[#CFCFCF]/50 mt-3 leading-relaxed">
-              {QUICK_ANSWER_EXAMPLE_SENTENCE}
-            </p>
-          </Card>
-        </div>
-
         <div className="col-span-full mb-0">
           <button
             onClick={() => setShowHelpModal(true)}
@@ -1347,7 +1280,7 @@ export default function App() {
         </div>
 
         {/* --- LEFT COLUMN (INPUTS) --- */}
-        <div ref={plannerRef} className="lg:col-span-4 space-y-6" data-nosnippet>
+        <div className="lg:col-span-4 space-y-6" data-nosnippet>
 
           <Card className="card-hover">
             <SectionHeader icon={DollarSign} title="The Basics" />
@@ -1415,7 +1348,7 @@ export default function App() {
           </div>
 
           <div className="lg:hidden mb-6">
-            <ChartSection timelineData={timelineData} baseTimelineData={baseTimelineData} breaks={breaks} hasLifeEvents={hasLifeEvents} />
+            <QuickFigures income={inputs.startingIncome} />
           </div>
 
           {/* VOLUNTARY REPAYMENTS */}
@@ -1685,6 +1618,10 @@ export default function App() {
             )}
           </Card>
 
+          <div className="lg:hidden mb-6">
+            <ChartSection timelineData={timelineData} baseTimelineData={baseTimelineData} breaks={breaks} hasLifeEvents={hasLifeEvents} />
+          </div>
+
           {/* SHARE BUTTON — mobile only, between Pay Cuts and Year by Year */}
           <div className="lg:hidden">
             <button
@@ -1705,6 +1642,10 @@ export default function App() {
 
           <div className="hidden lg:block">
             <HeroSection isDebtFree={isDebtFree} finalYear={finalYear} firstYear={inputs.firstYear} finalAge={finalAge} totalPaid={totalPaid} totalIndexation={totalIndexation} />
+          </div>
+
+          <div className="hidden lg:block">
+            <QuickFigures income={inputs.startingIncome} />
           </div>
 
           <div className="hidden lg:block">
