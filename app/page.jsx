@@ -1,11 +1,10 @@
 "use client";
-import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import {
-  Info, RotateCcw, TrendingUp, TrendingDown,
-  PauseCircle, DollarSign, Calendar, ChevronDown, ChevronUp, X, Wallet, HelpCircle, Trash2, BookOpen
+  RotateCcw,
+  Calendar, ChevronDown, ChevronUp, X, HelpCircle, BookOpen
 } from 'lucide-react';
 import {
   REPAYMENT_BANDS,
@@ -13,25 +12,14 @@ import {
   FINANCIAL_YEAR,
   DEFAULT_WAGE_GROWTH,
   CURRENT_INDEXATION_RATE,
-  CURRENT_INDEXATION_TOOLTIP,
   calculateCompulsoryRepayment,
 } from '../lib/hecsRates';
 import { buildProjection } from '../lib/help/projection-engine.mjs';
 import QuickFigures from '../components/help/QuickFigures';
 import PrimaryResult from '../components/help/PrimaryResult';
-
-// --- BRAND OS THEME CONSTANTS ---
-const THEME = {
-  colors: {
-    primaryBlue: '#0081CB',
-    coachViolet: '#6A3CFF',
-    mintAccent: '#62FFDA',
-    darkBase: '#0D0D0D',
-    softSilver: '#CFCFCF',
-    negativeRed: '#FF3366',
-    offWhite: '#FAFAFA',
-  }
-};
+import PlannerSetup from '../components/help/PlannerSetup';
+import ScenarioBuilder from '../components/help/ScenarioBuilder';
+import Timeline from '../components/help/Timeline';
 
 const formatCurrency = (val) =>
   new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 }).format(val);
@@ -130,445 +118,6 @@ const Card = ({ children, className = "", noPadding = false }) => (
 );
 
 // Helper component to bridge Recharts internal state to React state
-const ChartTooltipSyncer = ({ active, payload, onUpdate }) => {
-  useEffect(() => {
-    if (active && payload && payload.length) {
-      onUpdate(payload[0].payload);
-    }
-  }, [active, payload, onUpdate]);
-
-
-
-  return null;
-
-  return null;
-};
-
-// --- SCI-FI HUD CHART SECTION ---
-
-// --- MEMOIZED COMPONENTS ---
-
-// 1. Memoized Custom Dot
-const MemoizedCustomDot = React.memo((props) => {
-  const { cx, cy, payload } = props;
-  const hasPromo = payload.notes.some(n => n.includes('Promotion'));
-  const hasPayCut = payload.notes.some(n => n.includes('Income Drop'));
-  const hasVoluntary = payload.voluntary > 0;
-
-  if (hasPayCut) {
-    return (
-      <svg x={cx - 8} y={cy - 8} width={16} height={16} viewBox="0 0 24 24" fill="#FF3366" stroke="#0D0D0D" strokeWidth={2} style={{ overflow: 'visible' }}>
-        <path d="M12 21L2 4h20L12 21z" />
-      </svg>
-    );
-  }
-
-  if (hasPromo) {
-    return (
-      <svg x={cx - 8} y={cy - 8} width={16} height={16} viewBox="0 0 24 24" fill="#62FFDA" stroke="#0D0D0D" strokeWidth={2} style={{ overflow: 'visible' }}>
-        <path d="M12 2L2 12l10 10 10-10L12 2z" />
-      </svg>
-    );
-  }
-
-  if (hasVoluntary) {
-    return (
-      <svg x={cx - 8} y={cy - 8} width={16} height={16} viewBox="0 0 24 24" fill="#6A3CFF" stroke="#0D0D0D" strokeWidth={2} style={{ overflow: 'visible' }}>
-        <rect x="4" y="4" width="16" height="16" transform="rotate(45 12 12)" />
-      </svg>
-    );
-  }
-
-  return null;
-});
-MemoizedCustomDot.displayName = 'MemoizedCustomDot';
-
-// 2. Memoized Chart Component (dynamically imported — recharts excluded from initial bundle)
-const MemoizedChart = dynamic(
-  async () => {
-    const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea } = await import('recharts');
-    const Chart = React.memo(({ chartData, breaks, onHover, onLeave, hasLifeEvents }) => {
-      return (
-        <div className="flex-1 w-full min-h-0 relative [&_*]:focus:outline-none [&_*]:focus:ring-0">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              throttleDelay={0}
-              data={chartData}
-              margin={{ top: 20, right: 10, left: 0, bottom: 5 }}
-              onMouseMove={(e) => {
-                // No-op or custom logic if needed
-              }}
-              onMouseLeave={onLeave}
-            >
-              <defs>
-                <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#62FFDA" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#62FFDA" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="colorBase" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.08} />
-                  <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-
-              <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} strokeOpacity={0.4} />
-              <XAxis dataKey="year" stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickLine={false} axisLine={false} />
-              <YAxis stroke="#666" tick={{ fontSize: 12, fill: '#CFCFCF', opacity: 0.7 }} tickFormatter={(val) => `$${val / 1000}k`} tickLine={false} axisLine={false} />
-
-              <Tooltip
-                animationDuration={0}
-                content={<ChartTooltipSyncer onUpdate={onHover} />}
-                cursor={{
-                  stroke: '#62FFDA',
-                  strokeWidth: 2,
-                  strokeDasharray: '0',
-                  filter: 'drop-shadow(0 0 4px #62FFDA)'
-                }}
-              />
-
-              {/* Base projection line (purple) — only when life events exist */}
-              {hasLifeEvents && (
-                <Area
-                  type="monotone"
-                  dataKey="baseBalance"
-                  stroke="#8B5CF6"
-                  strokeWidth={2}
-                  strokeDasharray="5 4"
-                  fill="url(#colorBase)"
-                  dot={false}
-                  activeDot={{ r: 5, fill: '#fff', stroke: '#8B5CF6', strokeWidth: 2 }}
-                  isAnimationActive={false}
-                />
-              )}
-
-              {/* Glow Layer */}
-              <Area
-                type="monotone"
-                dataKey="endBalance"
-                stroke="#62FFDA"
-                strokeWidth={10}
-                strokeOpacity={0.15}
-                fill="transparent"
-                isAnimationActive={false}
-                pointerEvents="none"
-              />
-
-              {/* Main Line Layer */}
-              <Area
-                type="monotone"
-                dataKey="endBalance"
-                stroke="#62FFDA"
-                strokeWidth={3}
-                fill="url(#colorBalance)"
-                dot={<MemoizedCustomDot />}
-                activeDot={{
-                  r: 6,
-                  fill: '#fff',
-                  stroke: '#62FFDA',
-                  strokeWidth: 3,
-                  className: "animate-pulse",
-                  style: { filter: 'drop-shadow(0 0 8px #62FFDA)' }
-                }}
-              />
-
-              {breaks.map((b, i) => (
-                <ReferenceArea
-                  key={i}
-                  x1={parseInt(b.startYear)}
-                  x2={parseInt(b.startYear) + parseInt(b.duration)}
-                  fill="#fff"
-                  fillOpacity={0.03}
-                  pointerEvents="none"
-                />
-              ))}
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      );
-    }, (prevProps, nextProps) => {
-      return (
-        prevProps.chartData === nextProps.chartData &&
-        prevProps.breaks === nextProps.breaks &&
-        prevProps.hasLifeEvents === nextProps.hasLifeEvents
-      );
-    });
-    Chart.displayName = 'MemoizedChart';
-    return { default: Chart };
-  },
-  {
-    ssr: false,
-    loading: () => <div className="flex-1 w-full min-h-0 relative" style={{ minHeight: 260 }} />,
-  }
-);
-const TOOLTIP_WIDTH = 214;
-
-const ChartSection = ({ mode, timelineData, baseTimelineData, breaks, hasLifeEvents }) => {
-  const [hoveredData, setHoveredData] = useState(null);
-  const [pointerPos, setPointerPos] = useState(null);
-  const rafRef = useRef(null);
-  const ptrRafRef = useRef(null);
-
-  // Stable callback with RAF Throttling
-  const handleHoverUpdate = useCallback((data) => {
-    if (rafRef.current) return; // Drop frame if one is pending
-    rafRef.current = requestAnimationFrame(() => {
-      setHoveredData(data);
-      rafRef.current = null;
-    });
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    }
-    setHoveredData(null);
-    setPointerPos(null);
-  }, []);
-
-  const handlePointerMove = useCallback((x, y) => {
-    if (ptrRafRef.current) return;
-    ptrRafRef.current = requestAnimationFrame(() => {
-      setPointerPos({ x, y });
-      ptrRafRef.current = null;
-    });
-  }, []);
-
-  // Cleanup RAF on unmount
-  useEffect(() => {
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (ptrRafRef.current) cancelAnimationFrame(ptrRafRef.current);
-    };
-  }, []);
-
-  // Merge active + base timelines into one dataset for the chart
-  const mergedChartData = useMemo(() => {
-    if (!hasLifeEvents || baseTimelineData.length === 0) return timelineData;
-    const baseMap = new Map(baseTimelineData.map(r => [r.year, r.endBalance]));
-    const activeByYear = new Map(timelineData.map(r => [r.year, r]));
-    const allYears = [...new Set([
-      ...timelineData.map(r => r.year),
-      ...baseTimelineData.map(r => r.year),
-    ])].sort((a, b) => a - b);
-    return allYears.map(year => {
-      const activeRow = activeByYear.get(year);
-      const baseBalance = baseMap.get(year) ?? 0;
-      if (activeRow) return { ...activeRow, baseBalance };
-      return { year, endBalance: 0, baseBalance, notes: [], voluntary: 0, compulsory: 0, indexation: 0, isBreak: false, age: null };
-    });
-  }, [timelineData, baseTimelineData, hasLifeEvents]);
-
-  // Comparison summary values
-  const yearDiff = hasLifeEvents ? baseTimelineData.length - timelineData.length : 0;
-  const dollarDiff = hasLifeEvents
-    ? baseTimelineData.reduce((acc, r) => acc + r.compulsory + r.voluntary, 0)
-      - timelineData.reduce((acc, r) => acc + r.compulsory + r.voluntary, 0)
-    : 0;
-  const saves = yearDiff > 0 || (yearDiff === 0 && dollarDiff > 0);
-  const showSummary = hasLifeEvents && (yearDiff !== 0 || dollarDiff !== 0);
-  const summaryColor = saves ? '#62FFDA' : '#FF4D6A';
-  const absYears = Math.abs(yearDiff);
-  const yearLabel = absYears === 1 ? '1 year' : `${absYears} years`;
-
-  // Determine which data to show: hoveredData (live) OR the final year (summary)
-  const displayData = useMemo(() => {
-    if (hoveredData) return hoveredData;
-    // Default to final year if available
-    if (timelineData && timelineData.length > 0) return timelineData[timelineData.length - 1];
-    return null;
-  }, [hoveredData, timelineData]);
-
-  if (!displayData) return null;
-
-  const totalRepayment = (displayData.compulsory || 0) + (displayData.voluntary || 0);
-  const hasVoluntary = displayData.voluntary > 0;
-
-  return (
-    <Card
-      className={`${showSummary ? 'h-[492px]' : 'h-[450px]'} relative card-hover flex flex-col outline-none ring-0 touch-pan-y`}
-      style={{ WebkitTapHighlightColor: 'transparent' }}
-      mode={mode}
-    >
-      {/* HUD Decoration Corners */}
-      <div className="absolute top-4 left-4 w-2 h-2 border-l border-t border-[#62FFDA]/30 rounded-tl-sm pointer-events-none" />
-      <div className="absolute top-4 right-4 w-2 h-2 border-r border-t border-[#62FFDA]/30 rounded-tr-sm pointer-events-none" />
-      <div className="absolute bottom-4 left-4 w-2 h-2 border-l border-b border-[#62FFDA]/30 rounded-bl-sm pointer-events-none" />
-      <div className="absolute bottom-4 right-4 w-2 h-2 border-r border-b border-[#62FFDA]/30 rounded-br-sm pointer-events-none" />
-
-      {/* --- HUD HEADER & READOUT --- */}
-      <div className="flex flex-col gap-4 mb-2 shrink-0 z-20">
-        <div className="flex items-center justify-between pl-2">
-          <SectionHeader icon={TrendingUp} title="REPAYMENT TIMELINE" mode={mode} />
-          {/* Status Indicator */}
-          <div className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border ${hoveredData ? 'text-[#62FFDA] border-[#62FFDA]/30 bg-[#62FFDA]/5' : 'text-[#CFCFCF] border-white/10'}`}>
-            {hoveredData ? 'LIVE TRACKING' : 'FINAL YEAR'}
-          </div>
-        </div>
-
-
-        {/* --- THE DIGITAL READOUT --- */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 p-4 rounded-xl border transition-colors duration-200 bg-black/20 border-white/5">
-
-          {/* Year / Age */}
-          <div className="flex flex-col justify-center">
-            <span className="text-[10px] uppercase tracking-wider text-[#CFCFCF] font-bold mb-0.5">Timeline</span>
-            <div className="font-mono text-lg font-bold flex items-baseline gap-2 text-white">
-              {displayData.year} <span className="text-xs opacity-50 font-sans">Age {displayData.age}</span>
-            </div>
-          </div>
-
-          {/* Income */}
-          <div className="flex flex-col justify-center border-l border-white/5 pl-4">
-            <span className="text-[10px] uppercase tracking-wider text-[#CFCFCF] font-bold mb-0.5">Income</span>
-            <div className="font-mono text-lg font-bold text-white">
-              {formatCurrency(displayData.taxableIncome)}
-            </div>
-          </div>
-
-          {/* Repayments - Split View if Voluntary Exists */}
-          <div className="flex flex-col justify-center border-l border-white/5 pl-4 relative">
-            <span className="text-[10px] uppercase tracking-wider text-[#0081CB] font-bold mb-0.5">Repayment</span>
-
-            {/* FIXED HEIGHT CONTAINER TO PREVENT LAYOUT SHIFT & CHART RE-RENDER */}
-            <div className="h-[32px] flex flex-col justify-center">
-              {hasVoluntary ? (
-                <div className="flex flex-col w-full">
-                  <div className="flex justify-between items-baseline w-full">
-                    <span className="text-[10px] font-mono text-[#0081CB] opacity-80 mr-2">Compulsory:</span>
-                    <span className="font-mono text-xs font-bold text-[#0081CB]">{formatCurrency(displayData.compulsory)}</span>
-                  </div>
-                  <div className="flex justify-between items-baseline w-full">
-                    <span className="text-[10px] font-mono text-[#6A3CFF] opacity-80 mr-2">Voluntary:</span>
-                    <span className="font-mono text-xs font-bold text-[#6A3CFF]">{formatCurrency(displayData.voluntary)}</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="font-mono text-lg font-bold text-[#0081CB]">
-                  {formatCurrency(totalRepayment)}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Balance */}
-          <div className="flex flex-col justify-center border-l border-white/5 pl-4">
-            <span className="text-[10px] uppercase tracking-wider text-[#62FFDA] font-bold mb-0.5">Balance</span>
-            <div className="font-mono text-xl font-black text-[#62FFDA] drop-shadow-[0_0_8px_rgba(98,255,218,0.4)]">
-              {formatCurrency(displayData.endBalance)}
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      {/* --- CHART VISUALS --- */}
-      <div
-        className="flex-1 min-h-0 flex flex-col"
-        onMouseMove={hasLifeEvents ? (e) => handlePointerMove(e.clientX, e.clientY) : undefined}
-        onTouchMove={hasLifeEvents ? (e) => { const t = e.touches[0]; if (t) handlePointerMove(t.clientX, t.clientY); } : undefined}
-        onMouseLeave={handleMouseLeave}
-        onTouchEnd={hasLifeEvents ? () => setPointerPos(null) : undefined}
-      >
-        <MemoizedChart
-          chartData={mergedChartData}
-          breaks={breaks}
-          onHover={handleHoverUpdate}
-          onLeave={handleMouseLeave}
-          hasLifeEvents={hasLifeEvents}
-        />
-      </div>
-
-      {/* --- LIFE EVENTS HOVER TOOLTIP --- */}
-      {hasLifeEvents && hoveredData && pointerPos && typeof document !== 'undefined' &&
-        (hoveredData.baseBalance ?? 0) !== (hoveredData.endBalance ?? 0) &&
-        createPortal(
-        (() => {
-          const diff = (hoveredData.baseBalance ?? 0) - (hoveredData.endBalance ?? 0);
-          const saving = diff > 0;
-          const ESTIMATED_W = 170;
-          const flipLeft = pointerPos.x + 20 + ESTIMATED_W > window.innerWidth - 8;
-          return (
-            <div
-              style={{
-                position: 'fixed',
-                top: Math.max(8, pointerPos.y - 64),
-                left: flipLeft ? pointerPos.x - 12 - ESTIMATED_W : pointerPos.x + 20,
-                zIndex: 9999,
-                background: 'rgba(12, 16, 32, 0.85)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                border: '1px solid rgba(98, 255, 218, 0.15)',
-                borderRadius: '12px',
-                padding: '10px 14px',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-                pointerEvents: 'none',
-                width: 'max-content',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '16px', marginBottom: '6px' }}>
-                <span style={{ fontSize: '11px', color: '#6b7a99', letterSpacing: '0.02em' }}>{hoveredData.year} · Age {hoveredData.age}</span>
-                <span style={{ fontSize: '10px', color: '#6b7a99' }}>Balance</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '10px', marginBottom: '3px' }}>
-                <span style={{ fontSize: '11px', color: '#6b7a99' }}>With life events</span>
-                <span style={{ fontSize: '14px', fontWeight: 600, color: '#62FFDA' }}>{formatCurrency(hoveredData.endBalance ?? 0)}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '10px' }}>
-                <span style={{ fontSize: '11px', color: '#6b7a99' }}>Original path</span>
-                <span style={{ fontSize: '14px', fontWeight: 600, color: '#8B7AFF' }}>{formatCurrency(hoveredData.baseBalance ?? 0)}</span>
-              </div>
-              {diff !== 0 && (
-                <>
-                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', margin: '7px 0 5px' }} />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '10px' }}>
-                    <span style={{ fontSize: '11px', color: '#6b7a99' }}>Difference</span>
-                    <span style={{ fontSize: '15px', fontWeight: 700, color: saving ? '#62FFDA' : '#FF3366' }}>{formatCurrency(Math.abs(diff))}</span>
-                  </div>
-                </>
-              )}
-            </div>
-          );
-        })(),
-        document.body
-      )}
-
-      {/* --- LEGEND (only when base line is visible) --- */}
-      {hasLifeEvents && (
-        <div className="shrink-0 flex items-center justify-center gap-5 pb-1 text-[11px] text-[#CFCFCF]/60">
-          <div className="flex items-center gap-1.5">
-            <span className="inline-block w-5 border-t-2 border-[#62FFDA]" />
-            With life events
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="inline-block w-5 border-t-2 border-dashed border-[#8B5CF6]" />
-            Original path
-          </div>
-        </div>
-      )}
-
-      {/* --- COMPARISON SUMMARY (only when life events exist and values differ) --- */}
-      {showSummary && (
-        <div className="shrink-0 pt-1 pb-3 text-center">
-          <p className="font-lato text-[13px] lg:text-[14px] text-[#CFCFCF]">
-            Your life events{' '}
-            <span className="font-bold" style={{ color: summaryColor }}>
-              {saves ? 'save you' : 'add'}
-            </span>{' '}
-            <span className="font-bold" style={{ color: summaryColor }}>{yearLabel}</span>
-            {' '}and{' '}
-            <span className="font-bold" style={{ color: summaryColor }}>{formatCurrency(Math.abs(dollarDiff))}</span>
-            {' '}{saves ? 'in repayments' : 'to your repayments'}
-          </p>
-        </div>
-      )}
-
-    </Card >
-  );
-};
-
-
-
 const ShareIcon = ({ size = 18, color = 'currentColor' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
@@ -587,143 +136,10 @@ const SectionHeader = ({ icon: Icon, title, infoText }) => (
   </div>
 );
 
-// --- NEON SLIDER ---
-const NeonSlider = ({ label, value, onChange, min, max, step, unit, color, infoText }) => {
-  const [isActive, setIsActive] = useState(false);
-  const [localValue, setLocalValue] = useState(value);
-  const debounceTimerRef = useRef(null);
-
-  // Sync local value when prop changes (e.g., from external updates like reset)
-  useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
-
-  const percent = ((localValue - min) / (max - min)) * 100;
-
-  const handleChange = (newValue) => {
-    // Update local state immediately for smooth visual feedback
-    setLocalValue(newValue);
-
-    // Clear existing timer
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    // Debounce the actual state update by 150ms
-    debounceTimerRef.current = setTimeout(() => {
-      onChange(newValue);
-    }, 150);
-  };
-
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
-
-  return (
-    <div className="mb-6">
-      <div className="flex justify-between items-center mb-3">
-        <div className="flex items-center">
-          <label className="block text-xs font-bold uppercase tracking-wide font-montserrat text-[#CFCFCF]">
-            {label}
-          </label>
-          {infoText && <InfoTooltip text={infoText} />}
-        </div>
-        <div className="font-mono font-bold text-lg text-white">
-          {localValue}{unit}
-        </div>
-      </div>
-
-      <div className="relative h-6 w-full flex items-center group" style={{ touchAction: 'pan-y' }}>
-        <div className="absolute top-1/2 left-0 w-full h-1.5 -translate-y-1/2 rounded-full transition-colors bg-gray-800"></div>
-
-        <div
-          className="absolute top-1/2 left-0 h-1.5 -translate-y-1/2 rounded-full transition-all duration-100 ease-out"
-          style={{
-            width: `${percent}%`,
-            background: color,
-            boxShadow: isActive ? `0 0 12px ${color}` : 'none'
-          }}
-        ></div>
-
-        <div
-          className={`absolute top-1/2 h-4 w-4 -translate-y-1/2 -ml-2 rounded-full border-2 border-white pointer-events-none transition-all duration-100 ease-out ${isActive ? 'scale-110' : 'scale-100'}`}
-          style={{
-            left: `${percent}%`,
-            backgroundColor: color,
-            boxShadow: isActive ? `0 0 15px 2px ${color}` : 'none'
-          }}
-        ></div>
-
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={localValue}
-          onChange={(e) => handleChange(parseFloat(e.target.value))}
-          onMouseDown={() => setIsActive(true)}
-          onMouseUp={() => setIsActive(false)}
-          onTouchStart={() => setIsActive(true)}
-          onTouchEnd={() => setIsActive(false)}
-          style={{ touchAction: 'none' }}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-          aria-label={`${label} slider`}
-          aria-valuetext={`${localValue}${unit}`}
-          aria-valuenow={localValue}
-          aria-valuemin={min}
-          aria-valuemax={max}
-        />
-      </div>
-    </div>
-  );
-};
-
-// HUD Input Field
-const InputField = ({ label, value, onChange, unit, type = "number", step = 1, infoText, nudge }) => (
-  <div className="mb-5">
-    <div className="flex items-center mb-2">
-      <label className="block text-xs font-bold uppercase tracking-wide font-montserrat text-[#CFCFCF]">
-        {label}
-      </label>
-      {infoText && <InfoTooltip text={infoText} />}
-    </div>
-    <div className="relative group">
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => {
-          const val = e.target.value;
-          onChange(val === '' ? '' : parseFloat(val));
-        }}
-        className="w-full p-3.5 input-hud font-mono text-lg outline-none transition-all text-white placeholder-gray-600"
-      />
-      {unit && (
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#CFCFCF] font-bold pointer-events-none opacity-50">
-          {unit}
-        </span>
-      )}
-    </div>
-    {nudge && (
-      <div className={`mt-2 text-xs flex items-start gap-2 p-3 rounded-xl animate-in fade-in slide-in-from-top-1 backdrop-blur-md 
-        ${nudge.type === 'info'
-          ? 'bg-[#0081CB]/10 text-[#0081CB] border border-[#0081CB]/20'
-          : 'bg-[#FF3366]/10 text-[#FF3366] border border-[#FF3366]/20'}`}>
-        <Info size={14} className="shrink-0 mt-0.5" />
-        <span className="font-medium">{nudge.msg}</span>
-      </div>
-    )}
-  </div>
-);
-
 // --- MAIN COMPONENT ---
 
 export default function App() {
-  const [mode, setMode] = useState('dark');
+  const [isDesktopViewport, setIsDesktopViewport] = useState(null);
   const [inputs, setInputs] = useState({
     startingDebt: 50000,
     startingIncome: 70000,
@@ -742,12 +158,6 @@ export default function App() {
   const [reductions, setReductions] = useState([]);
   const [voluntary, setVoluntary] = useState([]);
   const [breaks, setBreaks] = useState([]);
-
-  // Collapse State for Action Cards (collapsed by default on mobile, open on desktop)
-  const [showVoluntary, setShowVoluntary] = useState(true);
-  const [showPromotions, setShowPromotions] = useState(true);
-  const [showBreaks, setShowBreaks] = useState(true);
-  const [showReductions, setShowReductions] = useState(true);
 
   const [showTable, setShowTable] = useState(false);
   const [showFaq, setShowFaq] = useState(true);
@@ -772,21 +182,11 @@ export default function App() {
   }, [showMenu]);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) setMode(savedTheme);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('theme', mode);
-  }, [mode]);
-
-  useEffect(() => {
-    if (window.innerWidth < 768) {
-      setShowVoluntary(false);
-      setShowPromotions(false);
-      setShowBreaks(false);
-      setShowReductions(false);
-    }
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+    const updateViewport = () => setIsDesktopViewport(mediaQuery.matches);
+    updateViewport();
+    mediaQuery.addEventListener('change', updateViewport);
+    return () => mediaQuery.removeEventListener('change', updateViewport);
   }, []);
 
   useEffect(() => {
@@ -825,10 +225,10 @@ export default function App() {
           if (b.length) setBreaks(b);
           if (r.length) setReductions(r);
         }
-      } catch (_) { /* ignore malformed events */ }
+      } catch { /* ignore malformed events */ }
     }
     window.history.replaceState({}, '', window.location.pathname);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   // --- CALCULATION ENGINE ---
   const timelineData = useMemo(() => buildProjection(inputs, {
@@ -907,13 +307,6 @@ export default function App() {
     setBreaks([]);
     setNudge(null);
 
-    // Reset Collapsible States (collapsed on mobile, open on desktop)
-    const isDesktop = window.innerWidth >= 768;
-    setShowVoluntary(isDesktop);
-    setShowPromotions(isDesktop);
-    setShowBreaks(isDesktop);
-    setShowReductions(isDesktop);
-
     // Reset Temp Inputs
     setTempVoluntary({ year: 2027, amount: 5000 });
     setTempPromo({ year: 2028, percent: 20 });
@@ -963,7 +356,7 @@ export default function App() {
     const url = generateShareURL();
     try {
       await navigator.clipboard.writeText(url);
-    } catch (_) {
+    } catch {
       // Fallback for browsers without clipboard API
       const ta = document.createElement('textarea');
       ta.value = url;
@@ -1032,29 +425,12 @@ export default function App() {
     }
   };
 
-  const ActionButton = ({ onClick, children }) => (
-    <button
-      onClick={onClick}
-      className="btn-3d-primary py-2.5 px-5 text-sm font-bold shadow-lg hover:shadow-xl active:scale-[0.98] w-24 shrink-0"
-    >
-      <span>{children}</span>
-    </button>
-  );
-
   return (
-    <div className="min-h-screen font-sans selection:bg-[#0081CB] selection:text-white pb-20 transition-colors duration-500 relative overflow-x-hidden text-white bg-[#0D0D0D]"
-      style={{ fontFamily: 'var(--font-lato), sans-serif' }}
-    >
-      {/* GLOBAL NOISE & GRADIENT BACKGROUND */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-[10%] w-[500px] h-[500px] bg-[#6A3CFF] rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse" style={{ animationDuration: '10s', zIndex: 0 }}></div>
-        <div className="absolute bottom-0 right-[10%] w-[600px] h-[600px] bg-[#0081CB] rounded-full mix-blend-screen filter blur-[130px] opacity-20" style={{ zIndex: 0 }}></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#62FFDA] rounded-full mix-blend-overlay filter blur-[150px] opacity-5" style={{ zIndex: 0 }}></div>
-        <div className="absolute inset-0 opacity-10 mix-blend-soft-light bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" style={{ zIndex: 0 }}></div>
-      </div>
+    <div className="min-h-screen bg-[var(--mb-cream)] pb-20 font-instrument text-[var(--mb-ink)] selection:bg-[var(--mb-mint)] selection:text-[var(--mb-ink)] relative overflow-x-hidden">
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(16,24,32,0.09) 0.7px, transparent 0.7px)', backgroundSize: '18px 18px' }} />
 
       {/* --- HEADER --- */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-500 border-white/5 bg-[#0D0D0D]/70" data-nosnippet>
+      <header className="sticky top-0 z-50 border-b border-black/10 bg-[var(--mb-paper)]/90 text-[var(--mb-ink)] backdrop-blur-xl" data-nosnippet>
         <div className="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <a
@@ -1069,7 +445,7 @@ export default function App() {
                 className="w-full h-full object-cover"
               />
             </a>
-            <span className="font-bold text-[10px] md:text-base leading-tight tracking-tight uppercase font-montserrat">
+            <span className="font-impact text-[9px] uppercase leading-tight tracking-[-0.01em] sm:text-[11px] md:text-sm">
               Higher Education Loan<br className="md:hidden" /> Program Calculator
             </span>
           </div>
@@ -1077,7 +453,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowShareModal(true)}
-              className="btn-soft flex items-center gap-2 text-[#CFCFCF]"
+              className="btn-soft flex items-center gap-2 text-[var(--mb-ink)]"
             >
               <ShareIcon size={18} color="#00A3FF" />
               <span className="hidden md:inline text-xs font-bold uppercase tracking-wider font-montserrat">Share</span>
@@ -1085,7 +461,7 @@ export default function App() {
 
             <button
               onClick={handleReset}
-              className="btn-soft flex items-center gap-2 text-[#CFCFCF]"
+              className="btn-soft flex items-center gap-2 text-[var(--mb-ink)]"
             >
               <RotateCcw size={18} />
               <span className="hidden md:inline text-xs font-bold uppercase tracking-wider font-montserrat">Reset</span>
@@ -1095,7 +471,7 @@ export default function App() {
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setShowMenu(v => !v)}
-                className="btn-soft flex items-center justify-center text-[#CFCFCF]"
+                className="btn-soft flex items-center justify-center text-[var(--mb-ink)]"
                 aria-label="Menu"
               >
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 4, width: 16, alignItems: 'center' }}>
@@ -1213,19 +589,19 @@ export default function App() {
 
         {/* LANDING COPY — full-width above both columns on desktop, above inputs on mobile */}
         <div className="col-span-full mb-0">
-          <p className="font-montserrat font-bold text-[15px] lg:text-[16px] text-[#00A3FF]" style={{ marginBottom: 6 }}>
+          <p className="font-anybody text-[18px] font-extrabold leading-tight tracking-[-0.03em] text-[var(--mb-ink)] lg:text-[22px]" style={{ marginBottom: 8 }}>
             Australia's most advanced HECS-HELP<br className="lg:hidden" /> & FEE-HELP repayment calculator.
           </p>
-          <p className="font-lato font-normal text-[13px] lg:text-[14px] text-[#CFCFCF]" style={{ lineHeight: '1.6' }}>
-            See how <strong className="font-bold" style={{ color: 'rgba(241, 245, 249, 0.7)' }}>indexation, wage growth, promotions, gap years, pay cuts</strong>, and <strong className="font-bold" style={{ color: 'rgba(241, 245, 249, 0.7)' }}>voluntary repayments</strong> affect your student debt over time.<br />
-            <span className="text-[#CFCFCF]/60">Built on official 2026-27 ATO repayment rates.</span>
+          <p className="max-w-3xl font-instrument text-[13px] leading-relaxed text-[var(--mb-muted)] lg:text-[14px]">
+            See how <strong className="font-bold text-[var(--mb-ink)]">indexation, income growth, promotions, career breaks, pay reductions</strong>, and <strong className="font-bold text-[var(--mb-ink)]">extra repayments</strong> affect your student debt over time.<br />
+            <span>Built on official 2026-27 repayment settings.</span>
           </p>
         </div>
 
         <div className="col-span-full mb-0">
           <button
             onClick={() => setShowHelpModal(true)}
-            className="group inline-flex items-center gap-2 font-lato text-[13px] font-bold text-[#CFCFCF] cursor-pointer transition-colors"
+            className="group inline-flex cursor-pointer items-center gap-2 font-instrument text-[13px] font-bold text-[var(--mb-ink)] transition-colors"
             style={{
               border: '1px dashed rgba(0,129,203,0.25)',
               background: 'transparent',
@@ -1237,73 +613,14 @@ export default function App() {
           >
             <span style={{ fontSize: '15px' }}>💡</span>
             How to use this calculator
-            <span className="text-[#CFCFCF]/50" style={{ fontSize: '14px' }}>›</span>
+            <span className="text-[var(--mb-muted)]" style={{ fontSize: '14px' }}>›</span>
           </button>
         </div>
 
         {/* --- LEFT COLUMN (INPUTS) --- */}
         <div className="lg:col-span-4 space-y-6" data-nosnippet>
 
-          <Card className="card-hover">
-            <SectionHeader icon={DollarSign} title="The Basics" />
-
-            <InputField
-              label="Starting Debt"
-              value={inputs.startingDebt}
-              onChange={(v) => handleInputChange('startingDebt', v)}
-              unit="$"
-              nudge={nudge?.field === 'startingDebt' ? nudge : null}
-              infoText="The amount you expect to owe on your HELP loan when you finish studying."
-            />
-
-            <InputField
-              label="Annual Income"
-              value={inputs.startingIncome}
-              onChange={(v) => handleInputChange('startingIncome', v)}
-              unit="$"
-              nudge={nudge?.field === 'startingIncome' ? nudge : null}
-              infoText="Total income before tax (including fringe benefits, salary sacrifice etc.) Not sure? Use expected total income. More info at ato.gov.au."
-            />
-
-            <NeonSlider
-              label="Wage Growth"
-              value={inputs.wageGrowth}
-              onChange={(v) => handleInputChange('wageGrowth', v)}
-              min={0}
-              max={10}
-              step={0.1}
-              unit="%"
-              color={THEME.colors.mintAccent}
-              infoText="Average yearly income increase over life of loan. If unsure, try 3-4%. Use Promotions for bigger jumps."
-            />
-
-            <NeonSlider
-              label="Indexation"
-              value={inputs.indexationRate}
-              onChange={(v) => handleInputChange('indexationRate', v)}
-              min={0}
-              max={10}
-              step={0.1}
-              unit="%"
-              color={THEME.colors.coachViolet}
-              infoText={CURRENT_INDEXATION_TOOLTIP}
-            />
-
-            <div className="grid grid-cols-2 gap-4">
-              <InputField
-                label="First Year"
-                value={inputs.firstYear}
-                onChange={(v) => handleInputChange('firstYear', v)}
-                infoText="Year you start your working life after finishing study. The calculator will show how long your debt lasts from that point."
-              />
-              <InputField
-                label="Your Age"
-                value={inputs.startingAge}
-                onChange={(v) => handleInputChange('startingAge', v)}
-                infoText="How old you'll be the year you've finished study and start working. The calculator shows how old you'll be when your debt is gone."
-              />
-            </div>
-          </Card>
+          <PlannerSetup inputs={inputs} onInputChange={handleInputChange} nudge={nudge} />
 
           <div className="lg:hidden">
             <PrimaryResult isDebtFree={isDebtFree} finalYear={finalYear} firstYear={inputs.firstYear} finalAge={finalAge} totalPaid={totalPaid} totalIndexation={totalIndexation} />
@@ -1313,285 +630,64 @@ export default function App() {
             <QuickFigures income={inputs.startingIncome} />
           </div>
 
-          {/* VOLUNTARY REPAYMENTS */}
-          <Card mode={mode} className="card-hover" noPadding={true}>
-            <button
-              onClick={() => setShowVoluntary(!showVoluntary)}
-              className="w-full p-6 flex items-center justify-between transition-colors"
-              aria-expanded={showVoluntary}
-              aria-controls="voluntary-repayments-content"
-            >
-              <SectionHeader
-                icon={Wallet}
-                title="Voluntary Repayments"
-                infoText="Extra payments you choose to make. These hit your loan before June 1 indexation, which helps to pay it off faster."
-              />
-              {showVoluntary ? <ChevronUp size={20} className="text-[#CFCFCF]" /> : <ChevronDown size={20} className="text-[#CFCFCF]" />}
-            </button>
+          <ScenarioBuilder
+            voluntary={{
+              items: voluntary,
+              temp: tempVoluntary,
+              setTemp: setTempVoluntary,
+              add: () => {
+                if (!tempVoluntary.year || !tempVoluntary.amount) return;
+                setVoluntary([...voluntary, { year: tempVoluntary.year, amount: tempVoluntary.amount }]);
+                setTempVoluntary((current) => ({ ...current, year: Number(current.year) + 1 }));
+              },
+              remove: (index) => setVoluntary(voluntary.filter((_, itemIndex) => itemIndex !== index)),
+            }}
+            promotion={{
+              items: promotions,
+              temp: tempPromo,
+              setTemp: setTempPromo,
+              add: () => {
+                if (!tempPromo.year || !tempPromo.percent) return;
+                setPromotions([...promotions, { year: tempPromo.year, percent: tempPromo.percent }]);
+                setTempPromo((current) => ({ ...current, year: Number(current.year) + 1 }));
+              },
+              remove: (index) => setPromotions(promotions.filter((_, itemIndex) => itemIndex !== index)),
+            }}
+            careerBreak={{
+              items: breaks,
+              temp: tempBreak,
+              setTemp: setTempBreak,
+              add: () => {
+                if (!tempBreak.startYear || !tempBreak.duration) return;
+                setBreaks([...breaks, { startYear: tempBreak.startYear, duration: tempBreak.duration }]);
+                setTempBreak((current) => ({ ...current, startYear: Number(current.startYear) + Number(current.duration) }));
+              },
+              remove: (index) => setBreaks(breaks.filter((_, itemIndex) => itemIndex !== index)),
+            }}
+            reduction={{
+              items: reductions,
+              temp: tempReduction,
+              setTemp: setTempReduction,
+              add: () => {
+                if (!tempReduction.year || !tempReduction.percent) return;
+                setReductions([...reductions, { year: tempReduction.year, percent: tempReduction.percent }]);
+                setTempReduction((current) => ({ ...current, year: Number(current.year) + 1 }));
+              },
+              remove: (index) => setReductions(reductions.filter((_, itemIndex) => itemIndex !== index)),
+            }}
+          />
 
-            {showVoluntary && (
-              <div id="voluntary-repayments-content" className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
-                <div className="flex gap-3 mb-5">
-                  <input
-                    type="number"
-                    placeholder="Year"
-                    className="w-20 p-3 rounded-xl text-sm font-mono outline-none input-hud text-white"
-                    value={tempVoluntary.year}
-                    onChange={(e) => setTempVoluntary({ ...tempVoluntary, year: e.target.value })}
-                  />
-                  <div className="relative flex-1 min-w-0">
-                    <input
-                      type="number"
-                      placeholder="Amount"
-                      className="w-full p-3 rounded-xl text-sm font-mono outline-none input-hud pr-6 text-white"
-                      value={tempVoluntary.amount}
-                      onChange={(e) => setTempVoluntary({ ...tempVoluntary, amount: e.target.value })}
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-bold pointer-events-none">$</span>
-                  </div>
-                  <ActionButton onClick={() => {
-                    if (tempVoluntary.year && tempVoluntary.amount) {
-                      setVoluntary([...voluntary, { year: tempVoluntary.year, amount: tempVoluntary.amount }]);
-                      setTempVoluntary(prev => ({ ...prev, year: parseInt(prev.year) + 1 }));
-                    }
-                  }}>Add</ActionButton>
-                </div>
-
-                <div className="space-y-3">
-                  {voluntary.map((v, i) => (
-                    <div key={i} className="group flex items-center justify-between p-4 rounded-xl border transition-all animate-in fade-in slide-in-from-left-4 bg-[#1A1A1A]/50 border-white/5">
-                      <div className="flex gap-6">
-                        <div>
-                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-[#CFCFCF]">Year</div>
-                          <div className="font-mono font-medium">{v.year}</div>
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-[#CFCFCF]">Amount</div>
-                          <div className="font-mono font-bold text-[#6A3CFF]">{formatCurrency(v.amount)}</div>
-                        </div>
-                      </div>
-                      <button onClick={() => setVoluntary(voluntary.filter((_, idx) => idx !== i))} className="btn-trash">
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </Card>
-
-          {/* PROMOTIONS */}
-          <Card mode={mode} className="card-hover" noPadding={true}>
-            <button
-              onClick={() => setShowPromotions(!showPromotions)}
-              className="w-full p-6 flex items-center justify-between transition-colors"
-              aria-expanded={showPromotions}
-              aria-controls="promotions-content"
-            >
-              <SectionHeader
-                icon={TrendingUp}
-                title="Promotions"
-                infoText="Big income jumps in certain years (e.g. 20%). Use this for modelling career steps, job changes, or switching industries."
-              />
-              {showPromotions ? <ChevronUp size={20} className="text-[#CFCFCF]" /> : <ChevronDown size={20} className="text-[#CFCFCF]" />}
-            </button>
-
-            {showPromotions && (
-              <div id="promotions-content" className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
-                <div className="flex gap-3 mb-5">
-                  <input
-                    type="number"
-                    placeholder="Year"
-                    className="w-20 p-3 rounded-xl text-sm font-mono outline-none input-hud text-white"
-                    value={tempPromo.year}
-                    onChange={(e) => setTempPromo({ ...tempPromo, year: e.target.value })}
-                  />
-                  <div className="relative flex-1 min-w-0">
-                    <input
-                      type="number"
-                      placeholder="%"
-                      className="w-full p-3 rounded-xl text-sm font-mono outline-none input-hud pr-6 text-white"
-                      value={tempPromo.percent}
-                      onChange={(e) => setTempPromo({ ...tempPromo, percent: e.target.value })}
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-bold pointer-events-none">%</span>
-                  </div>
-                  <ActionButton onClick={() => {
-                    if (tempPromo.year && tempPromo.percent) {
-                      setPromotions([...promotions, { year: tempPromo.year, percent: tempPromo.percent }]);
-                      setTempPromo(prev => ({ ...prev, year: parseInt(prev.year) + 1 }));
-                    }
-                  }}>Add</ActionButton>
-                </div>
-                <div className="space-y-3">
-                  {promotions.map((p, i) => (
-                    <div key={i} className="group flex items-center justify-between p-4 rounded-xl border transition-all animate-in fade-in slide-in-from-left-4 bg-[#1A1A1A]/50 border-white/5">
-                      <div className="flex gap-6">
-                        <div>
-                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-[#CFCFCF]">Year</div>
-                          <div className="font-mono font-medium">{p.year}</div>
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-[#CFCFCF]">Increase</div>
-                          <div className="font-mono font-bold text-[#62FFDA]">{p.percent}%</div>
-                        </div>
-                      </div>
-                      <button onClick={() => setPromotions(promotions.filter((_, idx) => idx !== i))} className="btn-trash">
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </Card>
-
-          {/* GAP YEARS */}
-          <Card mode={mode} className="card-hover" noPadding={true}>
-            <button
-              onClick={() => setShowBreaks(!showBreaks)}
-              className="w-full p-6 flex items-center justify-between transition-colors"
-              aria-expanded={showBreaks}
-              aria-controls="gap-years-content"
-            >
-              <SectionHeader
-                icon={PauseCircle}
-                title="Gap Years / Breaks"
-                infoText="Years you're not earning (e.g. travelling, time off, raising kids). Your loan still grows from indexation. Your wage growth kicks back in when you return to work."
-              />
-              {showBreaks ? <ChevronUp size={20} className="text-[#CFCFCF]" /> : <ChevronDown size={20} className="text-[#CFCFCF]" />}
-            </button>
-
-            {showBreaks && (
-              <div id="gap-years-content" className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
-                <div className="flex gap-3 mb-5">
-                  <input
-                    type="number"
-                    placeholder="Start"
-                    className="w-20 p-3 rounded-xl text-sm font-mono outline-none input-hud text-white"
-                    value={tempBreak.startYear}
-                    onChange={(e) => setTempBreak({ ...tempBreak, startYear: e.target.value })}
-                  />
-                  <div className="relative flex-1 min-w-0">
-                    <input
-                      type="number"
-                      placeholder="#"
-                      className="w-full p-3 rounded-xl text-sm font-mono outline-none input-hud pr-10 text-white"
-                      value={tempBreak.duration}
-                      onChange={(e) => setTempBreak({ ...tempBreak, duration: e.target.value })}
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-bold pointer-events-none">
-                      {parseInt(tempBreak.duration) === 1 ? 'year' : 'years'}
-                    </span>
-                  </div>
-                  <ActionButton onClick={() => {
-                    if (tempBreak.startYear && tempBreak.duration) {
-                      setBreaks([...breaks, { startYear: tempBreak.startYear, duration: tempBreak.duration }]);
-                      setTempBreak(prev => ({ ...prev, startYear: parseInt(prev.startYear) + parseInt(prev.duration) }));
-                    }
-                  }}>Add</ActionButton>
-                </div>
-                <div className="space-y-3">
-                  {breaks.map((b, i) => (
-                    <div key={i} className="group flex items-center justify-between p-4 rounded-xl border transition-all animate-in fade-in slide-in-from-left-4 bg-[#1A1A1A]/50 border-white/5">
-                      <div className="flex gap-6">
-                        <div>
-                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-[#CFCFCF]">Start</div>
-                          <div className="font-mono font-medium">{b.startYear}</div>
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-[#CFCFCF]">Duration</div>
-                          <div className="font-mono font-bold text-white">{b.duration} {parseInt(b.duration) === 1 ? 'year' : 'years'}</div>
-                        </div>
-                      </div>
-                      <button onClick={() => setBreaks(breaks.filter((_, idx) => idx !== i))} className="btn-trash">
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </Card>
-
-          {/* PAY CUTS */}
-          <Card mode={mode} className="card-hover" noPadding={true}>
-            <button
-              onClick={() => setShowReductions(!showReductions)}
-              className="w-full p-6 flex items-center justify-between transition-colors"
-              aria-expanded={showReductions}
-              aria-controls="pay-cuts-content"
-            >
-              <SectionHeader
-                icon={TrendingDown}
-                title="Pay Cuts"
-                infoText="Income drops in certain years (e.g. going part-time, changing careers). Helps you see how slower earning years affect your payoff time."
-              />
-              {showReductions ? <ChevronUp size={20} className="text-[#CFCFCF]" /> : <ChevronDown size={20} className="text-[#CFCFCF]" />}
-            </button>
-
-            {showReductions && (
-              <div id="pay-cuts-content" className="px-6 pb-6 animate-in slide-in-from-top-2 duration-200">
-                <div className="flex gap-3 mb-5">
-                  <input
-                    type="number"
-                    placeholder="Year"
-                    className="w-20 p-3 rounded-xl text-sm font-mono outline-none input-hud text-white"
-                    value={tempReduction.year}
-                    onChange={(e) => setTempReduction({ ...tempReduction, year: e.target.value })}
-                  />
-                  <div className="relative flex-1 min-w-0">
-                    <input
-                      type="number"
-                      placeholder="%"
-                      className="w-full p-3 rounded-xl text-sm font-mono outline-none input-hud pr-6 text-white"
-                      value={tempReduction.percent}
-                      onChange={(e) => setTempReduction({ ...tempReduction, percent: e.target.value })}
-                    />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs font-bold pointer-events-none">%</span>
-                  </div>
-                  <ActionButton onClick={() => {
-                    if (tempReduction.year && tempReduction.percent) {
-                      setReductions([...reductions, { year: tempReduction.year, percent: tempReduction.percent }]);
-                      setTempReduction(prev => ({ ...prev, year: parseInt(prev.year) + 1 }));
-                    }
-                  }}>Add</ActionButton>
-                </div>
-                <div className="space-y-3">
-                  {reductions.map((r, i) => (
-                    <div key={i} className="group flex items-center justify-between p-4 rounded-xl border transition-all animate-in fade-in slide-in-from-left-4 bg-[#1A1A1A]/50 border-white/5">
-                      <div className="flex gap-6">
-                        <div>
-                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-[#CFCFCF]">Year</div>
-                          <div className="font-mono font-medium">{r.year}</div>
-                        </div>
-                        <div>
-                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-[#CFCFCF]">Decrease</div>
-                          <div className="font-mono font-bold text-[#FF3366]">{r.percent}%</div>
-                        </div>
-                      </div>
-                      <button onClick={() => setReductions(reductions.filter((_, idx) => idx !== i))} className="btn-trash">
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </Card>
-
-          <div className="lg:hidden mb-6">
-            <ChartSection timelineData={timelineData} baseTimelineData={baseTimelineData} breaks={breaks} hasLifeEvents={hasLifeEvents} />
-          </div>
+          {isDesktopViewport === false ? (
+            <div className="lg:hidden mb-6">
+              <Timeline timelineData={timelineData} baseTimelineData={baseTimelineData} breaks={breaks} hasLifeEvents={hasLifeEvents} />
+            </div>
+          ) : null}
 
           {/* SHARE BUTTON — mobile only, between Pay Cuts and Year by Year */}
           <div className="lg:hidden">
             <button
               onClick={() => setShowShareModal(true)}
-              className="w-full flex items-center justify-center gap-2.5 py-3.5 px-5 font-montserrat font-bold text-sm text-[#CFCFCF] transition-all duration-200"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14 }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,129,203,0.3)'; e.currentTarget.style.background = 'rgba(0,129,203,0.05)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+              className="flex w-full items-center justify-center gap-2.5 rounded-2xl border border-black/15 bg-[var(--mb-paper)] px-5 py-3.5 font-impact text-[11px] uppercase tracking-[0.08em] text-[var(--mb-ink)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--mb-sky)]/40 hover:bg-white"
             >
               <ShareIcon size={16} color="#00A3FF" />
               Share my results
@@ -1610,18 +706,17 @@ export default function App() {
             <QuickFigures income={inputs.startingIncome} />
           </div>
 
-          <div className="hidden lg:block">
-            <ChartSection timelineData={timelineData} baseTimelineData={baseTimelineData} breaks={breaks} hasLifeEvents={hasLifeEvents} />
-          </div>
+          {isDesktopViewport === true ? (
+            <div className="hidden lg:block">
+              <Timeline timelineData={timelineData} baseTimelineData={baseTimelineData} breaks={breaks} hasLifeEvents={hasLifeEvents} />
+            </div>
+          ) : null}
 
           {/* SHARE BUTTON — desktop only, between chart and Year by Year */}
           <div className="hidden lg:flex justify-center">
             <button
               onClick={() => setShowShareModal(true)}
-              className="flex items-center gap-2.5 py-3 px-6 font-montserrat font-bold text-sm text-[#CFCFCF] transition-all duration-200"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 14 }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(0,129,203,0.3)'; e.currentTarget.style.background = 'rgba(0,129,203,0.05)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+              className="flex items-center gap-2.5 rounded-2xl border border-black/15 bg-[var(--mb-paper)] px-6 py-3 font-impact text-[11px] uppercase tracking-[0.08em] text-[var(--mb-ink)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--mb-sky)]/40 hover:bg-white"
             >
               <ShareIcon size={16} color="#00A3FF" />
               Share my results
@@ -1688,7 +783,7 @@ export default function App() {
 
           {/* GUIDES */}
           <div className="px-4 max-w-3xl mx-auto space-y-4">
-            <h4 className="font-bold uppercase tracking-widest text-[10px] text-[#CFCFCF]/60 opacity-70 text-center">Guides</h4>
+            <h4 className="font-impact uppercase tracking-[0.12em] text-[10px] text-[var(--mb-muted)] text-center">Guides</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
                 { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026-27' },
@@ -1702,10 +797,10 @@ export default function App() {
                 <Link
                   key={guide.href}
                   href={guide.href}
-                  className="group flex items-center gap-3 p-4 rounded-xl border border-white/5 bg-white/[0.03] hover:border-[#62FFDA]/30 hover:bg-white/[0.06] transition-all"
+                  className="group flex items-center gap-3 rounded-xl border border-black/15 bg-[var(--mb-paper)] p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[var(--mb-mint-deep)]/40 hover:bg-white"
                 >
                   <BookOpen size={16} className="text-[#0081CB] shrink-0 group-hover:text-[#62FFDA] transition-colors" />
-                  <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-lato">{guide.title}</span>
+                  <span className="font-instrument text-sm font-semibold text-[var(--mb-ink)] transition-colors">{guide.title}</span>
                 </Link>
               ))}
             </div>
@@ -1823,13 +918,13 @@ export default function App() {
           </Card>
 
           {/* DISCLAIMER / FOOTER */}
-          <div className="text-xs text-center px-4 leading-relaxed max-w-3xl mx-auto space-y-4 font-lato text-[#CFCFCF]/60">
+          <div className="mx-auto max-w-3xl space-y-4 px-4 text-center font-instrument text-xs leading-relaxed text-[var(--mb-muted)]">
             <h4 className="font-bold uppercase tracking-widest text-[10px] opacity-70">DISCLAIMER</h4>
             <p>
               This tool is for educational purposes only. It is not personal financial, legal, or tax advice and does not take into account your individual objectives. The model estimates compulsory repayments using the {FINANCIAL_YEAR} marginal repayment system and assumes these thresholds remain constant. Actual repayments are determined by the ATO after you lodge your tax return.
             </p>
 
-            <div className="rounded-xl overflow-hidden my-6 max-w-lg mx-auto border glass-dark border-white/5">
+            <div className="glass-dark mx-auto my-6 max-w-lg overflow-hidden rounded-xl border border-white/10 text-white">
               <div className="grid grid-cols-2 text-[10px] font-bold uppercase p-3 border-b border-[#333] bg-white/5">
                 <div className="text-left">Repayment Income</div>
                 <div className="text-right">Rate / Calculation</div>
@@ -1852,11 +947,11 @@ export default function App() {
           {/* --- STRUCTURED FOOTER --- */}
           <div className="col-span-full px-0 md:px-4 w-full" style={{ marginTop: 24 }}>
             <div
-              className="max-w-[640px] mx-auto px-6"
+              className="max-w-[640px] mx-auto px-6 text-[var(--mb-ink)]"
               style={{
-                border: '1px solid rgba(255,255,255,0.06)',
+                border: '1px solid rgba(16,24,32,0.12)',
                 borderRadius: 16,
-                background: 'rgba(255,255,255,0.015)',
+                background: 'rgba(255,250,241,0.78)',
                 paddingTop: 20,
                 paddingBottom: 16,
               }}
@@ -1872,7 +967,7 @@ export default function App() {
               <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-x-8 gap-y-5" style={{ marginBottom: 16 }}>
                 {/* Column 1: Guides */}
                 <div>
-                  <div className="font-montserrat text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Guides</div>
+                  <div className="font-impact text-[10px] uppercase tracking-widest text-[var(--mb-muted)]" style={{ marginBottom: 14 }}>Guides</div>
                   {[
                     { href: '/hecs-repayment-thresholds-2026-27', label: 'HECS Repayment Thresholds 2026-27' },
                     { href: '/hecs-indexation-2026', label: 'HECS Indexation 2026' },
@@ -1885,7 +980,7 @@ export default function App() {
                     <Link
                       key={href}
                       href={href}
-                      className="block font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors"
+                      className="block font-instrument text-[12px] text-[var(--mb-muted)] no-underline hover:text-[var(--mb-sky)] transition-colors"
                       style={{ marginBottom: 10, lineHeight: 1.5 }}
                     >
                       {label}
@@ -1895,23 +990,23 @@ export default function App() {
 
                 {/* Column 2: Links + Connect stacked */}
                 <div>
-                  <div className="font-montserrat text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Links</div>
-                  <Link href="/privacy-policy" className="block font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                  <div className="font-impact text-[10px] uppercase tracking-widest text-[var(--mb-muted)]" style={{ marginBottom: 14 }}>Links</div>
+                  <Link href="/privacy-policy" className="block font-instrument text-[12px] text-[var(--mb-muted)] no-underline hover:text-[var(--mb-sky)] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                     Privacy Policy
                   </Link>
-                  <a href="https://www.mitchbryant.com" target="_blank" rel="noopener noreferrer" className="block font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                  <a href="https://www.mitchbryant.com" target="_blank" rel="noopener noreferrer" className="block font-instrument text-[12px] text-[var(--mb-muted)] no-underline hover:text-[var(--mb-sky)] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                     mitchbryant.com
                   </a>
 
                   <div style={{ marginTop: 24 }}>
-                    <div className="font-montserrat text-[10px] font-bold uppercase tracking-widest text-[#CFCFCF]/50" style={{ marginBottom: 14 }}>Connect</div>
-                    <a href="https://www.tiktok.com/@itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                    <div className="font-impact text-[10px] uppercase tracking-widest text-[var(--mb-muted)]" style={{ marginBottom: 14 }}>Connect</div>
+                    <a href="https://www.tiktok.com/@itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-instrument text-[12px] text-[var(--mb-muted)] no-underline hover:text-[var(--mb-sky)] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                       TikTok @itsmitchbryant
                     </a>
-                    <a href="https://www.instagram.com/itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                    <a href="https://www.instagram.com/itsmitchbryant" target="_blank" rel="noopener noreferrer" className="block font-instrument text-[12px] text-[var(--mb-muted)] no-underline hover:text-[var(--mb-sky)] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                       Instagram @itsmitchbryant
                     </a>
-                    <a href="mailto:hello@mitchbryant.com" className="flex items-center gap-1.5 font-lato text-[12px] text-[rgba(241,245,249,0.55)] no-underline hover:text-[#00A3FF] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                    <a href="mailto:hello@mitchbryant.com" className="flex items-center gap-1.5 font-instrument text-[12px] text-[var(--mb-muted)] no-underline hover:text-[var(--mb-sky)] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                       hello@mitchbryant.com
                     </a>
@@ -1922,9 +1017,9 @@ export default function App() {
               {/* Bottom bar */}
               <div
                 className="text-center pt-4"
-                style={{ borderTop: '1px solid rgba(255,255,255,0.04)', marginTop: 8 }}
+                style={{ borderTop: '1px solid rgba(16,24,32,0.10)', marginTop: 8 }}
               >
-                <span className="font-lato text-[11px] text-[#CFCFCF]/40">
+                <span className="font-instrument text-[11px] text-[var(--mb-muted)]">
                   © 2025 Mitch Bryant · mitchbryant.com
                 </span>
               </div>
