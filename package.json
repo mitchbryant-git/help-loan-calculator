@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test tests/help-rates.test.mjs tests/help-projection.test.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^16.0.10",

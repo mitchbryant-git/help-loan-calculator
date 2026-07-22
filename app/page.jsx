@@ -17,6 +17,7 @@ import {
   calculateCompulsoryRepayment,
   getQuickAnswer,
 } from '../lib/hecsRates';
+import { buildProjection } from '../lib/help/projection-engine.mjs';
 
 // --- BRAND OS THEME CONSTANTS ---
 const THEME = {
@@ -38,9 +39,7 @@ const formatCurrency = (val) =>
 // can never go stale. Server-rendered (not behind interaction) for crawlability.
 const QUICK_ANSWER_EXAMPLE_INCOME = 80000;
 const QUICK_ANSWER_EXAMPLE = getQuickAnswer(QUICK_ANSWER_EXAMPLE_INCOME);
-const formatCurrencyCentsWithCommas = (val) =>
-  new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val);
-const QUICK_ANSWER_EXAMPLE_SENTENCE = `Example: on ${formatCurrency(QUICK_ANSWER_EXAMPLE_INCOME)}, your compulsory repayment is ${formatCurrencyCentsWithCommas(QUICK_ANSWER_EXAMPLE.annual)} for the year, about $${Math.round(QUICK_ANSWER_EXAMPLE.monthly)} a month.`;
+const QUICK_ANSWER_EXAMPLE_SENTENCE = `Example: on ${formatCurrency(QUICK_ANSWER_EXAMPLE_INCOME)}, your compulsory repayment is ${formatCurrency(QUICK_ANSWER_EXAMPLE.annual)} for the year, about ${formatCurrency(QUICK_ANSWER_EXAMPLE.monthly)} a month.`;
 
 const formatCurrencyShort = (val) => {
   const n = Math.round(val);
@@ -878,143 +877,20 @@ export default function App() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // --- CALCULATION ENGINE ---
-  const timelineData = useMemo(() => {
-    let data = [];
-    let balance = Number(inputs.startingDebt) || 0;
-    let baselineIncome = Number(inputs.startingIncome) || 0;
-    let currentYear = Number(inputs.firstYear) || 2026;
-    const safeWageGrowth = Number(inputs.wageGrowth) || 0;
-    const safeIndexation = Number(inputs.indexationRate) || 0;
-    const startAge = Number(inputs.startingAge) || 22;
-
-    let isPaidOff = false;
-    const maxYears = 50;
-    let yearsElapsed = 0;
-
-    if (balance <= 0) isPaidOff = true;
-
-    while (!isPaidOff && yearsElapsed < maxYears) {
-      const yearData = {
-        year: currentYear,
-        age: startAge ? startAge + yearsElapsed : null,
-        baselineIncome: baselineIncome,
-        taxableIncome: baselineIncome,
-        compulsory: 0,
-        voluntary: 0,
-        indexation: 0,
-        startBalance: balance,
-        endBalance: 0,
-        isBreak: false,
-        notes: []
-      };
-
-      if (yearsElapsed > 0) {
-        baselineIncome = baselineIncome * (1 + safeWageGrowth / 100);
-      }
-
-      const yearsPromos = promotions.filter(p => parseInt(p.year) === currentYear);
-      yearsPromos.forEach(p => {
-        baselineIncome = baselineIncome * (1 + p.percent / 100);
-        yearData.notes.push(`Promotion: +${p.percent}%`);
-      });
-
-      const yearsReductions = reductions.filter(r => parseInt(r.year) === currentYear);
-      yearsReductions.forEach(r => {
-        baselineIncome = baselineIncome * (1 - r.percent / 100);
-        yearData.notes.push(`Income Drop: -${r.percent}%`);
-      });
-
-      const activeBreak = breaks.find(b =>
-        currentYear >= parseInt(b.startYear) &&
-        currentYear < (parseInt(b.startYear) + parseInt(b.duration))
-      );
-
-      if (activeBreak) {
-        yearData.isBreak = true;
-        yearData.taxableIncome = 0;
-        yearData.notes.push("Work Break");
-      } else {
-        yearData.taxableIncome = baselineIncome;
-      }
-
-      let currentBalance = balance;
-      const yearVoluntary = voluntary
-        .filter(v => parseInt(v.year) === currentYear)
-        .reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
-
-      yearData.voluntary = yearVoluntary;
-      currentBalance = Math.max(0, currentBalance - yearVoluntary);
-
-      yearData.indexation = currentBalance * (safeIndexation / 100);
-      currentBalance = currentBalance + yearData.indexation;
-
-      if (!yearData.isBreak) {
-        const calculatedCompulsory = calculateCompulsoryRepayment(yearData.taxableIncome);
-        yearData.compulsory = Math.min(calculatedCompulsory, currentBalance);
-      }
-
-      currentBalance = Math.max(0, currentBalance - yearData.compulsory);
-      yearData.endBalance = currentBalance;
-
-      data.push(yearData);
-
-      if (yearData.endBalance <= 0.01) {
-        isPaidOff = true;
-      }
-
-      balance = yearData.endBalance;
-      currentYear++;
-      yearsElapsed++;
-      yearData.baselineIncome = baselineIncome;
-    }
-
-    return data;
-  }, [inputs, promotions, reductions, breaks, voluntary]);
+  const timelineData = useMemo(() => buildProjection(inputs, {
+    promotions,
+    reductions,
+    voluntary,
+    breaks,
+  }), [inputs, promotions, reductions, breaks, voluntary]);
 
   const hasLifeEvents = promotions.length > 0 || reductions.length > 0 || voluntary.length > 0 || breaks.length > 0;
 
   // Base projection — same engine but no life events, for dual-line chart comparison
-  const baseTimelineData = useMemo(() => {
-    if (!hasLifeEvents) return [];
-    let data = [];
-    let balance = Number(inputs.startingDebt) || 0;
-    let baselineIncome = Number(inputs.startingIncome) || 0;
-    let currentYear = Number(inputs.firstYear) || 2026;
-    const safeWageGrowth = Number(inputs.wageGrowth) || 0;
-    const safeIndexation = Number(inputs.indexationRate) || 0;
-    const startAge = Number(inputs.startingAge) || 22;
-    let isPaidOff = false;
-    const maxYears = 50;
-    let yearsElapsed = 0;
-    if (balance <= 0) isPaidOff = true;
-    while (!isPaidOff && yearsElapsed < maxYears) {
-      const yearData = {
-        year: currentYear,
-        age: startAge ? startAge + yearsElapsed : null,
-        taxableIncome: baselineIncome,
-        compulsory: 0,
-        voluntary: 0,
-        indexation: 0,
-        startBalance: balance,
-        endBalance: 0,
-      };
-      if (yearsElapsed > 0) baselineIncome = baselineIncome * (1 + safeWageGrowth / 100);
-      yearData.taxableIncome = baselineIncome;
-      let currentBalance = balance;
-      yearData.indexation = currentBalance * (safeIndexation / 100);
-      currentBalance = currentBalance + yearData.indexation;
-      const calculatedCompulsory = calculateCompulsoryRepayment(yearData.taxableIncome);
-      yearData.compulsory = Math.min(calculatedCompulsory, currentBalance);
-      currentBalance = Math.max(0, currentBalance - yearData.compulsory);
-      yearData.endBalance = currentBalance;
-      data.push(yearData);
-      if (yearData.endBalance <= 0.01) isPaidOff = true;
-      balance = yearData.endBalance;
-      currentYear++;
-      yearsElapsed++;
-    }
-    return data;
-  }, [inputs, hasLifeEvents]);
+  const baseTimelineData = useMemo(
+    () => (hasLifeEvents ? buildProjection(inputs) : []),
+    [inputs, hasLifeEvents]
+  );
 
   const handleInputChange = (field, rawValue) => {
     if (rawValue === '') {
