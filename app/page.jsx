@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import {
   Info, RotateCcw, TrendingUp, TrendingDown,
-  PauseCircle, DollarSign, Calendar, ChevronDown, ChevronUp, AlertCircle, X, Wallet, HelpCircle, Trash2, BookOpen
+  PauseCircle, DollarSign, Calendar, ChevronDown, ChevronUp, X, Wallet, HelpCircle, Trash2, BookOpen
 } from 'lucide-react';
 import {
   REPAYMENT_BANDS,
@@ -18,6 +18,7 @@ import {
 } from '../lib/hecsRates';
 import { buildProjection } from '../lib/help/projection-engine.mjs';
 import QuickFigures from '../components/help/QuickFigures';
+import PrimaryResult from '../components/help/PrimaryResult';
 
 // --- BRAND OS THEME CONSTANTS ---
 const THEME = {
@@ -719,45 +720,6 @@ const InputField = ({ label, value, onChange, unit, type = "number", step = 1, i
   </div>
 );
 
-// Hero Section
-const HeroSection = ({ isDebtFree, finalYear, firstYear, finalAge, totalPaid, totalIndexation }) => (
-  <div className="relative rounded-[28px] overflow-hidden shadow-2xl mb-6 lg:mb-0 group min-h-[220px] h-auto">
-    <div className="absolute inset-0 bg-gradient-to-r from-[#0081CB] to-[#6A3CFF] opacity-100 transition-transform duration-1000 group-hover:scale-105"
-      style={{ background: 'linear-gradient(110deg, #0081CB 0%, #6A3CFF 100%)' }}></div>
-    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-soft-light"></div>
-    <div className="relative p-6 sm:p-8 text-white h-full flex flex-col justify-between">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h2 className="text-xs font-bold uppercase tracking-[0.2em] opacity-80 mb-2 font-montserrat">Loan Paid Off In</h2>
-          <div
-            key={`${isDebtFree}-${finalYear}-${firstYear}`}
-            className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter font-montserrat pulse-stat drop-shadow-xl"
-          >
-            {isDebtFree ? `${finalYear - firstYear + 1} Years` : '50+ Years'}
-          </div>
-          <div className="mt-4 flex flex-wrap items-center gap-3 font-medium opacity-90">
-            {isDebtFree ? (
-              <>
-                <span className="bg-white/10 border border-white/20 px-3 py-1.5 rounded-lg text-sm font-lato backdrop-blur-md">Debt Free in {finalYear}</span>
-                {finalAge && <span className="bg-white/10 border border-white/20 px-3 py-1.5 rounded-lg text-sm font-lato backdrop-blur-md">Age: {finalAge}</span>}
-              </>
-            ) : (
-              <span className="text-[#FF3366] bg-black/40 px-3 py-1.5 rounded-lg flex items-center gap-2 border border-[#FF3366]/30 backdrop-blur-md"><AlertCircle size={16} /> Loan not cleared in 50 years</span>
-            )}
-          </div>
-        </div>
-        <div className="bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl p-5 w-full md:w-auto min-w-[200px] shadow-lg mt-2 md:mt-0">
-          <div className="text-[10px] uppercase tracking-wider opacity-70 mb-1 font-montserrat">Total Repaid</div>
-          <div className="text-2xl font-bold text-[#62FFDA] font-mono">{formatCurrency(totalPaid)}</div>
-          <div className="w-full h-px bg-white/10 my-3"></div>
-          <div className="text-[10px] uppercase tracking-wider opacity-70 mb-1 font-montserrat">Total Indexation</div>
-          <div className="text-2xl font-bold text-[#FF3366] font-mono">{formatCurrency(totalIndexation)}</div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
 // --- MAIN COMPONENT ---
 
 export default function App() {
@@ -1344,7 +1306,7 @@ export default function App() {
           </Card>
 
           <div className="lg:hidden">
-            <HeroSection isDebtFree={isDebtFree} finalYear={finalYear} firstYear={inputs.firstYear} finalAge={finalAge} totalPaid={totalPaid} totalIndexation={totalIndexation} />
+            <PrimaryResult isDebtFree={isDebtFree} finalYear={finalYear} firstYear={inputs.firstYear} finalAge={finalAge} totalPaid={totalPaid} totalIndexation={totalIndexation} />
           </div>
 
           <div className="lg:hidden mb-6">
@@ -1641,7 +1603,7 @@ export default function App() {
         <div className="lg:col-span-8 space-y-6">
 
           <div className="hidden lg:block">
-            <HeroSection isDebtFree={isDebtFree} finalYear={finalYear} firstYear={inputs.firstYear} finalAge={finalAge} totalPaid={totalPaid} totalIndexation={totalIndexation} />
+            <PrimaryResult isDebtFree={isDebtFree} finalYear={finalYear} firstYear={inputs.firstYear} finalAge={finalAge} totalPaid={totalPaid} totalIndexation={totalIndexation} />
           </div>
 
           <div className="hidden lg:block">

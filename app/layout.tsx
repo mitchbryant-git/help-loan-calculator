@@ -1,11 +1,17 @@
 import Script from 'next/script';
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Montserrat, Lato } from "next/font/google";
+import {
+  Anybody,
+  Archivo_Black,
+  Geist_Mono,
+  Instrument_Sans,
+} from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const anybody = Anybody({
+  variable: "--font-anybody",
   subsets: ["latin"],
+  weight: ["400", "600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -13,19 +19,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
+const archivoBlack = Archivo_Black({
+  variable: "--font-archivo-black",
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
+  weight: "400",
 });
 
-const lato = Lato({
-  variable: "--font-lato",
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument-sans",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.helploancalculator.com'),
   // 1. Google & Browser Tab
   title: "HECS-HELP Repayment Calculator Australia | 2026-27 Rates ($69,528 Threshold)",
   description: "Free Australian HECS-HELP and FEE-HELP repayment calculator, updated for the 2026-27 threshold of $69,528 and the 2.8% June 2026 indexation. Model promotions, gap years, and voluntary repayments to see your real payoff date.",
@@ -194,7 +201,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${lato.variable} antialiased`}
+        className={`${anybody.variable} ${archivoBlack.variable} ${instrumentSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
         <Script

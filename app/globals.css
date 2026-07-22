@@ -1,30 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5efe5;
+  --foreground: #101820;
+  --mb-cream: #f5efe5;
+  --mb-paper: #fffaf1;
+  --mb-ink: #101820;
+  --mb-muted: #625f59;
+  --mb-mint: #19e6c1;
+  --mb-mint-deep: #00a98f;
+  --mb-sky: #008cff;
+  --mb-yellow: #ffd21c;
+  --mb-pink: #f53678;
+  --mb-line: rgba(16, 24, 32, 0.16);
+  --mb-readout: #101820;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-instrument-sans);
   --font-mono: var(--font-geist-mono);
-  --font-montserrat: var(--font-montserrat);
-  --font-lato: var(--font-lato);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-anybody: var(--font-anybody);
+  --font-impact: var(--font-archivo-black);
+  --font-instrument: var(--font-instrument-sans);
+  --font-montserrat: var(--font-instrument-sans);
+  --font-lato: var(--font-instrument-sans);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-instrument-sans), Arial, Helvetica, sans-serif;
+}
+
+.font-anybody {
+  font-family: var(--font-anybody), Arial, Helvetica, sans-serif;
+}
+
+.font-impact {
+  font-family: var(--font-archivo-black), Impact, sans-serif;
+}
+
+.font-instrument {
+  font-family: var(--font-instrument-sans), Arial, Helvetica, sans-serif;
 }
 
 /* --- HELP LOAN CALCULATOR CUSTOM STYLES --- */
