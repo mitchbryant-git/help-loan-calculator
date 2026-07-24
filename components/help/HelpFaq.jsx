@@ -80,7 +80,7 @@ const faqs = [
 
 export default function HelpFaq() {
   return (
-    <section className="rounded-[28px] border border-black/15 bg-[var(--mb-paper)] p-5 shadow-[0_14px_36px_rgba(16,24,32,0.08)] sm:p-6 lg:p-8" aria-labelledby="faq-title">
+    <section className="mb-colour-card rounded-[28px] border border-black/15 p-5 sm:p-6 lg:p-8" style={{ '--card-accent': 'var(--mb-yellow)' }} aria-labelledby="faq-title">
       <div className="mb-6 flex items-start gap-3">
         <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--mb-yellow)]/25 text-[var(--mb-ink)]">
           <CircleHelp size={20} aria-hidden="true" />

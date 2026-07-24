@@ -10,7 +10,6 @@ import {
   CURRENT_INDEXATION_RATE,
 } from '../lib/hecsRates';
 import { buildProjection } from '../lib/help/projection-engine.mjs';
-import QuickFigures from '../components/help/QuickFigures';
 import PrimaryResult from '../components/help/PrimaryResult';
 import PlannerSetup from '../components/help/PlannerSetup';
 import ScenarioBuilder from '../components/help/ScenarioBuilder';
@@ -20,7 +19,9 @@ import MethodAndSources from '../components/help/MethodAndSources';
 import GuideNavigation from '../components/help/GuideNavigation';
 import HelpFaq from '../components/help/HelpFaq';
 import ShareResult from '../components/help/ShareResult';
+import ShareResultsCard from '../components/help/ShareResultsCard';
 import HowToUseModal from '../components/help/HowToUseModal';
+import HelpHero from '../components/help/HelpHero';
 
 // Helper component to bridge Recharts internal state to React state
 const ShareIcon = ({ size = 18, color = 'currentColor' }) => (
@@ -34,7 +35,6 @@ const ShareIcon = ({ size = 18, color = 'currentColor' }) => (
 // --- MAIN COMPONENT ---
 
 export default function App() {
-  const [isDesktopViewport, setIsDesktopViewport] = useState(null);
   const [inputs, setInputs] = useState({
     startingDebt: 50000,
     startingIncome: 70000,
@@ -68,14 +68,6 @@ export default function App() {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [showMenu]);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1024px)');
-    const updateViewport = () => setIsDesktopViewport(mediaQuery.matches);
-    updateViewport();
-    mediaQuery.addEventListener('change', updateViewport);
-    return () => mediaQuery.removeEventListener('change', updateViewport);
-  }, []);
 
   useEffect(() => {
     // These are draft form defaults, synchronised after the user changes the projection start year.
@@ -374,146 +366,95 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 app-fade-in">
-        {/* SEO: Visually hidden h1 for search engines */}
-        <h1 className="sr-only">HELP Loan Calculator | Australian HECS Debt Repayment Calculator</h1>
+      <main className="mx-auto grid max-w-[1480px] grid-cols-1 gap-8 px-4 pb-8 pt-5 relative z-10 app-fade-in sm:pt-8">
+        <HelpHero onOpenHelp={() => setShowHelpModal(true)} />
 
-        {/* LANDING COPY — full-width above both columns on desktop, above inputs on mobile */}
-        <div className="col-span-full mb-0">
-          <p className="font-anybody text-[18px] font-extrabold leading-tight tracking-[-0.03em] text-[var(--mb-ink)] lg:text-[22px]" style={{ marginBottom: 8 }}>
-            Australia's most advanced HECS-HELP<br className="lg:hidden" /> & FEE-HELP repayment calculator.
-          </p>
-          <p className="max-w-3xl font-instrument text-[13px] leading-relaxed text-[var(--mb-muted)] lg:text-[14px]">
-            See how <strong className="font-bold text-[var(--mb-ink)]">indexation, income growth, promotions, career breaks, pay reductions</strong>, and <strong className="font-bold text-[var(--mb-ink)]">extra repayments</strong> affect your student debt over time.<br />
-            <span>Built on official 2026-27 repayment settings.</span>
-          </p>
-        </div>
-
-        <div className="col-span-full mb-0">
-          <button
-            onClick={() => setShowHelpModal(true)}
-            className="group inline-flex cursor-pointer items-center gap-2 font-instrument text-[13px] font-bold text-[var(--mb-ink)] transition-colors"
-            style={{
-              border: '1px dashed rgba(0,129,203,0.25)',
-              background: 'transparent',
-              borderRadius: '10px',
-              padding: '9px 16px',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(0,129,203,0.06)'; e.currentTarget.style.borderColor = 'rgba(0,129,203,0.4)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(0,129,203,0.25)'; }}
-          >
-            <span style={{ fontSize: '15px' }}>💡</span>
-            How to use this calculator
-            <span className="text-[var(--mb-muted)]" style={{ fontSize: '14px' }}>›</span>
-          </button>
-        </div>
-
-        {/* --- LEFT COLUMN (INPUTS) --- */}
-        <div className="lg:col-span-4 space-y-6" data-nosnippet>
-
-          <PlannerSetup inputs={inputs} onInputChange={handleInputChange} nudge={nudge} />
-
-          <div className="lg:hidden">
-            <PrimaryResult isDebtFree={isDebtFree} finalYear={finalYear} firstYear={inputs.firstYear} finalAge={finalAge} totalPaid={totalPaid} totalIndexation={totalIndexation} />
-          </div>
-
-          <div className="lg:hidden mb-6">
-            <QuickFigures income={inputs.startingIncome} />
-          </div>
-
-          <ScenarioBuilder
-            voluntary={{
-              items: voluntary,
-              temp: tempVoluntary,
-              setTemp: setTempVoluntary,
-              add: () => {
-                if (!tempVoluntary.year || !tempVoluntary.amount) return;
-                setVoluntary([...voluntary, { year: tempVoluntary.year, amount: tempVoluntary.amount }]);
-                setTempVoluntary((current) => ({ ...current, year: Number(current.year) + 1 }));
-              },
-              remove: (index) => setVoluntary(voluntary.filter((_, itemIndex) => itemIndex !== index)),
-            }}
-            promotion={{
-              items: promotions,
-              temp: tempPromo,
-              setTemp: setTempPromo,
-              add: () => {
-                if (!tempPromo.year || !tempPromo.percent) return;
-                setPromotions([...promotions, { year: tempPromo.year, percent: tempPromo.percent }]);
-                setTempPromo((current) => ({ ...current, year: Number(current.year) + 1 }));
-              },
-              remove: (index) => setPromotions(promotions.filter((_, itemIndex) => itemIndex !== index)),
-            }}
-            careerBreak={{
-              items: breaks,
-              temp: tempBreak,
-              setTemp: setTempBreak,
-              add: () => {
-                if (!tempBreak.startYear || !tempBreak.duration) return;
-                setBreaks([...breaks, { startYear: tempBreak.startYear, duration: tempBreak.duration }]);
-                setTempBreak((current) => ({ ...current, startYear: Number(current.startYear) + Number(current.duration) }));
-              },
-              remove: (index) => setBreaks(breaks.filter((_, itemIndex) => itemIndex !== index)),
-            }}
-            reduction={{
-              items: reductions,
-              temp: tempReduction,
-              setTemp: setTempReduction,
-              add: () => {
-                if (!tempReduction.year || !tempReduction.percent) return;
-                setReductions([...reductions, { year: tempReduction.year, percent: tempReduction.percent }]);
-                setTempReduction((current) => ({ ...current, year: Number(current.year) + 1 }));
-              },
-              remove: (index) => setReductions(reductions.filter((_, itemIndex) => itemIndex !== index)),
-            }}
-          />
-
-          {isDesktopViewport === false ? (
-            <div className="lg:hidden mb-6">
-              <Timeline timelineData={timelineData} baseTimelineData={baseTimelineData} breaks={breaks} hasLifeEvents={hasLifeEvents} />
+        {/* RESPONSIVE PLANNING WORKSPACE
+            Mobile: planner → result → timeline → scenarios → share.
+            Desktop: planner left, payoff workspace centre, tools right. */}
+        <div id="calculator" className="col-span-full grid scroll-mt-28 grid-cols-1 gap-6 lg:grid-cols-[minmax(260px,0.8fr)_minmax(0,1.55fr)_minmax(270px,0.85fr)] lg:items-start">
+          <aside className="lg:col-start-1 lg:row-start-1 lg:row-span-2" data-nosnippet>
+            <div className="lg:sticky lg:top-28">
+              <PlannerSetup inputs={inputs} onInputChange={handleInputChange} nudge={nudge} />
             </div>
-          ) : null}
+          </aside>
 
-          {/* SHARE BUTTON — mobile only, between Pay Cuts and Year by Year */}
-          <div className="lg:hidden">
-            <button
-              onClick={() => setShowShareModal(true)}
-              className="flex w-full items-center justify-center gap-2.5 rounded-2xl border border-black/15 bg-[var(--mb-paper)] px-5 py-3.5 font-impact text-[11px] uppercase tracking-[0.08em] text-[var(--mb-ink)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--mb-sky)]/40 hover:bg-white"
-            >
-              <ShareIcon size={16} color="#00A3FF" />
-              Share my results
-            </button>
+          <div className="lg:col-start-2 lg:row-start-1">
+            <PrimaryResult
+              isDebtFree={isDebtFree}
+              finalYear={finalYear}
+              firstYear={inputs.firstYear}
+              finalAge={finalAge}
+              totalPaid={totalPaid}
+              totalIndexation={totalIndexation}
+            />
           </div>
+
+          <div className="lg:col-start-2 lg:row-start-2">
+            <Timeline
+              timelineData={timelineData}
+              baseTimelineData={baseTimelineData}
+              breaks={breaks}
+              promotions={promotions}
+              reductions={reductions}
+              voluntary={voluntary}
+              hasLifeEvents={hasLifeEvents}
+            />
+          </div>
+
+          <aside className="space-y-6 lg:col-start-3 lg:row-start-1 lg:row-span-2" data-nosnippet>
+            <ScenarioBuilder
+              voluntary={{
+                items: voluntary,
+                temp: tempVoluntary,
+                setTemp: setTempVoluntary,
+                add: () => {
+                  if (!tempVoluntary.year || !tempVoluntary.amount) return;
+                  setVoluntary([...voluntary, { year: tempVoluntary.year, amount: tempVoluntary.amount }]);
+                  setTempVoluntary((current) => ({ ...current, year: Number(current.year) + 1 }));
+                },
+                remove: (index) => setVoluntary(voluntary.filter((_, itemIndex) => itemIndex !== index)),
+              }}
+              promotion={{
+                items: promotions,
+                temp: tempPromo,
+                setTemp: setTempPromo,
+                add: () => {
+                  if (!tempPromo.year || !tempPromo.percent) return;
+                  setPromotions([...promotions, { year: tempPromo.year, percent: tempPromo.percent }]);
+                  setTempPromo((current) => ({ ...current, year: Number(current.year) + 1 }));
+                },
+                remove: (index) => setPromotions(promotions.filter((_, itemIndex) => itemIndex !== index)),
+              }}
+              careerBreak={{
+                items: breaks,
+                temp: tempBreak,
+                setTemp: setTempBreak,
+                add: () => {
+                  if (!tempBreak.startYear || !tempBreak.duration) return;
+                  setBreaks([...breaks, { startYear: tempBreak.startYear, duration: tempBreak.duration }]);
+                  setTempBreak((current) => ({ ...current, startYear: Number(current.startYear) + Number(current.duration) }));
+                },
+                remove: (index) => setBreaks(breaks.filter((_, itemIndex) => itemIndex !== index)),
+              }}
+              reduction={{
+                items: reductions,
+                temp: tempReduction,
+                setTemp: setTempReduction,
+                add: () => {
+                  if (!tempReduction.year || !tempReduction.percent) return;
+                  setReductions([...reductions, { year: tempReduction.year, percent: tempReduction.percent }]);
+                  setTempReduction((current) => ({ ...current, year: Number(current.year) + 1 }));
+                },
+                remove: (index) => setReductions(reductions.filter((_, itemIndex) => itemIndex !== index)),
+              }}
+            />
+
+            <ShareResultsCard onOpen={() => setShowShareModal(true)} />
+          </aside>
         </div>
 
-        {/* --- RIGHT COLUMN (OUTPUTS) --- */}
-        <div className="lg:col-span-8 space-y-6">
-
-          <div className="hidden lg:block">
-            <PrimaryResult isDebtFree={isDebtFree} finalYear={finalYear} firstYear={inputs.firstYear} finalAge={finalAge} totalPaid={totalPaid} totalIndexation={totalIndexation} />
-          </div>
-
-          <div className="hidden lg:block">
-            <QuickFigures income={inputs.startingIncome} />
-          </div>
-
-          {isDesktopViewport === true ? (
-            <div className="hidden lg:block">
-              <Timeline timelineData={timelineData} baseTimelineData={baseTimelineData} breaks={breaks} hasLifeEvents={hasLifeEvents} />
-            </div>
-          ) : null}
-
-          {/* SHARE BUTTON — desktop only, between chart and Year by Year */}
-          <div className="hidden lg:flex justify-center">
-            <button
-              onClick={() => setShowShareModal(true)}
-              className="flex items-center gap-2.5 rounded-2xl border border-black/15 bg-[var(--mb-paper)] px-6 py-3 font-impact text-[11px] uppercase tracking-[0.08em] text-[var(--mb-ink)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--mb-sky)]/40 hover:bg-white"
-            >
-              <ShareIcon size={16} color="#00A3FF" />
-              Share my results
-            </button>
-          </div>
-
+        <div className="col-span-full space-y-8">
           <YearTable timelineData={timelineData} />
 
           <GuideNavigation />

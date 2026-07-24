@@ -1,7 +1,44 @@
 import dynamic from 'next/dynamic';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { formatCurrency } from '../../lib/hecsRates';
+
+const EVENT_TYPES = {
+  voluntary: {
+    label: 'Extra repayment',
+    colour: '#19E6C1',
+    symbol: '$',
+  },
+  promotion: {
+    label: 'Promotion or pay rise',
+    colour: '#FFD21C',
+    symbol: '↑',
+  },
+  break: {
+    label: 'Career break',
+    colour: '#008CFF',
+    symbol: 'II',
+  },
+  reduction: {
+    label: 'Pay reduction',
+    colour: '#F53678',
+    symbol: '↓',
+  },
+};
+
+function repaymentFor(row) {
+  return (row?.compulsory || 0) + (row?.voluntary || 0);
+}
+
+function eventDescription(kind, event) {
+  if (kind === 'voluntary') return `${formatCurrency(event.amount)} extra repayment`;
+  if (kind === 'promotion') return `Income increased ${event.percent}%`;
+  if (kind === 'break') {
+    const duration = Number(event.duration);
+    return `${duration} ${duration === 1 ? 'year' : 'years'} away from work`;
+  }
+  return `Income reduced ${event.percent}%`;
+}
 
 const TimelineChart = dynamic(
   async () => {
@@ -10,6 +47,8 @@ const TimelineChart = dynamic(
       AreaChart,
       CartesianGrid,
       ReferenceArea,
+      ReferenceDot,
+      ReferenceLine,
       ResponsiveContainer,
       Tooltip,
       XAxis,
@@ -19,52 +58,149 @@ const TimelineChart = dynamic(
     function ChartTooltip({ active, payload }) {
       if (!active || !payload?.length) return null;
       const row = payload[0].payload;
-      const repayment = (row.compulsory || 0) + (row.voluntary || 0);
 
       return (
-        <div className="min-w-48 rounded-xl border border-white/15 bg-[var(--mb-ink)]/95 p-3 font-instrument text-xs text-white shadow-2xl backdrop-blur">
-          <div className="mb-2 flex items-center justify-between gap-5">
-            <strong className="font-mono text-sm">{row.year}</strong>
-            {row.age ? <span className="text-white/55">Age {row.age}</span> : null}
+        <div className="timeline-tooltip">
+          <div className="timeline-tooltip__heading">
+            <span>Projection year</span>
+            <strong>{row.year}</strong>
+            {row.age ? <i>Age {row.age}</i> : null}
           </div>
-          <dl className="space-y-1.5">
-            <div className="flex justify-between gap-6"><dt className="text-white/55">Balance</dt><dd className="font-mono font-bold text-[var(--mb-mint)]">{formatCurrency(row.endBalance)}</dd></div>
-            {row.baseBalance !== undefined ? <div className="flex justify-between gap-6"><dt className="text-white/55">Original path</dt><dd className="font-mono font-bold text-white/80">{formatCurrency(row.baseBalance)}</dd></div> : null}
-            <div className="flex justify-between gap-6"><dt className="text-white/55">Income</dt><dd className="font-mono font-bold">{formatCurrency(row.taxableIncome || 0)}</dd></div>
-            <div className="flex justify-between gap-6"><dt className="text-white/55">Repayment</dt><dd className="font-mono font-bold text-[var(--mb-sky)]">{formatCurrency(repayment)}</dd></div>
+
+          <dl className="timeline-tooltip__metrics">
+            <div>
+              <dt>Balance</dt>
+              <dd>{formatCurrency(row.endBalance)}</dd>
+            </div>
+            {row.baseBalance !== undefined ? (
+              <div>
+                <dt>Original path</dt>
+                <dd>{formatCurrency(row.baseBalance)}</dd>
+              </div>
+            ) : null}
+            <div>
+              <dt>Income</dt>
+              <dd>{formatCurrency(row.taxableIncome || 0)}</dd>
+            </div>
+            <div>
+              <dt>Repaid</dt>
+              <dd>{formatCurrency(repaymentFor(row))}</dd>
+            </div>
           </dl>
+
+          {row.events?.length ? (
+            <ul className="timeline-tooltip__events" aria-label="Life events this year">
+              {row.events.map((event) => (
+                <li key={event.id} style={{ '--event-colour': event.colour }}>
+                  <span>{event.symbol}</span>
+                  {event.description}
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
       );
     }
 
-    function Chart({ data, breaks, hasLifeEvents }) {
+    function EventMarker({ cx, cy, marker }) {
+      if (!Number.isFinite(cx) || !Number.isFinite(cy)) return <g />;
+
+      return (
+        <g
+          className="timeline-event-marker"
+          transform={`translate(${cx + marker.offset}, ${cy})`}
+          aria-label={`${marker.label}: ${marker.description} in ${marker.year}`}
+        >
+          <circle r="13" fill="#FFFaf1" stroke="#101820" strokeWidth="2" />
+          <circle r="10" fill={marker.colour} stroke="#101820" strokeWidth="1" />
+          <text
+            x="0"
+            y="0.5"
+            fill="#101820"
+            fontFamily="Arial, sans-serif"
+            fontSize={marker.symbol.length > 1 ? 7 : 11}
+            fontWeight="900"
+            textAnchor="middle"
+            dominantBaseline="middle"
+          >
+            {marker.symbol}
+          </text>
+        </g>
+      );
+    }
+
+    function Chart({
+      activeYear,
+      breakBands,
+      data,
+      eventMarkers,
+      hasLifeEvents,
+      onActiveRow,
+    }) {
+      const activatePoint = (nextState) => {
+        const index = Number(nextState?.activeTooltipIndex);
+        if (Number.isInteger(index) && data[index]) onActiveRow(data[index]);
+      };
+
       return (
         <ResponsiveContainer
           width="100%"
           height="100%"
           minWidth={0}
-          minHeight={260}
-          initialDimension={{ width: 640, height: 300 }}
+          minHeight={300}
+          initialDimension={{ width: 640, height: 330 }}
         >
-          <AreaChart data={data} margin={{ top: 18, right: 8, left: -10, bottom: 0 }}>
-            <defs>
-              <linearGradient id="helpBalanceFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#19E6C1" stopOpacity={0.32} />
-                <stop offset="95%" stopColor="#19E6C1" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid stroke="rgba(255,255,255,0.09)" strokeDasharray="3 5" vertical={false} />
-            <XAxis dataKey="year" tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.58)' }} tickLine={false} axisLine={false} minTickGap={28} />
-            <YAxis tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.58)' }} tickLine={false} axisLine={false} tickFormatter={(value) => `$${Math.round(value / 1000)}k`} width={48} />
-            <Tooltip content={<ChartTooltip />} cursor={{ stroke: '#19E6C1', strokeWidth: 1.5 }} />
+          <AreaChart
+            data={data}
+            margin={{ top: 24, right: 10, left: -10, bottom: 2 }}
+            onClick={activatePoint}
+            onMouseMove={activatePoint}
+            onTouchMove={activatePoint}
+            onTouchStart={activatePoint}
+          >
+            <CartesianGrid stroke="rgba(255,250,241,0.12)" strokeDasharray="3 6" vertical={false} />
+            <XAxis
+              dataKey="year"
+              tick={{ fontSize: 10, fill: 'rgba(255,250,241,0.62)', fontWeight: 700 }}
+              tickLine={false}
+              axisLine={{ stroke: 'rgba(255,250,241,0.18)' }}
+              minTickGap={26}
+            />
+            <YAxis
+              tick={{ fontSize: 10, fill: 'rgba(255,250,241,0.62)', fontWeight: 700 }}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(value) => `$${Math.round(value / 1000)}k`}
+              width={47}
+            />
+            <Tooltip
+              content={<ChartTooltip />}
+              cursor={{ stroke: '#FFFaf1', strokeWidth: 1.5, strokeDasharray: '3 5' }}
+              isAnimationActive={false}
+              wrapperStyle={{ outline: 'none', zIndex: 20 }}
+            />
+
+            {breakBands.map((careerBreak, index) => (
+              <ReferenceArea
+                key={`${careerBreak.startYear}-${careerBreak.duration}-${index}`}
+                x1={Number(careerBreak.startYear)}
+                x2={Number(careerBreak.startYear) + Number(careerBreak.duration)}
+                fill={EVENT_TYPES.break.colour}
+                fillOpacity={0.12}
+                stroke={EVENT_TYPES.break.colour}
+                strokeOpacity={0.5}
+                strokeDasharray="3 5"
+              />
+            ))}
 
             {hasLifeEvents ? (
               <Area
                 type="monotone"
                 dataKey="baseBalance"
-                stroke="rgba(255,255,255,0.52)"
+                name="Original path"
+                stroke="rgba(255,250,241,0.62)"
                 strokeWidth={2}
-                strokeDasharray="6 5"
+                strokeDasharray="7 6"
                 fill="transparent"
                 dot={false}
                 activeDot={false}
@@ -75,21 +211,35 @@ const TimelineChart = dynamic(
             <Area
               type="monotone"
               dataKey="endBalance"
+              name="Current path"
               stroke="#19E6C1"
-              strokeWidth={3}
-              fill="url(#helpBalanceFill)"
+              strokeWidth={4}
+              fill="#19E6C1"
+              fillOpacity={0.13}
               dot={false}
-              activeDot={{ r: 5, fill: '#101820', stroke: '#19E6C1', strokeWidth: 3 }}
+              activeDot={{ r: 6, fill: '#FFFaf1', stroke: '#19E6C1', strokeWidth: 4 }}
               isAnimationActive={false}
             />
 
-            {breaks.map((careerBreak, index) => (
-              <ReferenceArea
-                key={`${careerBreak.startYear}-${index}`}
-                x1={Number(careerBreak.startYear)}
-                x2={Number(careerBreak.startYear) + Number(careerBreak.duration)}
-                fill="#008CFF"
-                fillOpacity={0.08}
+            {activeYear ? (
+              <ReferenceLine
+                x={activeYear}
+                stroke="#FFFaf1"
+                strokeWidth={1}
+                strokeOpacity={0.42}
+                strokeDasharray="3 6"
+              />
+            ) : null}
+
+            {eventMarkers.map((marker) => (
+              <ReferenceDot
+                key={marker.id}
+                x={marker.year}
+                y={marker.balance}
+                r={13}
+                ifOverflow="extendDomain"
+                zIndex={1000}
+                shape={(props) => <EventMarker {...props} marker={marker} />}
               />
             ))}
           </AreaChart>
@@ -101,22 +251,79 @@ const TimelineChart = dynamic(
   },
   {
     ssr: false,
-    loading: () => <div className="h-[300px] w-full animate-pulse rounded-2xl bg-white/5" />,
+    loading: () => <div className="timeline-console__loading" aria-label="Loading repayment timeline" />,
   },
 );
 
-export default function Timeline({ timelineData, baseTimelineData, breaks, hasLifeEvents }) {
-  const data = useMemo(() => {
-    if (!hasLifeEvents || baseTimelineData.length === 0) return timelineData;
+export default function Timeline({
+  timelineData,
+  baseTimelineData,
+  breaks,
+  promotions,
+  reductions,
+  voluntary,
+  hasLifeEvents,
+}) {
+  const rawEvents = useMemo(() => [
+    ...voluntary.map((event, index) => ({
+      ...EVENT_TYPES.voluntary,
+      id: `voluntary-${event.year}-${index}`,
+      kind: 'voluntary',
+      year: Number(event.year),
+      description: eventDescription('voluntary', event),
+    })),
+    ...promotions.map((event, index) => ({
+      ...EVENT_TYPES.promotion,
+      id: `promotion-${event.year}-${index}`,
+      kind: 'promotion',
+      year: Number(event.year),
+      description: eventDescription('promotion', event),
+    })),
+    ...breaks.map((event, index) => ({
+      ...EVENT_TYPES.break,
+      id: `break-${event.startYear}-${index}`,
+      kind: 'break',
+      year: Number(event.startYear),
+      description: eventDescription('break', event),
+    })),
+    ...reductions.map((event, index) => ({
+      ...EVENT_TYPES.reduction,
+      id: `reduction-${event.year}-${index}`,
+      kind: 'reduction',
+      year: Number(event.year),
+      description: eventDescription('reduction', event),
+    })),
+  ], [breaks, promotions, reductions, voluntary]);
 
+  const eventsByYear = useMemo(() => {
+    const grouped = new Map();
+    rawEvents.forEach((event) => {
+      const existing = grouped.get(event.year) || [];
+      grouped.set(event.year, [...existing, event]);
+    });
+    return grouped;
+  }, [rawEvents]);
+
+  const data = useMemo(() => {
     const activeRows = new Map(timelineData.map((row) => [row.year, row]));
     const baselineRows = new Map(baseTimelineData.map((row) => [row.year, row]));
-    const years = [...new Set([...activeRows.keys(), ...baselineRows.keys()])].sort((a, b) => a - b);
+    const years = hasLifeEvents
+      ? [...new Set([...activeRows.keys(), ...baselineRows.keys()])].sort((a, b) => a - b)
+      : timelineData.map((row) => row.year);
 
     return years.map((year) => {
       const active = activeRows.get(year);
       const baseline = baselineRows.get(year);
-      if (active) return { ...active, baseBalance: baseline?.endBalance ?? 0 };
+      const events = eventsByYear.get(year) || [];
+
+      if (active) {
+        return {
+          ...active,
+          baseBalance: hasLifeEvents ? (baseline?.endBalance ?? 0) : undefined,
+          events,
+        };
+      }
+
       return {
         year,
         age: baseline?.age,
@@ -125,61 +332,151 @@ export default function Timeline({ timelineData, baseTimelineData, breaks, hasLi
         voluntary: 0,
         endBalance: 0,
         baseBalance: baseline?.endBalance ?? 0,
+        events,
+        notes: [],
       };
     });
-  }, [timelineData, baseTimelineData, hasLifeEvents]);
+  }, [baseTimelineData, eventsByYear, hasLifeEvents, timelineData]);
+
+  const eventMarkers = useMemo(() => {
+    const rows = new Map(data.map((row) => [row.year, row]));
+    const positionsByYear = new Map();
+
+    return rawEvents
+      .map((event) => {
+        const row = rows.get(event.year);
+        if (!row) return null;
+        const position = positionsByYear.get(event.year) || 0;
+        positionsByYear.set(event.year, position + 1);
+
+        return {
+          ...event,
+          balance: row.endBalance,
+          offset: position === 0 ? 0 : position % 2 === 1 ? 17 * Math.ceil(position / 2) : -17 * Math.ceil(position / 2),
+        };
+      })
+      .filter(Boolean);
+  }, [data, rawEvents]);
+
+  const finalRow = timelineData[timelineData.length - 1];
+  const [activeYear, setActiveYear] = useState(finalRow?.year);
+
+  const activeRow = data.find((row) => row.year === activeYear) || finalRow;
+  const activeEvents = activeRow?.events || [];
+  const activeRepayment = repaymentFor(activeRow);
+  const yearDifference = hasLifeEvents ? baseTimelineData.length - timelineData.length : 0;
+  const baselineRepaid = baseTimelineData.reduce((sum, row) => sum + repaymentFor(row), 0);
+  const scenarioRepaid = timelineData.reduce((sum, row) => sum + repaymentFor(row), 0);
+  const repaymentDifference = baselineRepaid - scenarioRepaid;
+
+  const handleActiveRow = useCallback((row) => {
+    setActiveYear((currentYear) => (currentYear === row.year ? currentYear : row.year));
+  }, []);
 
   if (!timelineData.length) return null;
 
-  const finalRow = timelineData[timelineData.length - 1];
-  const finalRepayment = (finalRow.compulsory || 0) + (finalRow.voluntary || 0);
-  const yearDifference = hasLifeEvents ? baseTimelineData.length - timelineData.length : 0;
-  const baselineRepaid = baseTimelineData.reduce((sum, row) => sum + row.compulsory + row.voluntary, 0);
-  const scenarioRepaid = timelineData.reduce((sum, row) => sum + row.compulsory + row.voluntary, 0);
-  const repaymentDifference = baselineRepaid - scenarioRepaid;
+  const legendEvents = Object.entries(EVENT_TYPES)
+    .filter(([kind]) => rawEvents.some((event) => event.kind === kind))
+    .map(([kind, config]) => ({ kind, ...config }));
 
   return (
-    <section className="overflow-hidden rounded-[28px] border border-black/15 bg-[var(--mb-paper)] shadow-[0_16px_40px_rgba(16,24,32,0.10)]" aria-labelledby="timeline-title">
-      <div className="flex flex-wrap items-start justify-between gap-3 p-5 sm:p-6">
-        <div>
-          <p className="font-impact text-[10px] uppercase tracking-[0.14em] text-[var(--mb-mint-deep)]">Your path over time</p>
-          <h2 id="timeline-title" className="mt-1 font-anybody text-xl font-extrabold tracking-[-0.03em] text-[var(--mb-ink)]">Repayment timeline</h2>
+    <section
+      className="timeline-console mb-colour-card overflow-hidden"
+      style={{ '--card-accent': 'var(--mb-pink)' }}
+      aria-labelledby="timeline-title"
+    >
+      <header className="timeline-console__header">
+        <div className="timeline-console__heading">
+          <span className="timeline-console__number" aria-hidden="true">03</span>
+          <div>
+            <p>Live projection</p>
+            <h2 id="timeline-title">Repayment timeline</h2>
+          </div>
         </div>
-        <span className="rounded-full border border-black/15 bg-[var(--mb-cream)] px-3 py-1.5 font-impact text-[9px] uppercase tracking-[0.1em] text-[var(--mb-muted)]">Ends {finalRow.year}</span>
-      </div>
+        <div className="timeline-console__end-state">
+          <span>Debt-free target</span>
+          <strong>{finalRow.year}</strong>
+        </div>
+      </header>
 
-      <div className="bg-[var(--mb-readout)] p-4 sm:p-6">
-        <dl className="mb-4 grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-white/10 sm:grid-cols-4">
+      <div className="timeline-console__body">
+        <div className="timeline-console__status">
+          <span><i /> Projection online</span>
+          <span>Touch or hover the chart to inspect any year</span>
+        </div>
+
+        <dl className="timeline-console__hud" aria-label={`Projection details for ${activeRow.year}`}>
           {[
-            ['Final year', finalRow.year, 'text-white'],
-            ['Age', finalRow.age ?? '—', 'text-white'],
-            ['Final repayment', formatCurrency(finalRepayment), 'text-[var(--mb-sky)]'],
-            ['Balance', formatCurrency(finalRow.endBalance), 'text-[var(--mb-mint)]'],
-          ].map(([label, value, colour]) => (
-            <div key={label} className="bg-[var(--mb-readout)] p-3.5">
-              <dt className="font-impact text-[9px] uppercase tracking-[0.1em] text-white/45">{label}</dt>
-              <dd className={`mt-1 font-mono text-sm font-bold sm:text-base ${colour}`}>{value}</dd>
+            ['Selected year', activeRow.year, 'sky'],
+            ['Age', activeRow.age ?? '—', 'yellow'],
+            ['Repaid this year', formatCurrency(activeRepayment), 'pink'],
+            ['Balance remaining', formatCurrency(activeRow.endBalance), 'mint'],
+          ].map(([label, value, tone]) => (
+            <div key={label} className={`timeline-console__hud-cell timeline-console__hud-cell--${tone}`}>
+              <dt>{label}</dt>
+              <dd>{value}</dd>
             </div>
           ))}
         </dl>
 
-        <div className="h-[300px] min-w-0">
-          <TimelineChart data={data} breaks={breaks} hasLifeEvents={hasLifeEvents} />
+        <div className="timeline-console__active-strip">
+          <span>Viewing {activeRow.year}</span>
+          {activeEvents.length ? (
+            <ul aria-label="Events in the selected year">
+              {activeEvents.map((event) => (
+                <li key={event.id} style={{ '--event-colour': event.colour }}>
+                  <i>{event.symbol}</i>
+                  {event.description}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No optional events this year</p>
+          )}
         </div>
 
-        {hasLifeEvents ? (
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4 font-instrument text-xs text-white/65">
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1.5"><i className="h-0.5 w-5 bg-[var(--mb-mint)]" /> With life events</span>
-              <span className="flex items-center gap-1.5"><i className="w-5 border-t-2 border-dashed border-white/50" /> Original path</span>
-            </div>
-            {yearDifference !== 0 || repaymentDifference !== 0 ? (
-              <strong className="text-white">
-                {yearDifference > 0 ? `${yearDifference} years sooner` : yearDifference < 0 ? `${Math.abs(yearDifference)} years later` : 'Same payoff year'} · {repaymentDifference >= 0 ? `${formatCurrency(repaymentDifference)} less repaid` : `${formatCurrency(Math.abs(repaymentDifference))} more repaid`}
-              </strong>
-            ) : null}
+        <div className="timeline-console__chart">
+          <TimelineChart
+            activeYear={activeRow.year}
+            breakBands={breaks}
+            data={data}
+            eventMarkers={eventMarkers}
+            hasLifeEvents={hasLifeEvents}
+            onActiveRow={handleActiveRow}
+          />
+        </div>
+
+        <footer className="timeline-console__footer">
+          <div className="timeline-console__path-legend">
+            <span><i className="timeline-console__line timeline-console__line--current" /> Current path</span>
+            {hasLifeEvents ? <span><i className="timeline-console__line timeline-console__line--baseline" /> Original path</span> : null}
           </div>
-        ) : null}
+
+          {legendEvents.length ? (
+            <div className="timeline-console__event-legend" aria-label="Life event markers">
+              {legendEvents.map((event) => (
+                <span key={event.kind} style={{ '--event-colour': event.colour }}>
+                  <i>{event.symbol}</i>
+                  {event.label}
+                </span>
+              ))}
+            </div>
+          ) : null}
+
+          {hasLifeEvents && (yearDifference !== 0 || repaymentDifference !== 0) ? (
+            <strong className="timeline-console__comparison">
+              {yearDifference > 0
+                ? `${yearDifference} years sooner`
+                : yearDifference < 0
+                  ? `${Math.abs(yearDifference)} years later`
+                  : 'Same payoff year'}
+              <span>·</span>
+              {repaymentDifference >= 0
+                ? `${formatCurrency(repaymentDifference)} less repaid`
+                : `${formatCurrency(Math.abs(repaymentDifference))} more repaid`}
+            </strong>
+          ) : null}
+        </footer>
       </div>
     </section>
   );

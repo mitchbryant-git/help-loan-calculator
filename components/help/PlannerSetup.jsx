@@ -1,7 +1,7 @@
 import { ChevronDown, Info, SlidersHorizontal } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 
-import { CURRENT_INDEXATION_TOOLTIP } from '../../lib/hecsRates';
+import { CURRENT_INDEXATION_TOOLTIP, FINANCIAL_YEAR, formatCurrency, getQuickAnswer } from '../../lib/hecsRates';
 
 function InfoHint({ text, label }) {
   return (
@@ -39,10 +39,10 @@ function NumberField({ label, value, onChange, suffix, help, nudge }) {
             const nextValue = event.target.value;
             onChange(nextValue === '' ? '' : Number(nextValue));
           }}
-          className="w-full rounded-2xl border border-black/20 bg-white px-4 py-3.5 pr-10 font-mono text-lg font-bold text-[var(--mb-ink)] outline-none transition focus:border-[var(--mb-mint-deep)] focus:ring-4 focus:ring-[var(--mb-mint)]/20"
+          className="w-full rounded-xl border-2 border-black/80 bg-white px-4 py-3.5 pr-14 font-mono text-lg font-bold text-[var(--mb-ink)] outline-none transition focus:border-[var(--mb-sky)] focus:ring-4 focus:ring-[var(--mb-sky)]/18"
         />
         {suffix ? (
-          <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 font-instrument text-sm font-bold text-[var(--mb-muted)]">
+          <span className="pointer-events-none absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-[10px] border-l-2 border-black/80 bg-[var(--mb-mint)] font-impact text-sm text-[var(--mb-ink)]">
             {suffix}
           </span>
         ) : null}
@@ -82,7 +82,7 @@ function AssumptionSlider({ label, value, onChange, help, colour }) {
           </label>
           <InfoHint text={help} label={label} />
         </div>
-        <output htmlFor={id} className="font-mono text-lg font-bold text-[var(--mb-ink)]">{localValue}%</output>
+        <output htmlFor={id} className="rounded-lg border-2 border-black bg-[var(--mb-mint)] px-2 py-1 font-mono text-base font-bold text-[var(--mb-ink)]">{localValue}%</output>
       </div>
       <input
         id={id}
@@ -100,19 +100,21 @@ function AssumptionSlider({ label, value, onChange, help, colour }) {
 }
 
 export default function PlannerSetup({ inputs, onInputChange, nudge }) {
+  const quickAnswer = getQuickAnswer(inputs.startingIncome);
   return (
     <section
-      className="rounded-[28px] border border-black/15 bg-[var(--mb-paper)] p-5 shadow-[0_16px_40px_rgba(16,24,32,0.10)] sm:p-6"
+      className="mb-colour-card rounded-[28px] border border-black/15 p-5 sm:p-6"
+      style={{ '--card-accent': 'var(--mb-sky)' }}
       aria-labelledby="planner-setup-title"
     >
-      <div className="mb-6 flex items-start justify-between gap-4">
+      <div className="-mx-5 -mt-5 mb-6 flex items-start justify-between gap-4 rounded-t-[14px] border-b-2 border-black bg-[var(--mb-sky)] px-5 py-4 sm:-mx-6 sm:-mt-6 sm:px-6">
         <div>
-          <p className="font-impact text-[10px] uppercase tracking-[0.14em] text-[var(--mb-mint-deep)]">Start here</p>
+          <p className="font-impact text-[10px] uppercase tracking-[0.14em] text-[var(--mb-ink)]">01 · Start here</p>
           <h2 id="planner-setup-title" className="mt-1 font-anybody text-2xl font-extrabold tracking-[-0.035em] text-[var(--mb-ink)]">
             Plan your HELP debt
           </h2>
         </div>
-        <div className="rounded-2xl bg-[var(--mb-mint)]/18 p-3 text-[var(--mb-mint-deep)]">
+        <div className="rounded-xl border-2 border-black bg-[var(--mb-paper)] p-2.5 text-[var(--mb-ink)]">
           <SlidersHorizontal size={20} />
         </div>
       </div>
@@ -134,7 +136,19 @@ export default function PlannerSetup({ inputs, onInputChange, nudge }) {
           nudge={nudge?.field === 'startingIncome' ? nudge : null}
           help="Repayment income is broader than salary. It can include taxable income, reportable fringe benefits, net investment losses and reportable super contributions."
         />
-      </div>
+        <div className="rounded-xl border-2 border-black/70 bg-[var(--mb-paper)] px-4 py-3.5" aria-label="Estimated compulsory repayment">
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-impact text-[9px] uppercase tracking-[0.12em] text-[var(--mb-muted)]">Estimated compulsory repayment</p>
+            <span className="shrink-0 rounded-full bg-[var(--mb-mint)]/18 px-2 py-1 font-instrument text-[9px] font-bold text-[var(--mb-mint-deep)]">{FINANCIAL_YEAR}</span>
+          </div>
+          <p className="mt-2 font-mono text-sm font-bold text-[var(--mb-ink)]">
+            {formatCurrency(quickAnswer.annual)}/yr
+            <span className="mx-2 text-black/25">·</span>
+            {formatCurrency(quickAnswer.monthly)}/mo
+            <span className="mx-2 text-black/25">·</span>
+            {formatCurrency(quickAnswer.weekly)}/wk
+          </p>
+        </div>      </div>
 
       <details className="group mt-6 border-t border-black/15 pt-5" open>
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 marker:hidden">

@@ -66,10 +66,10 @@ function ScenarioPanel({ kind, count, children }) {
   const Icon = panel.icon;
 
   return (
-    <details className="group rounded-2xl border border-black/15 bg-white/55">
+    <details className="group rounded-xl border-2 border-black/75 bg-[var(--mb-paper)]">
       <summary className="flex cursor-pointer list-none items-center gap-3 p-4 marker:hidden">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--panel-colour)]/15" style={{ '--panel-colour': panel.colour }}>
-          <Icon size={19} style={{ color: panel.colour }} />
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 border-black bg-[var(--panel-colour)]" style={{ '--panel-colour': panel.colour }}>
+          <Icon size={19} className="text-[var(--mb-ink)]" />
         </span>
         <span className="min-w-0 flex-1">
           <span className="block font-anybody text-sm font-bold text-[var(--mb-ink)]">{panel.title}</span>
@@ -126,13 +126,13 @@ export default function ScenarioBuilder({
   reduction,
 }) {
   return (
-    <section className="rounded-[28px] border border-black/15 bg-[var(--mb-paper)] p-5 shadow-[0_16px_40px_rgba(16,24,32,0.10)] sm:p-6" aria-labelledby="scenario-builder-title">
-      <div className="mb-5 flex items-start gap-3">
-        <span className="mt-0.5 rounded-2xl bg-[var(--mb-yellow)]/25 p-3 text-[var(--mb-ink)]">
+    <section className="mb-colour-card rounded-[28px] border border-black/15 p-5 sm:p-6" style={{ '--card-accent': 'var(--mb-yellow)' }} aria-labelledby="scenario-builder-title">
+      <div className="-mx-5 -mt-5 mb-5 flex items-start gap-3 rounded-t-[14px] border-b-2 border-black bg-[var(--mb-yellow)] px-5 py-4 sm:-mx-6 sm:-mt-6 sm:px-6">
+        <span className="mt-0.5 rounded-lg border-2 border-black bg-[var(--mb-paper)] p-2.5 text-[var(--mb-ink)]">
           <Sparkles size={19} />
         </span>
         <div>
-          <p className="font-impact text-[10px] uppercase tracking-[0.14em] text-[var(--mb-muted)]">Optional</p>
+          <p className="font-impact text-[10px] uppercase tracking-[0.14em] text-[var(--mb-ink)]">04 · Optional</p>
           <h2 id="scenario-builder-title" className="mt-1 font-anybody text-xl font-extrabold tracking-[-0.03em] text-[var(--mb-ink)]">What could change?</h2>
           <p className="mt-1 font-instrument text-xs leading-relaxed text-[var(--mb-muted)]">Add only the life events you want to test. Your original path remains available for comparison.</p>
         </div>
@@ -140,7 +140,7 @@ export default function ScenarioBuilder({
 
       <div className="space-y-3">
         <ScenarioPanel kind="voluntary" count={voluntary.items.length}>
-          <div className="flex items-end gap-2">
+          <div className="flex flex-wrap items-end gap-2">
             <CompactField label="Year" value={voluntary.temp.year} onChange={(year) => voluntary.setTemp({ ...voluntary.temp, year })} width="w-24" />
             <CompactField label="Amount" value={voluntary.temp.amount} onChange={(amount) => voluntary.setTemp({ ...voluntary.temp, amount })} suffix="$" />
             <AddButton onClick={() => voluntary.add()} />
@@ -149,7 +149,7 @@ export default function ScenarioBuilder({
         </ScenarioPanel>
 
         <ScenarioPanel kind="promotion" count={promotion.items.length}>
-          <div className="flex items-end gap-2">
+          <div className="flex flex-wrap items-end gap-2">
             <CompactField label="Year" value={promotion.temp.year} onChange={(year) => promotion.setTemp({ ...promotion.temp, year })} width="w-24" />
             <CompactField label="Increase" value={promotion.temp.percent} onChange={(percent) => promotion.setTemp({ ...promotion.temp, percent })} suffix="%" />
             <AddButton onClick={() => promotion.add()} />
@@ -158,7 +158,7 @@ export default function ScenarioBuilder({
         </ScenarioPanel>
 
         <ScenarioPanel kind="break" count={careerBreak.items.length}>
-          <div className="flex items-end gap-2">
+          <div className="flex flex-wrap items-end gap-2">
             <CompactField label="Start" value={careerBreak.temp.startYear} onChange={(startYear) => careerBreak.setTemp({ ...careerBreak.temp, startYear })} width="w-24" />
             <CompactField label="Duration" value={careerBreak.temp.duration} onChange={(duration) => careerBreak.setTemp({ ...careerBreak.temp, duration })} suffix="yrs" />
             <AddButton onClick={() => careerBreak.add()} />
@@ -167,7 +167,7 @@ export default function ScenarioBuilder({
         </ScenarioPanel>
 
         <ScenarioPanel kind="reduction" count={reduction.items.length}>
-          <div className="flex items-end gap-2">
+          <div className="flex flex-wrap items-end gap-2">
             <CompactField label="Year" value={reduction.temp.year} onChange={(year) => reduction.setTemp({ ...reduction.temp, year })} width="w-24" />
             <CompactField label="Decrease" value={reduction.temp.percent} onChange={(percent) => reduction.setTemp({ ...reduction.temp, percent })} suffix="%" />
             <AddButton onClick={() => reduction.add()} />

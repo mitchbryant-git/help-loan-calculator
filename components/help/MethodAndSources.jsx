@@ -28,7 +28,7 @@ const sources = [
 
 export default function MethodAndSources({ indexationRate, wageGrowth }) {
   return (
-    <section className="overflow-hidden rounded-[28px] border border-black/15 bg-[var(--mb-paper)] shadow-[0_14px_36px_rgba(16,24,32,0.08)]" aria-labelledby="method-title">
+    <section className="mb-colour-card overflow-hidden rounded-[28px] border border-black/15" style={{ '--card-accent': 'var(--mb-mint)' }} aria-labelledby="method-title">
       <div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-[1.05fr_0.95fr] lg:p-8">
         <div>
           <div className="flex items-center gap-3">

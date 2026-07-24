@@ -11,6 +11,8 @@ const guides = [
   { href: '/help-borrowing-limit', title: 'The HELP borrowing limit', detail: 'The 2026 cap and what counts towards it' },
 ];
 
+const guideAccents = ['var(--mb-sky)', 'var(--mb-mint)', 'var(--mb-yellow)', 'var(--mb-pink)'];
+
 export default function GuideNavigation() {
   return (
     <section aria-labelledby="guides-title">
@@ -27,7 +29,8 @@ export default function GuideNavigation() {
           <Link
             key={guide.href}
             href={guide.href}
-            className={`group flex min-h-32 flex-col justify-between rounded-3xl border border-black/15 bg-[var(--mb-paper)] p-5 shadow-[0_10px_28px_rgba(16,24,32,0.06)] transition hover:-translate-y-0.5 hover:border-[var(--mb-mint-deep)]/45 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--mb-sky)] ${index === guides.length - 1 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
+            className={`mb-colour-card group flex min-h-32 flex-col justify-between rounded-3xl border border-black/15 p-5 transition hover:-translate-y-0.5 hover:border-[var(--mb-ink)]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--mb-sky)] ${index === guides.length - 1 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
+            style={{ '--card-accent': guideAccents[index % guideAccents.length] }}
           >
             <span className="flex items-start justify-between gap-4">
               <span className="font-impact text-[10px] uppercase leading-relaxed tracking-[0.08em] text-[var(--mb-ink)]">{guide.title}</span>
