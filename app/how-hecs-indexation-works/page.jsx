@@ -1,7 +1,8 @@
+/* eslint-disable react/no-unescaped-entities */
 import Link from 'next/link';
-import { ArrowLeft, BookOpen } from 'lucide-react';
-import { INDEXATION_HISTORY, REPAYMENT_THRESHOLD, ATO_INDEXATION_URL } from '../../lib/hecsRates';
+import { INDEXATION_HISTORY, REPAYMENT_THRESHOLD } from '../../lib/hecsRates';
 import GuideSiteHeader from '../../components/help/GuideSiteHeader';
+import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
 const RECENT_HISTORY = [...INDEXATION_HISTORY].reverse().map((row) => [
   String(row.year),
@@ -37,27 +38,21 @@ export const metadata = {
 
 export default function GuideIndexation() {
   return (
-    <div
-      className="guide-article-page min-h-screen pb-20"
-      style={{ fontFamily: 'var(--font-lato), sans-serif' }}
-    >
+    <div className="guide-article-page min-h-screen pb-20">
       <div className="guide-article-background" aria-hidden="true" />
 
       <GuideSiteHeader />
 
       <main className="max-w-3xl mx-auto px-4 py-8 relative z-10 app-fade-in">
-        {/* Back Link */}
-        <Link href="/" className="inline-flex items-center gap-2 text-[#0081CB] hover:text-[#62FFDA] transition-colors text-sm font-bold font-montserrat uppercase tracking-wider mb-8">
-          <ArrowLeft size={16} />
-          Back to Calculator
-        </Link>
+        <GuidePageIntro
+          code="03"
+          accent="pink"
+          title="How HECS Indexation Works: What It Is, Why It Matters, and What's Changed"
+          summary="Understand when indexation is applied, how the CPI/WPI safeguard works, what historical rates looked like, and why a national wage measure may not match your own pay."
+        />
 
         {/* Article */}
         <article className="space-y-8">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-montserrat text-white leading-tight">
-            How HECS Indexation Works: What It Is, Why It Matters, and What's Changed
-          </h1>
-
           {/* Dated callout */}
           <div className="rounded-xl border border-[#62FFDA]/20 bg-[#62FFDA]/5 p-4 text-sm text-[#CFCFCF] leading-relaxed">
             <strong className="text-white">1 June 2026 update:</strong> this year's rate was 2.8%.{' '}
@@ -229,31 +224,12 @@ export default function GuideIndexation() {
           </section>
         </article>
 
-        {/* More Guides */}
-        <div className="mt-16 space-y-4">
-          <h4 className="font-bold uppercase tracking-widest text-[10px] text-[#CFCFCF]/60 opacity-70 text-center">More Guides</h4>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {[
-              { href: '/hecs-indexation-2026', title: 'HECS Indexation 2026' },
-              { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026-27' },
-              { href: '/hecs-debt-and-home-loans', title: 'HECS Debt & Home Loans' },
-            ].map((guide) => (
-              <Link
-                key={guide.href}
-                href={guide.href}
-                className="group flex items-center gap-3 p-4 rounded-xl border border-white/5 bg-white/[0.03] hover:border-[#62FFDA]/30 hover:bg-white/[0.06] transition-all"
-              >
-                <BookOpen size={16} className="text-[#0081CB] shrink-0 group-hover:text-[#62FFDA] transition-colors" />
-                <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-lato">{guide.title}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-montserrat text-[#CFCFCF]/40 text-center">
-          <div>&copy; 2025 Mitch Bryant &middot; mitchbryant.com</div>
-        </div>
+        <GuideRelatedGuides guides={[
+          { href: '/hecs-indexation-2026', title: 'HECS Indexation 2026' },
+          { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026–27' },
+          { href: '/hecs-debt-and-home-loans', title: 'HECS Debt & Home Loans' },
+        ]} />
+        <GuidePageFooter />
       </main>
     </div>
   );

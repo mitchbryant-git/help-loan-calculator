@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+/* eslint-disable react/no-unescaped-entities */
 import GuideSiteHeader from '../../components/help/GuideSiteHeader';
+import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
 export const metadata = {
   title: 'HELP Borrowing Limit 2026 | How Much Can You Borrow?',
@@ -20,27 +20,21 @@ export const metadata = {
 
 export default function GuideBorrowingLimit() {
   return (
-    <div
-      className="guide-article-page min-h-screen pb-20"
-      style={{ fontFamily: 'var(--font-lato), sans-serif' }}
-    >
+    <div className="guide-article-page min-h-screen pb-20">
       <div className="guide-article-background" aria-hidden="true" />
 
       <GuideSiteHeader />
 
       <main className="max-w-3xl mx-auto px-4 py-8 relative z-10 app-fade-in">
-        {/* Back Link */}
-        <Link href="/" className="inline-flex items-center gap-2 text-[#0081CB] hover:text-[#62FFDA] transition-colors text-sm font-bold font-montserrat uppercase tracking-wider mb-8">
-          <ArrowLeft size={16} />
-          Back to Calculator
-        </Link>
+        <GuidePageIntro
+          code="07"
+          accent="yellow"
+          title="The HELP Borrowing Limit: How Much Can You Actually Borrow?"
+          summary="Learn the 2026 borrowing limits, which HELP loans count toward them, how repayments restore available balance, and what happens when course fees exceed your remaining limit."
+        />
 
         {/* Article */}
         <article className="space-y-8">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-montserrat text-white leading-tight">
-            The HELP Borrowing Limit: How Much Can You Actually Borrow?
-          </h1>
-
           {/* Section: There's a Cap */}
           <section className="space-y-4">
             <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">There's a Cap on How Much You Can Borrow</h3>
@@ -123,31 +117,12 @@ export default function GuideBorrowingLimit() {
           </section>
         </article>
 
-        {/* More Guides */}
-        <div className="mt-16 space-y-4">
-          <h4 className="font-bold uppercase tracking-widest text-[10px] text-[#CFCFCF]/60 opacity-70 text-center">More Guides</h4>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {[
-              { href: '/hecs-help-vs-fee-help', title: 'HECS-HELP vs FEE-HELP' },
-              { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026-27' },
-              { href: '/how-hecs-indexation-works', title: 'How HECS Indexation Works' },
-            ].map((guide) => (
-              <Link
-                key={guide.href}
-                href={guide.href}
-                className="group flex items-center gap-3 p-4 rounded-xl border border-white/5 bg-white/[0.03] hover:border-[#62FFDA]/30 hover:bg-white/[0.06] transition-all"
-              >
-                <BookOpen size={16} className="text-[#0081CB] shrink-0 group-hover:text-[#62FFDA] transition-colors" />
-                <span className="text-sm font-medium text-[#CFCFCF] group-hover:text-white transition-colors font-lato">{guide.title}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-white/5 text-[10px] uppercase tracking-widest font-montserrat text-[#CFCFCF]/40 text-center">
-          <div>&copy; 2025 Mitch Bryant &middot; mitchbryant.com</div>
-        </div>
+        <GuideRelatedGuides guides={[
+          { href: '/hecs-help-vs-fee-help', title: 'HECS-HELP vs FEE-HELP' },
+          { href: '/hecs-repayment-thresholds-2026-27', title: 'HECS Repayment Thresholds 2026–27' },
+          { href: '/how-hecs-indexation-works', title: 'How HECS Indexation Works' },
+        ]} />
+        <GuidePageFooter />
       </main>
     </div>
   );

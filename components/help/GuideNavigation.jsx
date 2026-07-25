@@ -15,7 +15,7 @@ const guideAccents = ['var(--mb-sky)', 'var(--mb-mint)', 'var(--mb-yellow)', 'va
 
 export default function GuideNavigation() {
   return (
-    <section aria-labelledby="guides-title">
+    <section id="guides" className="scroll-mt-28" aria-labelledby="guides-title">
       <div className="mb-5 flex items-end justify-between gap-4">
         <div>
           <p className="font-impact text-[9px] uppercase tracking-[0.12em] text-[var(--mb-pink)]">Go deeper</p>
