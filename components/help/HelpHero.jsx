@@ -79,7 +79,7 @@ export default function HelpHero({ onOpenHelp }) {
       </div>
 
       <div className="help-hero__footer">
-        <span>Australia&apos;s advanced HECS-HELP &amp; FEE-HELP repayment planner</span>
+        <span>2026–27 HECS-HELP &amp; FEE-HELP repayment planner</span>
         <span>Estimate only · Educational use</span>
       </div>
     </section>

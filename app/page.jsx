@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   RotateCcw,
 } from 'lucide-react';
@@ -22,6 +21,8 @@ import ShareResult from '../components/help/ShareResult';
 import ShareResultsCard from '../components/help/ShareResultsCard';
 import HowToUseModal from '../components/help/HowToUseModal';
 import HelpHero from '../components/help/HelpHero';
+import BrandLockup from '../components/help/BrandLockup';
+import { getSharedPlanParams } from '../lib/help/share-plan.mjs';
 
 // Helper component to bridge Recharts internal state to React state
 const ShareIcon = ({ size = 18, color = 'currentColor' }) => (
@@ -78,10 +79,13 @@ export default function App() {
     setTempReduction(prev => ({ ...prev, year: inputs.firstYear + 5 }));
   }, [inputs.firstYear]);
 
-  // URL param decode — runs once on mount
+  // Shared plans use the URL fragment so calculator figures are not included in
+  // analytics page locations or server requests. Legacy query-string links
+  // remain readable and are cleaned from the address bar after hydration.
   useEffect(() => {
-    if (!window.location.search) return;
-    const params = new URLSearchParams(window.location.search);
+    const params = getSharedPlanParams(window.location);
+    if (!params) return;
+
     const safe = (val, fallback, min, max) => {
       const n = parseFloat(val);
       return (!isNaN(n) && n >= min && n <= max) ? n : fallback;
@@ -111,7 +115,10 @@ export default function App() {
         }
       } catch { /* ignore malformed events */ }
     }
-    window.history.replaceState({}, '', window.location.pathname);
+    window.history.replaceState({}, '', `${window.location.pathname}#calculator`);
+    window.requestAnimationFrame(() => {
+      document.getElementById('calculator')?.scrollIntoView({ block: 'start' });
+    });
   }, []);
 
   // --- CALCULATION ENGINE ---
@@ -140,11 +147,14 @@ export default function App() {
     let newNudge = null;
 
     if (field === 'startingDebt') {
-      if (value > 186544) {
-        value = 186544;
-        newNudge = { field, type: 'warning', msg: "Capped at $129,883 for most, or $186,544 for Medicine & some Aviation courses" };
-      } else if (value === 0) {
+      if (value === 0) {
         newNudge = { field, type: 'info', msg: "Lucky you! Nothing to repay." };
+      } else if (value > 129883) {
+        newNudge = {
+          field,
+          type: 'info',
+          msg: 'That can be valid. The HELP loan limit caps new borrowing, not the accumulated balance shown in myGov.',
+        };
       }
     }
     if (field === 'startingIncome') {
@@ -209,27 +219,9 @@ export default function App() {
       <div className="fixed inset-0 pointer-events-none z-0 opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(16,24,32,0.09) 0.7px, transparent 0.7px)', backgroundSize: '18px 18px' }} />
 
       {/* --- HEADER --- */}
-      <header className="sticky top-0 z-50 border-b border-black/10 bg-[var(--mb-paper)]/90 text-[var(--mb-ink)] backdrop-blur-xl" data-nosnippet>
-        <div className="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            <a
-              href="https://www.mitchbryant.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#0081CB]/30 border border-white/20 overflow-hidden transition-transform hover:scale-105 active:scale-95"
-            >
-              <Image
-                src="/apple-touch-icon.png"
-                alt="MB Logo"
-                width={40}
-                height={40}
-                className="w-full h-full object-cover"
-              />
-            </a>
-            <span className="font-impact text-[9px] uppercase leading-tight tracking-[-0.01em] sm:text-[11px] md:text-sm">
-              Higher Education Loan<br className="md:hidden" /> Program Calculator
-            </span>
-          </div>
+      <header className="site-header" data-nosnippet>
+        <div className="site-header__inner">
+          <BrandLockup className="min-w-0" />
 
           <div className="flex items-center gap-3">
             <button
@@ -237,7 +229,7 @@ export default function App() {
               className="btn-soft flex items-center gap-2 text-[var(--mb-ink)]"
               aria-label="Share results"
             >
-              <ShareIcon size={18} color="#00A3FF" />
+              <ShareIcon size={18} color="var(--mb-sky)" />
               <span className="hidden md:inline text-xs font-bold uppercase tracking-wider font-montserrat">Share</span>
             </button>
 
@@ -256,6 +248,8 @@ export default function App() {
                 onClick={() => setShowMenu(v => !v)}
                 className="btn-soft flex items-center justify-center text-[var(--mb-ink)]"
                 aria-label="Menu"
+                aria-expanded={showMenu}
+                aria-haspopup="true"
               >
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 4, width: 16, alignItems: 'center' }}>
                   <span style={{
@@ -285,67 +279,67 @@ export default function App() {
                 <div style={{
                   position: 'absolute', top: 'calc(100% + 12px)', right: 0,
                   width: 260,
-                  background: '#151B2E',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: 'var(--mb-paper)',
+                  border: '2px solid var(--mb-ink)',
                   borderRadius: 16,
                   padding: 8,
-                  boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
+                  boxShadow: '7px 7px 0 var(--mb-mint)',
                   zIndex: 200,
                   animation: 'menuFadeIn 0.25s ease forwards',
-                }}>
+                }} role="navigation" aria-label="Site menu">
                   <style>{`@keyframes menuFadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
 
                   {/* GUIDES section */}
-                  <div style={{ padding: '12px 12px 6px', fontFamily: 'var(--font-montserrat), sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(207,207,207,0.5)' }}>
+                  <div style={{ padding: '12px 12px 6px', fontFamily: 'var(--font-archivo-black), sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mb-muted)' }}>
                     Guides
                   </div>
                   {[
-                    { href: '/hecs-repayment-thresholds-2026-27', label: 'HECS Repayment Thresholds 2026-27', emoji: '📊', color: '#0081CB' },
-                    { href: '/hecs-indexation-2026', label: 'HECS Indexation 2026', emoji: '📉', color: '#FF9F0A' },
-                    { href: '/how-hecs-indexation-works', label: 'How HECS Indexation Works', emoji: '📈', color: '#62FFDA' },
-                    { href: '/hecs-debt-and-home-loans', label: 'HECS Debt & Home Loans', emoji: '🏠', color: '#6A3CFF' },
-                    { href: '/real-cost-of-starting-uni-before-youre-ready', label: 'The Real Cost of Starting Uni Early', emoji: '🎓', color: '#00A3FF' },
-                    { href: '/hecs-help-vs-fee-help', label: 'HECS-HELP vs FEE-HELP', emoji: '⚖️', color: '#8B5CF6' },
-                    { href: '/help-borrowing-limit', label: 'The HELP Borrowing Limit 2026', emoji: '💰', color: '#FF9F0A' },
-                  ].map(({ href, label, emoji, color }) => (
+                    { href: '/hecs-repayment-thresholds-2026-27', label: 'HECS Repayment Thresholds 2026-27', code: '01', color: 'var(--mb-sky)', text: 'var(--mb-paper)' },
+                    { href: '/hecs-indexation-2026', label: 'HECS Indexation 2026', code: '02', color: 'var(--mb-mint)' },
+                    { href: '/how-hecs-indexation-works', label: 'How HECS Indexation Works', code: '03', color: 'var(--mb-yellow)' },
+                    { href: '/hecs-debt-and-home-loans', label: 'HECS Debt & Home Loans', code: '04', color: 'var(--mb-pink)' },
+                    { href: '/real-cost-of-starting-uni-before-youre-ready', label: 'The Real Cost of Starting Uni Early', code: '05', color: 'var(--mb-mint)' },
+                    { href: '/hecs-help-vs-fee-help', label: 'HECS-HELP vs FEE-HELP', code: '06', color: 'var(--mb-yellow)' },
+                    { href: '/help-borrowing-limit', label: 'The HELP Borrowing Limit 2026', code: '07', color: 'var(--mb-pink)' },
+                  ].map(({ href, label, code, color, text = 'var(--mb-ink)' }) => (
                     <Link
                       key={href}
                       href={href}
                       onClick={() => setShowMenu(false)}
                       style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, textDecoration: 'none', transition: 'background 0.15s' }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                      onMouseEnter={e => e.currentTarget.style.background = 'var(--mb-cream)'}
                       onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                     >
-                      <span style={{ width: 28, height: 28, borderRadius: 8, background: color + '1A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>{emoji}</span>
-                      <span style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 13, fontWeight: 700, color: '#F1F5F9', lineHeight: 1.3 }}>{label}</span>
+                      <span style={{ width: 28, height: 28, borderRadius: 8, border: '1.5px solid var(--mb-ink)', background: color, color: text, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-archivo-black), sans-serif', fontSize: 9, flexShrink: 0 }}>{code}</span>
+                      <span style={{ fontFamily: 'var(--font-instrument-sans), sans-serif', fontSize: 13, fontWeight: 700, color: 'var(--mb-ink)', lineHeight: 1.3 }}>{label}</span>
                     </Link>
                   ))}
 
                   {/* Divider */}
-                  <div style={{ height: 1, background: 'rgba(255,255,255,0.05)', margin: '6px 12px' }} />
+                  <div style={{ height: 1, background: 'rgba(17,20,17,0.12)', margin: '6px 12px' }} />
 
                   {/* MORE section */}
-                  <div style={{ padding: '6px 12px 6px', fontFamily: 'var(--font-montserrat), sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(207,207,207,0.5)' }}>
+                  <div style={{ padding: '6px 12px 6px', fontFamily: 'var(--font-archivo-black), sans-serif', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mb-muted)' }}>
                     More
                   </div>
                   <button
                     onClick={() => { setShowMenu(false); setShowHelpModal(true); }}
                     style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, width: '100%', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', transition: 'background 0.15s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--mb-cream)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <span style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(255,193,7,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>💡</span>
-                    <span style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>How to Use This Calculator</span>
+                    <span style={{ width: 28, height: 28, borderRadius: 8, border: '1.5px solid var(--mb-ink)', background: 'var(--mb-yellow)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-archivo-black), sans-serif', fontSize: 11, flexShrink: 0 }}>?</span>
+                    <span style={{ fontFamily: 'var(--font-instrument-sans), sans-serif', fontSize: 13, fontWeight: 600, color: 'var(--mb-ink)' }}>How to use this calculator</span>
                   </button>
                   <Link
                     href="/privacy-policy"
                     onClick={() => setShowMenu(false)}
                     style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, textDecoration: 'none', transition: 'background 0.15s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--mb-cream)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <span style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>🔒</span>
-                    <span style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>Privacy Policy</span>
+                    <span style={{ width: 28, height: 28, borderRadius: 8, border: '1.5px solid var(--mb-ink)', background: 'var(--mb-pink)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-archivo-black), sans-serif', fontSize: 10, flexShrink: 0 }}>P</span>
+                    <span style={{ fontFamily: 'var(--font-instrument-sans), sans-serif', fontSize: 13, fontWeight: 600, color: 'var(--mb-ink)' }}>Privacy policy</span>
                   </Link>
                   <a
                     href="https://www.mitchbryant.com"
@@ -353,11 +347,11 @@ export default function App() {
                     rel="noopener noreferrer"
                     onClick={() => setShowMenu(false)}
                     style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, textDecoration: 'none', transition: 'background 0.15s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--mb-cream)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <span style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(0,163,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>🌐</span>
-                    <span style={{ fontFamily: 'var(--font-lato), sans-serif', fontSize: 13, fontWeight: 400, color: '#CFCFCF' }}>mitchbryant.com</span>
+                    <span style={{ width: 28, height: 28, borderRadius: 8, border: '1.5px solid var(--mb-ink)', background: 'var(--mb-sky)', color: 'var(--mb-paper)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-archivo-black), sans-serif', fontSize: 8, flexShrink: 0 }}>MB</span>
+                    <span style={{ fontFamily: 'var(--font-instrument-sans), sans-serif', fontSize: 13, fontWeight: 600, color: 'var(--mb-ink)' }}>mitchbryant.com</span>
                   </a>
                 </div>
               )}

@@ -78,7 +78,7 @@ export default function MethodAndSources({ indexationRate, wageGrowth }) {
       <div className="border-t border-black/10 p-5 sm:p-6 lg:p-8">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
           <div>
-            <p className="font-impact text-[9px] uppercase tracking-[0.12em] text-[var(--mb-sky)]">Current calculation rules</p>
+            <p className="font-impact text-[9px] uppercase tracking-[0.12em] text-[var(--mb-sky-deep)]">Current calculation rules</p>
             <h3 className="mt-1 font-anybody text-xl font-extrabold tracking-[-0.03em] text-[var(--mb-ink)]">{FINANCIAL_YEAR} repayment bands</h3>
           </div>
           <span className="font-instrument text-xs text-[var(--mb-muted)]">Checked 22 July 2026</span>

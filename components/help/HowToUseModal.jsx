@@ -4,8 +4,8 @@ import { ListChecks, X } from 'lucide-react';
 const steps = [
   ['Enter your starting point', 'Add your current HELP debt and repayment income. Repayment income can be different from salary, so use your best annual estimate.'],
   ['Set the assumptions', 'Adjust income growth, indexation, first working year and age only if you have a better planning assumption.'],
-  ['Read the baseline result', 'Start with the estimated payoff year, total repaid, indexation and Quick Figures before adding extra complexity.'],
-  ['Test real-life changes', 'Use the optional Scenario Builder for an extra repayment, promotion, career break or pay reduction.'],
+  ['Read the baseline result', 'Start with the estimated payoff year, total repaid, indexation and compulsory repayment before adding extra complexity.'],
+  ['Test real-life changes', 'Use What could change? to add an extra repayment, promotion, career break or pay reduction.'],
   ['Inspect the path', 'Compare the timeline, then open the year-by-year breakdown when you want the annual detail.'],
   ['Check the evidence', 'Read the method, assumptions and official sources before using the estimate to support a decision.'],
 ];
@@ -39,7 +39,7 @@ export default function HowToUseModal({ open, onClose }) {
               <ListChecks size={20} aria-hidden="true" />
             </span>
             <div>
-              <p className="font-impact text-[9px] uppercase tracking-[0.12em] text-[var(--mb-sky)]">Six simple steps</p>
+              <p className="font-impact text-[9px] uppercase tracking-[0.12em] text-[var(--mb-sky-deep)]">Six simple steps</p>
               <h2 id="how-to-title" className="mt-1 font-anybody text-2xl font-extrabold tracking-[-0.03em] text-[var(--mb-ink)]">How to use the calculator</h2>
             </div>
           </div>

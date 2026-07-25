@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowLeft, BookOpen } from 'lucide-react';
+import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 
 export const metadata = {
   title: 'The Real Cost of Starting Uni Before You\'re Ready | HECS Debt Scenarios',
@@ -20,33 +21,12 @@ export const metadata = {
 export default function GuideStartingEarly() {
   return (
     <div
-      className="min-h-screen font-sans selection:bg-[#0081CB] selection:text-white pb-20 transition-colors duration-500 relative overflow-x-hidden text-white bg-[#0D0D0D]"
+      className="guide-article-page min-h-screen pb-20"
       style={{ fontFamily: 'var(--font-lato), sans-serif' }}
     >
-      {/* GLOBAL NOISE & GRADIENT BACKGROUND */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-[10%] w-[500px] h-[500px] bg-[#6A3CFF] rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse" style={{ animationDuration: '10s', zIndex: 0 }}></div>
-        <div className="absolute bottom-0 right-[10%] w-[600px] h-[600px] bg-[#0081CB] rounded-full mix-blend-screen filter blur-[130px] opacity-20" style={{ zIndex: 0 }}></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#62FFDA] rounded-full mix-blend-overlay filter blur-[150px] opacity-5" style={{ zIndex: 0 }}></div>
-        <div className="absolute inset-0 opacity-10 mix-blend-soft-light bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" style={{ zIndex: 0 }}></div>
-      </div>
+      <div className="guide-article-background" aria-hidden="true" />
 
-      {/* --- HEADER --- */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl border-b transition-colors duration-500 border-white/5 bg-[#0D0D0D]/70" data-nosnippet>
-        <div className="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-[#0081CB]/30 border border-white/20 overflow-hidden transition-transform hover:scale-105 active:scale-95"
-            >
-              <img src="/apple-touch-icon.png" alt="MB Logo" className="w-full h-full object-cover" />
-            </Link>
-            <span className="font-bold text-sm md:text-lg tracking-tight uppercase font-montserrat">
-              HELP Loan Calculator
-            </span>
-          </div>
-        </div>
-      </header>
+      <GuideSiteHeader />
 
       <main className="max-w-3xl mx-auto px-4 py-8 relative z-10 app-fade-in">
         {/* Back Link */}

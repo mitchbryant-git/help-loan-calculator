@@ -2,33 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Check, Copy, Download, Share2, X } from 'lucide-react';
 
 import { FINANCIAL_YEAR, formatCurrency } from '../../lib/hecsRates';
+import { buildShareUrl } from '../../lib/help/share-plan.mjs';
 
 const SCENARIO_TYPES = {
-  promotion: { colour: '#FFD21C', symbol: '↑' },
-  voluntary: { colour: '#19E6C1', symbol: '$' },
-  break: { colour: '#008CFF', symbol: 'II' },
-  reduction: { colour: '#F53678', symbol: '↓' },
+  promotion: { colour: '#F8D018', symbol: '↑' },
+  voluntary: { colour: '#08D8B8', symbol: '$' },
+  break: { colour: '#0068D8', symbol: 'II' },
+  reduction: { colour: '#F84878', symbol: '↓' },
 };
-
-function buildShareUrl(inputs, events) {
-  const params = new URLSearchParams();
-  params.set('d', String(inputs.startingDebt));
-  params.set('i', String(inputs.startingIncome));
-  params.set('g', String(inputs.wageGrowth));
-  params.set('x', String(inputs.indexationRate));
-  params.set('y', String(inputs.firstYear));
-  params.set('a', String(inputs.startingAge));
-
-  const encodedEvents = [
-    ...events.promotions.map((event) => ({ t: 'p', y: Number(event.year), pct: Number(event.percent) })),
-    ...events.voluntary.map((event) => ({ t: 'v', y: Number(event.year), amt: Number(event.amount) })),
-    ...events.breaks.map((event) => ({ t: 'b', sy: Number(event.startYear), d: Number(event.duration) })),
-    ...events.reductions.map((event) => ({ t: 'r', y: Number(event.year), pct: Number(event.percent) })),
-  ];
-
-  if (encodedEvents.length) params.set('e', JSON.stringify(encodedEvents));
-  return `https://helploancalculator.com/?${params.toString()}`;
-}
 
 function scenarioLabels(events) {
   return [
@@ -150,7 +131,7 @@ export default function ShareResult({
     try {
       const html2canvas = (await import('html2canvas')).default;
       const canvas = await html2canvas(cardRef.current, {
-        backgroundColor: '#fffaf1',
+        backgroundColor: '#fff9f2',
         scale: 2,
         useCORS: true,
         logging: false,
@@ -208,7 +189,7 @@ export default function ShareResult({
           <div ref={cardRef} className="share-pass">
             <div className="share-pass__system-bar">
               <span>MB-01 // HELP // RESULT FILE</span>
-              <span><i /> Verified projection</span>
+              <span><i /> Projection generated</span>
             </div>
 
             <div className="share-pass__hero">
@@ -290,7 +271,11 @@ export default function ShareResult({
           </div>
 
           <p className="share-centre__status" role="status" aria-live="polite">
-            {status ? <span><Check size={15} aria-hidden="true" />{status}</span> : 'Your shared link includes the current inputs and optional events.'}
+            {status ? (
+              <span><Check size={15} aria-hidden="true" />{status}</span>
+            ) : (
+              'Anyone with the link can see the figures and optional events included in this plan.'
+            )}
           </p>
         </div>
       </div>

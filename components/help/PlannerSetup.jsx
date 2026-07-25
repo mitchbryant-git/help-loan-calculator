@@ -109,8 +109,8 @@ export default function PlannerSetup({ inputs, onInputChange, nudge }) {
     >
       <div className="-mx-5 -mt-5 mb-6 flex items-start justify-between gap-4 rounded-t-[14px] border-b-2 border-black bg-[var(--mb-sky)] px-5 py-4 sm:-mx-6 sm:-mt-6 sm:px-6">
         <div>
-          <p className="font-impact text-[10px] uppercase tracking-[0.14em] text-[var(--mb-ink)]">01 · Start here</p>
-          <h2 id="planner-setup-title" className="mt-1 font-anybody text-2xl font-extrabold tracking-[-0.035em] text-[var(--mb-ink)]">
+          <p className="font-impact text-[10px] uppercase tracking-[0.14em] text-[var(--mb-paper)]">01 · Start here</p>
+          <h2 id="planner-setup-title" className="mt-1 font-anybody text-2xl font-extrabold tracking-[-0.035em] text-[var(--mb-paper)]">
             Plan your HELP debt
           </h2>
         </div>
@@ -126,7 +126,7 @@ export default function PlannerSetup({ inputs, onInputChange, nudge }) {
           onChange={(value) => onInputChange('startingDebt', value)}
           suffix="$"
           nudge={nudge?.field === 'startingDebt' ? nudge : null}
-          help="The HELP debt balance you expect to have when this plan begins."
+          help="Enter the accumulated HELP balance shown in myGov. The annual HELP loan limit caps new borrowing, not your accumulated balance, which can be higher after indexation or loan fees."
         />
         <NumberField
           label="Repayment income"

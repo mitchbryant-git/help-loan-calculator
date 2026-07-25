@@ -9,14 +9,14 @@ import {
   formatCurrency,
 } from '../../lib/hecsRates';
 
-const linkClass = 'font-semibold text-[var(--mb-sky)] underline decoration-[var(--mb-sky)]/30 underline-offset-2 transition hover:text-[var(--mb-mint-deep)]';
+const linkClass = 'font-semibold text-[var(--mb-sky-deep)] underline decoration-[var(--mb-sky)]/30 underline-offset-2 transition hover:text-[var(--mb-mint-deep)]';
 
 const faqs = [
   {
     q: "What's the difference between HECS and HELP?",
     a: (
       <>
-        <p>HELP is the Australian Government's overall student-loan system. HECS-HELP is the most common loan within it, used for student contributions in Commonwealth Supported Places.</p>
+        <p>HELP is the Australian Government&apos;s overall student-loan system. HECS-HELP is the most common loan within it, used for student contributions in Commonwealth Supported Places.</p>
         <p className="mt-3">Other types include FEE-HELP for eligible full-fee study, SA-HELP for student services and amenities fees, and OS-HELP for eligible overseas study expenses. These balances form part of your accumulated HELP debt and use the same compulsory-repayment system.</p>
         <a href="https://www.studyassist.gov.au/helping-you-understand/how-student-loans-work" target="_blank" rel="noopener noreferrer" className={`${linkClass} mt-3 inline-block`}>See how student loans work on Study Assist</a>
       </>
@@ -49,7 +49,7 @@ const faqs = [
   {
     q: 'Can I make voluntary repayments?',
     a: (
-      <p>Yes. You can make voluntary repayments to the ATO at any time. They reduce your debt but do not replace a compulsory repayment that may be assessed on your income. Use the Scenario Builder above to test how the timing could change your projection.</p>
+      <p>Yes. You can make voluntary repayments to the ATO at any time. They reduce your debt but do not replace a compulsory repayment that may be assessed on your income. Use What could change? above to test how the timing could change your projection.</p>
     ),
   },
   {

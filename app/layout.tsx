@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.helploancalculator.com'),
   // 1. Google & Browser Tab
   title: "HECS-HELP Repayment Calculator Australia | 2026-27 Rates ($69,528 Threshold)",
-  description: "Free Australian HECS-HELP and FEE-HELP repayment calculator, updated for the 2026-27 threshold of $69,528 and the 2.8% June 2026 indexation. Model promotions, gap years, and voluntary repayments to see your real payoff date.",
+  description: "Free Australian HECS-HELP and FEE-HELP repayment calculator, updated for the 2026-27 threshold of $69,528 and the 2.8% June 2026 indexation. Model promotions, career breaks, and voluntary repayments to estimate your payoff year.",
 
   // 2. SEO Keywords
   keywords: [
@@ -51,19 +51,15 @@ export const metadata: Metadata = {
   // 3. Social Media Cards (Facebook, LinkedIn, iMessage)
   openGraph: {
     title: "HECS-HELP Repayment Calculator Australia | 2026-27 Rates ($69,528 Threshold)",
-    description: "Free Australian HECS-HELP and FEE-HELP repayment calculator, updated for the 2026-27 threshold of $69,528 and the 2.8% June 2026 indexation. Model promotions, gap years, and voluntary repayments to see your real payoff date.",
+    description: "Free Australian HECS-HELP and FEE-HELP repayment calculator, updated for the 2026-27 threshold of $69,528 and the 2.8% June 2026 indexation. Model promotions, career breaks, and voluntary repayments to estimate your payoff year.",
     url: 'https://www.helploancalculator.com',
     siteName: 'HELP Loan Calculator',
     locale: 'en_AU',
     type: 'website',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 992,
-        height: 630,
-        alt: 'HELP Loan Calculator showing repayment timeline and debt payoff projections',
-      }
-    ],
+    images: [{
+      url: '/brand/help/mb01-help-loaded-hero-v1.webp',
+      alt: 'MB-01 Life Console with the HELP Loan Calculator module loaded',
+    }],
   },
 
   // 4. Verification
@@ -73,8 +69,7 @@ export const metadata: Metadata = {
 
   // 5. Favicon
   icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
+    icon: '/brand/mb01-mark.svg',
   },
 
   // 6. Canonical URL
@@ -97,7 +92,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               "name": "HELP Loan Calculator",
-              "description": "The #1 Australian HECS-HELP debt calculator. Estimate your loan repayment timeline. See how indexation and life events affect your loan.",
+              "description": "A free Australian HECS-HELP and FEE-HELP calculator for estimating repayment timelines and testing how indexation and life events could affect a HELP balance.",
               "url": "https://www.helploancalculator.com",
               "applicationCategory": "FinanceApplication",
               "offers": {
@@ -216,7 +211,19 @@ export default function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-FWVMDBHJFK');
+              var cleanReferrer = '';
+              if (document.referrer) {
+                try {
+                  var referrerUrl = new URL(document.referrer);
+                  cleanReferrer = referrerUrl.origin + referrerUrl.pathname;
+                } catch (error) {
+                  cleanReferrer = '';
+                }
+              }
+              gtag('config', 'G-FWVMDBHJFK', {
+                page_location: window.location.origin + window.location.pathname,
+                page_referrer: cleanReferrer
+              });
             `,
           }}
         />
