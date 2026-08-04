@@ -389,7 +389,6 @@ export default function Timeline({
         <div className="timeline-console__heading">
           <span className="timeline-console__number" aria-hidden="true">03</span>
           <div>
-            <p>Live projection</p>
             <h2 id="timeline-title">Repayment timeline</h2>
           </div>
         </div>
@@ -419,9 +418,9 @@ export default function Timeline({
           ))}
         </dl>
 
-        <div className="timeline-console__active-strip">
-          <span>Viewing {activeRow.year}</span>
-          {activeEvents.length ? (
+        {activeEvents.length ? (
+          <div className="timeline-console__active-strip">
+            <span>Events in {activeRow.year}</span>
             <ul aria-label="Events in the selected year">
               {activeEvents.map((event) => (
                 <li key={event.id} style={{ '--event-colour': event.colour }}>
@@ -430,10 +429,8 @@ export default function Timeline({
                 </li>
               ))}
             </ul>
-          ) : (
-            <p>No optional events this year</p>
-          )}
-        </div>
+          </div>
+        ) : null}
 
         <div className="timeline-console__chart">
           <TimelineChart

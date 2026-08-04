@@ -31,8 +31,9 @@ export default function HelpHero({ onOpenHelp }) {
 
           <h1 id="help-hero-title" className="help-hero__title">
             <span>Know your</span>
-            <span className="help-hero__title-block">numbers.</span>
-            <span>Plan your move.</span>
+            <span className="help-hero__title-accent help-hero__title-accent--mint">numbers.</span>
+            <span>Own your</span>
+            <span className="help-hero__title-accent help-hero__title-accent--pink">future.</span>
           </h1>
 
           <p className="help-hero__lede">

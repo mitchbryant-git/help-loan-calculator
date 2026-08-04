@@ -1,7 +1,7 @@
 import { ChevronDown, Info, SlidersHorizontal } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 
-import { CURRENT_INDEXATION_TOOLTIP, FINANCIAL_YEAR, formatCurrency, getQuickAnswer } from '../../lib/hecsRates';
+import { CURRENT_INDEXATION_TOOLTIP } from '../../lib/hecsRates';
 
 function InfoHint({ text, label }) {
   return (
@@ -100,14 +100,13 @@ function AssumptionSlider({ label, value, onChange, help, colour }) {
 }
 
 export default function PlannerSetup({ inputs, onInputChange, nudge }) {
-  const quickAnswer = getQuickAnswer(inputs.startingIncome);
   return (
     <section
-      className="mb-colour-card rounded-[28px] border border-black/15 p-5 sm:p-6"
+      className="planner-setup mb-colour-card rounded-[28px] border border-black/15 p-5 sm:p-6 lg:pb-5"
       style={{ '--card-accent': 'var(--mb-sky)' }}
       aria-labelledby="planner-setup-title"
     >
-      <div className="-mx-5 -mt-5 mb-6 flex items-start justify-between gap-4 rounded-t-[14px] border-b-2 border-black bg-[var(--mb-sky)] px-5 py-4 sm:-mx-6 sm:-mt-6 sm:px-6">
+      <div className="planner-setup__header -mx-5 -mt-5 mb-6 flex items-start justify-between gap-4 rounded-t-[14px] border-b-2 border-black bg-[var(--mb-sky)] px-5 py-4 sm:-mx-6 sm:-mt-6 sm:px-6 lg:mb-5">
         <div>
           <p className="font-impact text-[10px] uppercase tracking-[0.14em] text-[var(--mb-paper)]">01 · Start here</p>
           <h2 id="planner-setup-title" className="mt-1 font-anybody text-2xl font-extrabold tracking-[-0.035em] text-[var(--mb-paper)]">
@@ -119,7 +118,7 @@ export default function PlannerSetup({ inputs, onInputChange, nudge }) {
         </div>
       </div>
 
-      <div className="grid gap-5">
+      <div className="planner-setup__fields grid gap-5 lg:gap-4">
         <NumberField
           label="HELP debt balance"
           value={inputs.startingDebt}
@@ -136,21 +135,9 @@ export default function PlannerSetup({ inputs, onInputChange, nudge }) {
           nudge={nudge?.field === 'startingIncome' ? nudge : null}
           help="Repayment income is broader than salary. It can include taxable income, reportable fringe benefits, net investment losses and reportable super contributions."
         />
-        <div className="rounded-xl border-2 border-black/70 bg-[var(--mb-paper)] px-4 py-3.5" aria-label="Estimated compulsory repayment">
-          <div className="flex items-center justify-between gap-3">
-            <p className="font-impact text-[9px] uppercase tracking-[0.12em] text-[var(--mb-muted)]">Estimated compulsory repayment</p>
-            <span className="shrink-0 rounded-full bg-[var(--mb-mint)]/18 px-2 py-1 font-instrument text-[9px] font-bold text-[var(--mb-mint-deep)]">{FINANCIAL_YEAR}</span>
-          </div>
-          <p className="mt-2 font-mono text-sm font-bold text-[var(--mb-ink)]">
-            {formatCurrency(quickAnswer.annual)}/yr
-            <span className="mx-2 text-black/25">·</span>
-            {formatCurrency(quickAnswer.monthly)}/mo
-            <span className="mx-2 text-black/25">·</span>
-            {formatCurrency(quickAnswer.weekly)}/wk
-          </p>
-        </div>      </div>
+      </div>
 
-      <details className="group mt-6 border-t border-black/15 pt-5" open>
+      <details className="planner-setup__assumptions group mt-6 border-t border-black/15 pt-5 lg:mt-5 lg:pt-4" open>
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 marker:hidden">
           <div>
             <p className="font-impact text-[10px] uppercase tracking-[0.12em] text-[var(--mb-muted)]">Planning assumptions</p>
@@ -159,7 +146,7 @@ export default function PlannerSetup({ inputs, onInputChange, nudge }) {
           <ChevronDown size={20} className="text-[var(--mb-ink)] transition-transform group-open:rotate-180" />
         </summary>
 
-        <div className="mt-6 grid gap-6">
+        <div className="planner-setup__assumption-grid mt-6 grid gap-6 lg:mt-5 lg:gap-5">
           <AssumptionSlider
             label="Annual income growth"
             value={inputs.wageGrowth}
@@ -176,7 +163,7 @@ export default function PlannerSetup({ inputs, onInputChange, nudge }) {
           />
           <div className="grid grid-cols-2 gap-4">
             <NumberField
-              label="First working year"
+              label="First year"
               value={inputs.firstYear}
               onChange={(value) => onInputChange('firstYear', value)}
               help="The first year represented in your plan after finishing study."
