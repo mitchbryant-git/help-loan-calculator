@@ -3,13 +3,6 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 
 import { formatCurrency } from '../../lib/hecsRates';
 
-const YEAR_ACCENTS = [
-  'var(--mb-sky)',
-  'var(--mb-mint)',
-  'var(--mb-yellow)',
-  'var(--mb-pink)',
-];
-
 function signedCurrency(value, sign) {
   if (value <= 0) return '—';
   return `${sign}${formatCurrency(value)}`;
@@ -77,13 +70,8 @@ export default function YearTable({ timelineData }) {
       {isOpen ? (
         <div id={regionId} className="year-table__content">
           <div className="year-table__mobile-list sm:hidden">
-            {timelineData.map((row, index) => (
-              <article
-                key={row.year}
-                className="year-table__year-card"
-                style={{ '--year-accent': YEAR_ACCENTS[index % YEAR_ACCENTS.length] }}
-                aria-labelledby={`year-${row.year}`}
-              >
+            {timelineData.map((row) => (
+              <article key={row.year} className="year-table__year-card" aria-labelledby={`year-${row.year}`}>
                 <header className="year-table__year-card-header">
                   <div>
                     <p className="year-table__year-kicker">Projection year</p>
@@ -141,8 +129,8 @@ export default function YearTable({ timelineData }) {
                 </tr>
               </thead>
               <tbody>
-                {timelineData.map((row, index) => (
-                  <tr key={row.year} style={{ '--row-accent': YEAR_ACCENTS[index % YEAR_ACCENTS.length] }}>
+                {timelineData.map((row) => (
+                  <tr key={row.year}>
                     <th scope="row">
                       <span className="year-table__desktop-year">{row.year}</span>
                       {row.age ? <span className="year-table__desktop-age">Age {row.age}</span> : null}
