@@ -4,18 +4,52 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { CURRENT_INDEXATION_TOOLTIP } from '../../lib/hecsRates';
 
 function InfoHint({ text, label }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const hintId = useId();
+  const rootRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const handleDocumentClick = (event) => {
+      if (!rootRef.current?.contains(event.target)) setIsOpen(false);
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key !== 'Escape') return;
+      setIsOpen(false);
+      buttonRef.current?.focus();
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
+
   return (
-    <details className="group relative ml-1.5 inline-block">
-      <summary
-        className="flex h-4 w-4 cursor-pointer list-none items-center justify-center rounded-full border border-[var(--mb-sky)] text-[var(--mb-sky)] marker:hidden"
+    <div ref={rootRef} className="planner-info-hint">
+      <button
+        ref={buttonRef}
+        type="button"
+        className="planner-info-trigger"
         aria-label={`About ${label}`}
+        aria-expanded={isOpen}
+        aria-controls={hintId}
+        onClick={() => setIsOpen((open) => !open)}
       >
         <Info size={10} strokeWidth={2.5} />
-      </summary>
-      <div className="absolute left-1/2 top-6 z-30 w-64 -translate-x-1/2 rounded-xl bg-[var(--mb-ink)] p-3 font-instrument text-xs font-normal normal-case leading-relaxed tracking-normal text-white shadow-xl sm:left-0 sm:translate-x-0">
-        {text}
-      </div>
-    </details>
+      </button>
+      {isOpen ? (
+        <div id={hintId} className="planner-info-panel" role="note">
+          {text}
+        </div>
+      ) : null}
+    </div>
   );
 }
 
@@ -24,7 +58,7 @@ function NumberField({ label, value, onChange, suffix, help, nudge }) {
 
   return (
     <div>
-      <div className="mb-2 flex items-center">
+      <div className="planner-info-row mb-2">
         <label htmlFor={id} className="font-instrument text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--mb-muted)]">
           {label}
         </label>
@@ -75,13 +109,11 @@ function AssumptionSlider({ label, value, onChange, help, colour }) {
 
   return (
     <div>
-      <div className="mb-3 flex items-center justify-between gap-4">
-        <div className="flex items-center">
-          <label htmlFor={id} className="font-instrument text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--mb-muted)]">
-            {label}
-          </label>
-          <InfoHint text={help} label={label} />
-        </div>
+      <div className="planner-assumption-heading mb-3">
+        <label htmlFor={id} className="font-instrument text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--mb-muted)]">
+          {label}
+        </label>
+        <InfoHint text={help} label={label} />
         <output htmlFor={id} className="rounded-lg border-2 border-black bg-[var(--mb-mint)] px-2 py-1 font-mono text-base font-bold text-[var(--mb-ink)]">{localValue}%</output>
       </div>
       <input

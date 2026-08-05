@@ -3363,6 +3363,77 @@ body {
   }
 }
 
+/* --- PLANNER INFORMATION HELPERS --- */
+.planner-info-row,
+.planner-assumption-heading {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  column-gap: 6px;
+  row-gap: 9px;
+}
+
+.planner-assumption-heading {
+  grid-template-columns: max-content minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.planner-info-hint {
+  display: contents;
+}
+
+.planner-info-trigger {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  grid-column: 2;
+  grid-row: 1;
+  place-items: center;
+  justify-self: start;
+  border: 1.5px solid var(--mb-sky);
+  border-radius: 999px;
+  background: var(--mb-paper);
+  color: var(--mb-sky);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, transform 120ms ease;
+}
+
+.planner-info-trigger:hover,
+.planner-info-trigger[aria-expanded='true'] {
+  background: var(--mb-sky);
+  color: var(--mb-paper);
+  transform: translateY(-1px);
+}
+
+.planner-info-trigger:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--mb-sky) 35%, transparent);
+  outline-offset: 2px;
+}
+
+.planner-info-panel {
+  width: 100%;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  border: 1.5px solid var(--mb-ink);
+  border-left: 5px solid var(--mb-sky);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--mb-paper) 90%, var(--mb-sky));
+  padding: 10px 11px;
+  color: var(--mb-ink);
+  font-family: var(--font-instrument-sans), Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 550;
+  line-height: 1.45;
+  text-transform: none;
+  letter-spacing: normal;
+  box-shadow: 3px 3px 0 var(--mb-ink);
+}
+
+.planner-assumption-heading > output {
+  grid-column: 3;
+  grid-row: 1;
+}
+
 /* --- YEAR-BY-YEAR PROJECTION LEDGER (DARK CONSOLE) --- */
 .year-table {
   border-radius: 16px;
