@@ -63,7 +63,7 @@ export default function HelpHero({ onOpenHelp }) {
           <div className="help-hero__image-frame">
             <Image
               src="/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg"
-              alt="Cream MB-01 Life Console with the mint student debt cartridge inserted"
+              alt="Cream MB-01 Life Console with the mint HECS Debt Calculator cartridge inserted"
               width={1280}
               height={653}
               priority
