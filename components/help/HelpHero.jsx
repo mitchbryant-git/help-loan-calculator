@@ -26,7 +26,7 @@ export default function HelpHero({ onOpenHelp }) {
         <div className="help-hero__copy">
           <p className="help-hero__eyebrow">
             <span className="help-hero__eyebrow-number">01</span>
-            HELP Loan Calculator
+            HECS Debt Calculator
           </p>
 
           <h1 id="help-hero-title" className="help-hero__title">
@@ -62,8 +62,8 @@ export default function HelpHero({ onOpenHelp }) {
         <div className="help-hero__visual">
           <div className="help-hero__image-frame">
             <Image
-              src="/brand/help/mb01-help-loaded-hero-v1.webp"
-              alt="Cream MB-01 Life Console with the mint HELP Loan Calculator cartridge inserted"
+              src="/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg"
+              alt="Cream MB-01 Life Console with the mint student debt cartridge inserted"
               width={1280}
               height={653}
               priority
@@ -72,10 +72,10 @@ export default function HelpHero({ onOpenHelp }) {
             />
           </div>
           <div className="help-hero__visual-label" aria-hidden="true">
-            <span>HELP MODULE</span>
+            <span>HECS MODULE</span>
             <strong>READY</strong>
           </div>
-          <div className="help-hero__visual-code" aria-hidden="true">MB-01 // HELP // v1.0.0</div>
+          <div className="help-hero__visual-code" aria-hidden="true">MB-01 // HECS // v1.1.0</div>
         </div>
       </div>
 

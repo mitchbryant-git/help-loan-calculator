@@ -7,13 +7,13 @@ export const metadata = {
   title: 'HECS Indexation 2026: The 2.8% Rate Explained',
   description: 'HECS-HELP debts were indexed by 2.8% on 1 June 2026, the lowest rate since 2021. See what it added to your balance, why the rate fell, and when the next window is.',
   alternates: {
-    canonical: 'https://www.helploancalculator.com/hecs-indexation-2026',
+    canonical: 'https://allthatsnext.com/hecs-debt-calculator/hecs-indexation-2026',
   },
   openGraph: {
     title: 'HECS Indexation 2026: The 2.8% Rate Explained',
     description: 'HECS-HELP debts were indexed by 2.8% on 1 June 2026, the lowest rate since 2021. See what it added to your balance, why the rate fell, and when the next window is.',
-    url: 'https://www.helploancalculator.com/hecs-indexation-2026',
-    siteName: 'HELP Loan Calculator',
+    url: 'https://allthatsnext.com/hecs-debt-calculator/hecs-indexation-2026',
+    siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
   },
@@ -98,7 +98,7 @@ export default function GuideIndexation2026() {
             </p>
             <p className="text-[#CFCFCF] leading-relaxed">
               Want to see what a voluntary repayment actually does to your payoff date?{' '}
-              <a href="https://www.helploancalculator.com" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
+              <a href="https://allthatsnext.com/hecs-debt-calculator" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
                 Model it in the calculator →
               </a>
             </p>

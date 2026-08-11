@@ -49,7 +49,7 @@ If you're still deciding whether to go to uni, or how much debt to take on, this
 
 None of this means "don't go to uni." It means go in with your eyes open and understand the downstream effects.
 
-**Model your specific scenario:** [Use the HELP Loan Calculator →](https://www.helploancalculator.com) to see how long your debt will take to repay based on your expected income, and when you'd be clear of it before applying for a home loan.
+**Model your specific scenario:** [Use the HECS Debt Calculator →](https://allthatsnext.com/hecs-debt-calculator) to see how long your debt will take to repay based on your expected income, and when you'd be clear of it before applying for a home loan.
 
 ### Where to Learn More
 

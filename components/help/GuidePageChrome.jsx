@@ -94,8 +94,8 @@ export function GuidePageFooter() {
       <div className="guide-footer__brand">
         <span>MB-01</span>
         <div>
-          <strong>HELP Loan Calculator</strong>
-          <small>Built by Mitch Bryant</small>
+          <strong>HECS Debt Calculator</strong>
+          <small>Built by All That&apos;s Next</small>
         </div>
       </div>
 

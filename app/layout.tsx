@@ -32,10 +32,10 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.helploancalculator.com'),
+  metadataBase: new URL('https://allthatsnext.com'),
   // 1. Google & Browser Tab
-  title: "HECS-HELP Repayment Calculator Australia | 2026-27 Rates ($69,528 Threshold)",
-  description: "Free Australian HECS-HELP and FEE-HELP repayment calculator, updated for the 2026-27 threshold of $69,528 and the 2.8% June 2026 indexation. Model promotions, career breaks, and voluntary repayments to estimate your payoff year.",
+  title: "HECS Debt Calculator Australia | 2026-27 Repayments & Payoff",
+  description: "Free Australian HECS debt calculator for HECS-HELP, FEE-HELP and other HELP debts. Model income growth, indexation, career breaks and extra repayments to estimate your payoff path.",
 
   // 2. SEO Keywords
   keywords: [
@@ -50,15 +50,15 @@ export const metadata: Metadata = {
 
   // 3. Social Media Cards (Facebook, LinkedIn, iMessage)
   openGraph: {
-    title: "HECS-HELP Repayment Calculator Australia | 2026-27 Rates ($69,528 Threshold)",
-    description: "Free Australian HECS-HELP and FEE-HELP repayment calculator, updated for the 2026-27 threshold of $69,528 and the 2.8% June 2026 indexation. Model promotions, career breaks, and voluntary repayments to estimate your payoff year.",
-    url: 'https://www.helploancalculator.com',
-    siteName: 'HELP Loan Calculator',
+    title: "HECS Debt Calculator Australia | All That’s Next",
+    description: "See how HECS-HELP, FEE-HELP and other HELP debt could move over time. Test income growth, indexation, career breaks and extra repayments.",
+    url: 'https://allthatsnext.com/hecs-debt-calculator',
+    siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'website',
     images: [{
-      url: '/brand/help/mb01-help-loaded-hero-v1.webp',
-      alt: 'MB-01 Life Console with the HELP Loan Calculator module loaded',
+      url: '/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg',
+      alt: 'MB-01 Life Console with the mint HECS Debt Calculator cartridge inserted',
     }],
   },
 
@@ -69,12 +69,12 @@ export const metadata: Metadata = {
 
   // 5. Favicon
   icons: {
-    icon: '/brand/mb01-mark.svg',
+    icon: 'https://allthatsnext.com/favicon-atn-cream-v1.png',
   },
 
   // 6. Canonical URL
   alternates: {
-    canonical: 'https://www.helploancalculator.com',
+    canonical: 'https://allthatsnext.com/hecs-debt-calculator',
   },
 }
 export default function RootLayout({
@@ -91,9 +91,9 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebApplication",
-              "name": "HELP Loan Calculator",
+              "name": "HECS Debt Calculator",
               "description": "A free Australian HECS-HELP and FEE-HELP calculator for estimating repayment timelines and testing how indexation and life events could affect a HELP balance.",
-              "url": "https://www.helploancalculator.com",
+              "url": "https://allthatsnext.com/hecs-debt-calculator",
               "applicationCategory": "FinanceApplication",
               "offers": {
                 "@type": "Offer",

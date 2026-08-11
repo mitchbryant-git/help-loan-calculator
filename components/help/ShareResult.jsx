@@ -101,8 +101,8 @@ export default function ShareResult({
     try {
       if (navigator.share) {
         await navigator.share({
-          title: 'My HELP loan estimate',
-          text: isDebtFree ? `My estimated HELP payoff year is ${finalYear}.` : 'See my HELP loan projection.',
+          title: 'My HECS debt estimate',
+          text: isDebtFree ? `My estimated HECS debt payoff year is ${finalYear}.` : 'See my HECS debt projection.',
           url,
         });
         setStatus('Shared');
@@ -142,7 +142,7 @@ export default function ShareResult({
       const objectUrl = URL.createObjectURL(blob);
       const anchor = document.createElement('a');
       anchor.href = objectUrl;
-      anchor.download = 'my-help-loan-estimate.png';
+      anchor.download = 'my-hecs-debt-estimate.png';
       anchor.click();
       URL.revokeObjectURL(objectUrl);
       setStatus('Image saved');
@@ -167,7 +167,7 @@ export default function ShareResult({
             <span className="share-centre__number" aria-hidden="true">EX</span>
             <div>
               <p>MB-01 export module</p>
-              <h2 id="share-result-title">Share your HELP estimate</h2>
+              <h2 id="share-result-title">Share your HECS debt estimate</h2>
             </div>
           </div>
           <button
@@ -188,7 +188,7 @@ export default function ShareResult({
 
           <div ref={cardRef} className="share-pass">
             <div className="share-pass__system-bar">
-              <span>MB-01 // HELP // RESULT FILE</span>
+              <span>MB-01 // HECS // RESULT FILE</span>
               <span><i /> Projection generated</span>
             </div>
 
@@ -247,7 +247,7 @@ export default function ShareResult({
             <div className="share-pass__footer">
               <span>{FINANCIAL_YEAR} settings</span>
               <span>Educational estimate only</span>
-              <strong>helploancalculator.com</strong>
+              <strong>allthatsnext.com/hecs-debt-calculator</strong>
             </div>
 
             <div className="share-pass__stripes" aria-hidden="true">

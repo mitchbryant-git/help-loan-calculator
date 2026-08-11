@@ -7,13 +7,13 @@ export const metadata = {
   title: 'HECS Repayment Thresholds 2026-27 | $69,528 Threshold Explained',
   description: 'The HECS-HELP repayment threshold is $69,528 for the 2026-27 financial year. See the full rates table, worked examples, and what it means for your repayments.',
   alternates: {
-    canonical: 'https://www.helploancalculator.com/hecs-repayment-thresholds-2026-27',
+    canonical: 'https://allthatsnext.com/hecs-debt-calculator/hecs-repayment-thresholds-2026-27',
   },
   openGraph: {
     title: 'HECS Repayment Thresholds 2026-27 | $69,528 Threshold Explained',
     description: 'The HECS-HELP repayment threshold is $69,528 for the 2026-27 financial year. See the full rates table, worked examples, and what it means for your repayments.',
-    url: 'https://www.helploancalculator.com/hecs-repayment-thresholds-2026-27',
-    siteName: 'HELP Loan Calculator',
+    url: 'https://allthatsnext.com/hecs-debt-calculator/hecs-repayment-thresholds-2026-27',
+    siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
   },
@@ -102,8 +102,8 @@ export default function GuideRepaymentThresholds2026() {
             </p>
             <p className="text-[#CFCFCF] leading-relaxed">
               That's not a reason to panic. It's a reason to know your timeline. <strong className="text-white">Want to see exactly when you'll be debt free?</strong>{' '}
-              <a href="https://www.helploancalculator.com" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
-                Use the HELP Loan Calculator →
+              <a href="https://allthatsnext.com/hecs-debt-calculator" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
+                Use the HECS Debt Calculator →
               </a>{' '}
               Model a pay rise, a voluntary repayment, or a gap year and watch the payoff date move.
             </p>

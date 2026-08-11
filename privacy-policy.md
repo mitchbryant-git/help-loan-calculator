@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**helploancalculator.com**
+**allthatsnext.com/hecs-debt-calculator**
 Last updated: March 2026
 
 ## The short version
@@ -13,7 +13,7 @@ This site doesn't collect your personal data. There are no accounts, no sign-ups
 
 ## How the calculator works
 
-The HELP Loan Calculator runs entirely in your web browser. All calculations are performed on your device using JavaScript. Your inputs (debt amount, income, wage growth, indexation rate, age, and any life events you model) are never sent to our servers. We cannot see what you enter.
+The HECS Debt Calculator runs entirely in your web browser. All calculations are performed on your device using JavaScript. Your inputs (debt amount, income, wage growth, indexation rate, age, and any life events you model) are never sent to our servers. We cannot see what you enter.
 
 ## Shareable links
 

@@ -24,13 +24,13 @@ export const metadata = {
   title: 'How HECS Indexation Works | CPI, WPI Cap & Historical Rates',
   description: 'Learn how HECS-HELP indexation works in Australia. See historical rates, the CPI/WPI cap reform, and why "your debt won\'t outgrow your wages" isn\'t the full story.',
   alternates: {
-    canonical: 'https://www.helploancalculator.com/how-hecs-indexation-works',
+    canonical: 'https://allthatsnext.com/hecs-debt-calculator/how-hecs-indexation-works',
   },
   openGraph: {
     title: 'How HECS Indexation Works | CPI, WPI Cap & Historical Rates',
     description: 'Learn how HECS-HELP indexation works in Australia. See historical rates, the CPI/WPI cap reform, and why "your debt won\'t outgrow your wages" isn\'t the full story.',
-    url: 'https://www.helploancalculator.com/how-hecs-indexation-works',
-    siteName: 'HELP Loan Calculator',
+    url: 'https://allthatsnext.com/hecs-debt-calculator/how-hecs-indexation-works',
+    siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
   },
@@ -193,8 +193,8 @@ export default function GuideIndexation() {
             </ul>
             <p className="text-[#CFCFCF] leading-relaxed">
               <strong className="text-white">See how indexation affects your specific debt over time:</strong>{' '}
-              <a href="https://www.helploancalculator.com" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
-                Use the HELP Loan Calculator →
+              <a href="https://allthatsnext.com/hecs-debt-calculator" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
+                Use the HECS Debt Calculator →
               </a>{' '}
               Adjust the indexation rate, change your starting salary, and watch how the numbers shift year by year.
             </p>

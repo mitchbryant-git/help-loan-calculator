@@ -54,7 +54,7 @@ Now scale that up. A $50,000 debt? After three years of indexation at 3%, you're
 
 The higher threshold protects you from financial strain early in your career, which is genuinely helpful. But it also means your debt has more time to grow before you start chipping away at it. Being aware of this doesn't mean you need to panic. It means you can plan for it.
 
-**Want to see exactly how long it'll take to pay off your HECS debt based on your expected income?** [Use the HELP Loan Calculator →](https://www.helploancalculator.com) — model different starting salaries and see how the threshold affects your total repayment.
+**Want to see exactly how long it'll take to pay off your HECS debt based on your expected income?** [Use the HECS Debt Calculator →](https://allthatsnext.com/hecs-debt-calculator) — model different starting salaries and see how the threshold affects your total repayment.
 
 ### Where This Info Comes From
 

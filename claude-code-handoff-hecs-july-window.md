@@ -1,3 +1,5 @@
+> Historical handoff only. Superseded by `HANDOFF.md` and retained for context.
+
 # HANDOFF: helploancalculator.com, FY 2026-27 Update
 
 You are working in the helploancalculator.com repository (Next.js 15 App Router, TypeScript/JS, Tailwind, deployed on Vercel). No CLAUDE.md exists yet.

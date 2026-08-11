@@ -6,13 +6,13 @@ export const metadata = {
   title: 'HECS Debt & Home Loans | How Student Debt Affects Borrowing Power',
   description: 'Find out how HECS-HELP debt affects your home loan borrowing power in Australia. See the 2025 APRA changes, how banks assess student debt, and what it means for first-home buyers.',
   alternates: {
-    canonical: 'https://www.helploancalculator.com/hecs-debt-and-home-loans',
+    canonical: 'https://allthatsnext.com/hecs-debt-calculator/hecs-debt-and-home-loans',
   },
   openGraph: {
     title: 'HECS Debt & Home Loans | How Student Debt Affects Borrowing Power',
     description: 'Find out how HECS-HELP debt affects your home loan borrowing power in Australia. See the 2025 APRA changes, how banks assess student debt, and what it means for first-home buyers.',
-    url: 'https://www.helploancalculator.com/hecs-debt-and-home-loans',
-    siteName: 'HELP Loan Calculator',
+    url: 'https://allthatsnext.com/hecs-debt-calculator/hecs-debt-and-home-loans',
+    siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
   },
@@ -110,8 +110,8 @@ export default function GuideHomeLoans() {
             </p>
             <p className="text-[#CFCFCF] leading-relaxed">
               <strong className="text-white">Model your specific scenario:</strong>{' '}
-              <a href="https://www.helploancalculator.com" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
-                Use the HELP Loan Calculator →
+              <a href="https://allthatsnext.com/hecs-debt-calculator" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
+                Use the HECS Debt Calculator →
               </a>{' '}
               to see how long your debt will take to repay based on your expected income, and when you'd be clear of it before applying for a home loan.
             </p>

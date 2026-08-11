@@ -342,7 +342,7 @@ export default function App() {
                     <span style={{ fontFamily: 'var(--font-instrument-sans), sans-serif', fontSize: 13, fontWeight: 600, color: 'var(--mb-ink)' }}>Privacy policy</span>
                   </Link>
                   <a
-                    href="https://www.mitchbryant.com"
+                    href="https://allthatsnext.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setShowMenu(false)}
@@ -351,7 +351,7 @@ export default function App() {
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
                     <span style={{ width: 28, height: 28, borderRadius: 8, border: '1.5px solid var(--mb-ink)', background: 'var(--mb-sky)', color: 'var(--mb-paper)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-archivo-black), sans-serif', fontSize: 8, flexShrink: 0 }}>MB</span>
-                    <span style={{ fontFamily: 'var(--font-instrument-sans), sans-serif', fontSize: 13, fontWeight: 600, color: 'var(--mb-ink)' }}>mitchbryant.com</span>
+                    <span style={{ fontFamily: 'var(--font-instrument-sans), sans-serif', fontSize: 13, fontWeight: 600, color: 'var(--mb-ink)' }}>All That&apos;s Next</span>
                   </a>
                 </div>
               )}
@@ -507,8 +507,8 @@ export default function App() {
                   <Link href="/privacy-policy" className="block font-instrument text-[12px] text-[var(--mb-muted)] no-underline hover:text-[var(--mb-sky)] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
                     Privacy Policy
                   </Link>
-                  <a href="https://www.mitchbryant.com" target="_blank" rel="noopener noreferrer" className="block font-instrument text-[12px] text-[var(--mb-muted)] no-underline hover:text-[var(--mb-sky)] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
-                    mitchbryant.com
+                  <a href="https://allthatsnext.com" target="_blank" rel="noopener noreferrer" className="block font-instrument text-[12px] text-[var(--mb-muted)] no-underline hover:text-[var(--mb-sky)] transition-colors" style={{ marginBottom: 10, lineHeight: 1.5 }}>
+                    All That&apos;s Next
                   </a>
 
                   <div style={{ marginTop: 24 }}>
@@ -533,7 +533,7 @@ export default function App() {
                 style={{ borderTop: '1px solid rgba(16,24,32,0.10)', marginTop: 8 }}
               >
                 <span className="font-instrument text-[11px] text-[var(--mb-muted)]">
-                  © 2026 Mitch Bryant · mitchbryant.com
+                  © 2026 All That&apos;s Next · allthatsnext.com
                 </span>
               </div>
             </div>

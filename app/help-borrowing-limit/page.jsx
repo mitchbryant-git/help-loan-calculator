@@ -6,13 +6,13 @@ export const metadata = {
   title: 'HELP Borrowing Limit 2026 | How Much Can You Borrow?',
   description: 'There\'s a cap on how much you can borrow for uni in Australia. Learn the 2026 HELP loan limit, what counts toward it, and what happens when your degree costs more than the limit.',
   alternates: {
-    canonical: 'https://www.helploancalculator.com/help-borrowing-limit',
+    canonical: 'https://allthatsnext.com/hecs-debt-calculator/help-borrowing-limit',
   },
   openGraph: {
     title: 'HELP Borrowing Limit 2026 | How Much Can You Borrow?',
     description: 'There\'s a cap on how much you can borrow for uni in Australia. Learn the 2026 HELP loan limit, what counts toward it, and what happens when your degree costs more than the limit.',
-    url: 'https://www.helploancalculator.com/help-borrowing-limit',
-    siteName: 'HELP Loan Calculator',
+    url: 'https://allthatsnext.com/hecs-debt-calculator/help-borrowing-limit',
+    siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
   },

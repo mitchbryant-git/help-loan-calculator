@@ -96,7 +96,7 @@ Understanding indexation isn't about stressing over it. It's about making inform
 - **Don't take the "won't outgrow wages" line at face value** — it's based on a national average, not your personal situation.
 - **Model your own scenario** — your income path, your debt size, and your repayment timeline are unique to you.
 
-**See how indexation affects your specific debt over time:** [Use the HELP Loan Calculator →](https://www.helploancalculator.com) — adjust the indexation rate, change your starting salary, and watch how the numbers shift year by year.
+**See how indexation affects your specific debt over time:** [Use the HECS Debt Calculator →](https://allthatsnext.com/hecs-debt-calculator) — adjust the indexation rate, change your starting salary, and watch how the numbers shift year by year.
 
 ### Where This Info Comes From
 

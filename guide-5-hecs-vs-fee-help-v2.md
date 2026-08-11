@@ -56,7 +56,7 @@ Once the debt exists, the ATO treats them identically. Same thresholds, same mar
 
 If you're weighing up a private uni vs a public uni, make sure you understand the cost difference. Going private isn't wrong, but it's a decision worth tens of thousands of dollars. Make sure the specific program offers something genuinely worth the premium, not just a nicer campus.
 
-**Compare the numbers yourself:** [Use the HELP Loan Calculator →](https://www.helploancalculator.com) — try $45,000 (public uni, HECS-HELP) vs $130,000 (private uni, FEE-HELP) and see how the repayment timeline changes.
+**Compare the numbers yourself:** [Use the HECS Debt Calculator →](https://allthatsnext.com/hecs-debt-calculator) — try $45,000 (public uni, HECS-HELP) vs $130,000 (private uni, FEE-HELP) and see how the repayment timeline changes.
 
 ### Where This Info Comes From
 

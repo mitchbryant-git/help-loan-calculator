@@ -72,7 +72,7 @@ Whether that trade-off is worth it depends entirely on your situation. But it's 
 
 These scenarios are generalisations. Your degree, your income path, and your timeline will be different. That's exactly why we built the calculator.
 
-[Use the HELP Loan Calculator →](https://www.helploancalculator.com) to model your specific situation:
+[Use the HECS Debt Calculator →](https://allthatsnext.com/hecs-debt-calculator) to model your specific situation:
 - Enter different debt amounts to compare a 3-year vs 4-year path
 - Use the **gap year feature** to see what happens if you delay repayments for a year
 - Adjust your expected income and see how it changes the payoff timeline

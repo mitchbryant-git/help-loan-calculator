@@ -25,8 +25,8 @@ test('shared plans keep calculator figures out of the request URL', () => {
   });
   const url = new URL(link);
 
-  assert.equal(url.origin, 'https://www.helploancalculator.com');
-  assert.equal(url.pathname, '/');
+  assert.equal(url.origin, 'https://allthatsnext.com');
+  assert.equal(url.pathname, '/hecs-debt-calculator/');
   assert.equal(url.search, '');
   assert.match(url.hash, /^#plan\?/);
 

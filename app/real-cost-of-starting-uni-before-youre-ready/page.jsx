@@ -6,13 +6,13 @@ export const metadata = {
   title: 'The Real Cost of Starting Uni Before You\'re Ready | HECS Debt Scenarios',
   description: 'What happens financially when you jump into a degree before you\'re sure? See real scenarios comparing the cost of switching degrees, dropping out, or taking a gap year first.',
   alternates: {
-    canonical: 'https://www.helploancalculator.com/real-cost-of-starting-uni-before-youre-ready',
+    canonical: 'https://allthatsnext.com/hecs-debt-calculator/real-cost-of-starting-uni-before-youre-ready',
   },
   openGraph: {
     title: 'The Real Cost of Starting Uni Before You\'re Ready | HECS Debt Scenarios',
     description: 'What happens financially when you jump into a degree before you\'re sure? See real scenarios comparing the cost of switching degrees, dropping out, or taking a gap year first.',
-    url: 'https://www.helploancalculator.com/real-cost-of-starting-uni-before-youre-ready',
-    siteName: 'HELP Loan Calculator',
+    url: 'https://allthatsnext.com/hecs-debt-calculator/real-cost-of-starting-uni-before-youre-ready',
+    siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
   },
@@ -138,8 +138,8 @@ export default function GuideStartingEarly() {
               These scenarios are generalisations. Your degree, your income path, and your timeline will be different. That's exactly why we built the calculator.
             </p>
             <p className="text-[#CFCFCF] leading-relaxed">
-              <a href="https://www.helploancalculator.com" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
-                Use the HELP Loan Calculator →
+              <a href="https://allthatsnext.com/hecs-debt-calculator" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
+                Use the HECS Debt Calculator →
               </a>{' '}
               to model your specific situation:
             </p>

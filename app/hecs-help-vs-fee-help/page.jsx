@@ -7,13 +7,13 @@ export const metadata = {
   title: 'HECS-HELP vs FEE-HELP | What\'s the Difference?',
   description: 'Understand the difference between HECS-HELP and FEE-HELP in Australia. Which loan you get, why it matters, and how it changes what you\'ll owe.',
   alternates: {
-    canonical: 'https://www.helploancalculator.com/hecs-help-vs-fee-help',
+    canonical: 'https://allthatsnext.com/hecs-debt-calculator/hecs-help-vs-fee-help',
   },
   openGraph: {
     title: 'HECS-HELP vs FEE-HELP | What\'s the Difference?',
     description: 'Understand the difference between HECS-HELP and FEE-HELP in Australia. Which loan you get, why it matters, and how it changes what you\'ll owe.',
-    url: 'https://www.helploancalculator.com/hecs-help-vs-fee-help',
-    siteName: 'HELP Loan Calculator',
+    url: 'https://allthatsnext.com/hecs-debt-calculator/hecs-help-vs-fee-help',
+    siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
   },
@@ -137,8 +137,8 @@ export default function GuideHecsVsFeeHelp() {
             </p>
             <p className="text-[#CFCFCF] leading-relaxed">
               <strong className="text-white">Compare the numbers yourself:</strong>{' '}
-              <a href="https://www.helploancalculator.com" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
-                Use the HELP Loan Calculator →
+              <a href="https://allthatsnext.com/hecs-debt-calculator" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
+                Use the HECS Debt Calculator →
               </a>{' '}
               Try $45,000 (public uni, HECS-HELP) vs $130,000 (private uni, FEE-HELP) and see how the repayment timeline changes.
             </p>

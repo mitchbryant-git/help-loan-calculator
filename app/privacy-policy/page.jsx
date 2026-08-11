@@ -4,10 +4,10 @@ import { ArrowLeft, ExternalLink, LockKeyhole } from 'lucide-react';
 import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 
 export const metadata = {
-  title: 'Privacy Policy | HELP Loan Calculator',
-  description: 'How helploancalculator.com handles calculator inputs, shared plans, analytics and standard website data.',
+  title: 'Privacy Policy | HECS Debt Calculator',
+  description: 'How the All That’s Next HECS Debt Calculator handles calculator inputs, shared plans, analytics and standard website data.',
   alternates: {
-    canonical: 'https://www.helploancalculator.com/privacy-policy',
+    canonical: 'https://allthatsnext.com/hecs-debt-calculator/privacy-policy',
   },
   robots: {
     index: false,
@@ -76,7 +76,7 @@ const sections = [
           The brand typefaces are packaged with the application and served with the site. The browser does not need to contact Google Fonts to display them.
         </p>
         <p>
-          Links to services such as the ATO, Study Assist, myGov and mitchbryant.com are governed by those sites&apos; own privacy practices once you leave this website.
+          Links to services such as the ATO, Study Assist and myGov are governed by those sites&apos; own privacy practices once you leave this website.
         </p>
       </>
     ),
@@ -110,7 +110,7 @@ export default function PrivacyPolicy() {
             <div>
               <p>MB-01 · Privacy file</p>
               <h1>Privacy policy</h1>
-              <span>Last updated 25 July 2026</span>
+              <span>Last updated 11 August 2026</span>
             </div>
           </header>
 
