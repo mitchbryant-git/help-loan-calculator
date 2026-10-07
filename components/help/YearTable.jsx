@@ -49,7 +49,6 @@ export default function YearTable({ timelineData }) {
         onClick={() => setIsOpen((open) => !open)}
       >
         <span className="year-table__heading">
-          <span className="year-table__number" aria-hidden="true">05</span>
           <span>
             <span className="year-table__eyebrow">Projection ledger</span>
             <span id="year-table-title" className="year-table__title">Year-by-year breakdown</span>

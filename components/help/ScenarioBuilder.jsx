@@ -132,7 +132,7 @@ export default function ScenarioBuilder({
           <Sparkles size={19} />
         </span>
         <div>
-          <p className="font-impact text-[10px] uppercase tracking-[0.14em] text-[var(--mb-ink)]">04 · Optional</p>
+          <p className="font-impact text-[10px] uppercase tracking-[0.14em] text-[var(--mb-ink)]">Optional</p>
           <h2 id="scenario-builder-title" className="mt-1 font-anybody text-xl font-extrabold tracking-[-0.03em] text-[var(--mb-ink)]">What could change?</h2>
           <p className="mt-1 font-instrument text-xs leading-relaxed text-[var(--mb-muted)]">Add only the life events you want to test. Your original path remains available for comparison.</p>
         </div>

@@ -21,7 +21,7 @@ export default function PrimaryResult({
       <div className="primary-result__main p-5 sm:p-6">
         <div className="primary-result__module-bar -mx-5 -mt-5 mb-5 flex items-center gap-2 rounded-t-[14px] border-b-2 border-black bg-[var(--mb-mint)] px-5 py-3 text-[var(--mb-ink)] sm:-mx-6 sm:-mt-6 sm:px-6">
           <span className="h-2.5 w-2.5 rounded-sm border border-black bg-[var(--mb-paper)]" />
-          <p className="font-impact text-[10px] uppercase tracking-[0.14em]">02 · Your payoff summary</p>
+          <p className="font-impact text-[10px] uppercase tracking-[0.14em]">Your payoff summary</p>
         </div>
 
         <p className="primary-result__label font-instrument text-[11px] font-bold uppercase tracking-[0.15em] text-[var(--mb-muted)]">
