@@ -5,20 +5,18 @@ import Image from 'next/image';
 export default function HelpHero({ onOpenHelp }) {
   return (
     <section className="help-hero col-span-full" aria-labelledby="help-hero-title">
-      <div className="help-hero__stripes" aria-hidden="true">
-        <span /><span /><span /><span />
+      <div className="help-hero__top-band" aria-hidden="true">
+        <div className="help-hero__stripes"><span /><span /><span /><span /></div>
       </div>
       <div className="help-hero__body">
         <div className="help-hero__copy">
-          <p className="help-hero__eyebrow">HECS Debt Calculator</p>
+
           <h1 id="help-hero-title" className="help-hero__title">
-            <span>Know your</span>
-            <span className="help-hero__title-accent">numbers.</span>
-            <span>Own your</span>
-            <span className="help-hero__title-accent">future.</span>
+            <span className="help-hero__title-degree">Your degree<br />ends.</span>
+            <span className="help-hero__title-accent">When does<br />your debt?</span>
           </h1>
           <p className="help-hero__lede">
-            See when your HELP debt could be gone, what you may repay, and how
+            See when your HECS debt could be gone, what you may repay, and how
             income growth, career breaks and extra repayments can change the path.
           </p>
           <div className="help-hero__actions">

@@ -229,12 +229,12 @@ export default function App() {
       <div className="fixed inset-0 pointer-events-none z-0 opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(16,24,32,0.09) 0.7px, transparent 0.7px)', backgroundSize: '18px 18px' }} />
 
       {/* --- HEADER --- */}
-      <header className="site-header" data-nosnippet>
+      <header className="site-header" aria-label="HECS Debt Calculator" data-nosnippet>
         <div className="site-header__inner">
           <a className="hecs-atn-lockup" href="https://allthatsnext.com" aria-label="All That's Next home">
             <Image src="/hecs-debt-calculator/brand/all-thats-next-lockup-web-v1.png" alt="All That's Next" width={212} height={40} priority />
           </a>
-          <a className="hecs-header-product" href="/hecs-debt-calculator">HECS Debt Calculator</a>
+
 
           <div className="hecs-header-actions">
             <button

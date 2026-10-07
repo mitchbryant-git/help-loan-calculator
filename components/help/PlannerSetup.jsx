@@ -142,7 +142,7 @@ export default function PlannerSetup({ inputs, onInputChange, nudge }) {
         <div>
           <p className="font-impact text-[10px] uppercase tracking-[0.14em] text-[var(--mb-paper)]">Start here</p>
           <h2 id="planner-setup-title" className="mt-1 font-anybody text-2xl font-extrabold tracking-[-0.035em] text-[var(--mb-paper)]">
-            Plan your HELP debt
+            Plan your HECS debt
           </h2>
         </div>
         <div className="rounded-xl border-2 border-black bg-[var(--mb-paper)] p-2.5 text-[var(--mb-ink)]">
@@ -152,7 +152,7 @@ export default function PlannerSetup({ inputs, onInputChange, nudge }) {
 
       <div className="planner-setup__fields grid gap-5 lg:gap-4">
         <NumberField
-          label="HELP debt balance"
+          label="HECS debt balance"
           value={inputs.startingDebt}
           onChange={(value) => onInputChange('startingDebt', value)}
           suffix="$"
