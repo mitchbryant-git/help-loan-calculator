@@ -21,7 +21,7 @@ import ShareResult from '../components/help/ShareResult';
 import ShareResultsCard from '../components/help/ShareResultsCard';
 import HowToUseModal from '../components/help/HowToUseModal';
 import HelpHero from '../components/help/HelpHero';
-import BrandLockup from '../components/help/BrandLockup';
+import Image from 'next/image';
 import { getSharedPlanParams } from '../lib/help/share-plan.mjs';
 
 // Helper component to bridge Recharts internal state to React state
@@ -66,8 +66,18 @@ export default function App() {
     const handler = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false);
     };
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setShowMenu(false);
+        menuRef.current?.querySelector('button')?.focus();
+      }
+    };
     document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [showMenu]);
 
   useEffect(() => {
@@ -215,15 +225,18 @@ export default function App() {
   const finalAge = timelineData.length > 0 ? timelineData[timelineData.length - 1].age : inputs.startingAge;
 
   return (
-    <div className="min-h-screen bg-[var(--mb-cream)] pb-20 font-instrument text-[var(--mb-ink)] selection:bg-[var(--mb-mint)] selection:text-[var(--mb-ink)] relative overflow-x-hidden">
+    <div className="hecs-calculator-page min-h-screen bg-[var(--mb-cream)] pb-20 font-instrument text-[var(--mb-ink)] selection:bg-[var(--mb-mint)] selection:text-[var(--mb-ink)] relative overflow-x-hidden">
       <div className="fixed inset-0 pointer-events-none z-0 opacity-40" style={{ backgroundImage: 'radial-gradient(rgba(16,24,32,0.09) 0.7px, transparent 0.7px)', backgroundSize: '18px 18px' }} />
 
       {/* --- HEADER --- */}
       <header className="site-header" data-nosnippet>
         <div className="site-header__inner">
-          <BrandLockup className="min-w-0" />
+          <a className="hecs-atn-lockup" href="https://allthatsnext.com" aria-label="All That's Next home">
+            <Image src="/hecs-debt-calculator/brand/all-thats-next-lockup-web-v1.png" alt="All That's Next" width={212} height={40} priority />
+          </a>
+          <a className="hecs-header-product" href="/hecs-debt-calculator">HECS Debt Calculator</a>
 
-          <div className="flex items-center gap-3">
+          <div className="hecs-header-actions">
             <button
               onClick={() => setShowShareModal(true)}
               className="btn-soft flex items-center gap-2 text-[var(--mb-ink)]"
@@ -249,7 +262,7 @@ export default function App() {
                 className="btn-soft flex items-center justify-center text-[var(--mb-ink)]"
                 aria-label="Menu"
                 aria-expanded={showMenu}
-                aria-haspopup="true"
+                aria-controls="hecs-site-menu"
               >
                 <span style={{ display: 'flex', flexDirection: 'column', gap: 4, width: 16, alignItems: 'center' }}>
                   <span style={{
@@ -286,7 +299,7 @@ export default function App() {
                   boxShadow: '7px 7px 0 var(--mb-mint)',
                   zIndex: 200,
                   animation: 'menuFadeIn 0.25s ease forwards',
-                }} role="navigation" aria-label="Site menu">
+                }} id="hecs-site-menu" role="navigation" aria-label="Site menu">
                   <style>{`@keyframes menuFadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }`}</style>
 
                   {/* GUIDES section */}

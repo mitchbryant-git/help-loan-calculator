@@ -387,7 +387,6 @@ export default function Timeline({
     >
       <header className="timeline-console__header">
         <div className="timeline-console__heading">
-          <span className="timeline-console__number" aria-hidden="true">03</span>
           <div>
             <h2 id="timeline-title">Repayment timeline</h2>
           </div>
