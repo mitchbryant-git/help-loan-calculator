@@ -1,3 +1,4 @@
+import { Children, isValidElement } from 'react';
 import Link from 'next/link';
 import { ChevronDown, CircleHelp } from 'lucide-react';
 
@@ -78,9 +79,31 @@ const faqs = [
   },
 ];
 
+function visibleText(node) {
+  return Children.toArray(node).map((child) => {
+    if (typeof child === 'string' || typeof child === 'number') return String(child);
+    return isValidElement(child) ? visibleText(child.props.children) : '';
+  }).join('');
+}
+
 export default function HelpFaq() {
   return (
     <section className="mb-colour-card rounded-[28px] border border-black/15 p-5 sm:p-6 lg:p-8" style={{ '--card-accent': 'var(--mb-yellow)' }} aria-labelledby="faq-title">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [{
+          '@type': 'WebApplication', '@id': 'https://allthatsnext.com/hecs-debt-calculator#application',
+          name: 'HECS Debt Calculator', url: 'https://allthatsnext.com/hecs-debt-calculator',
+          applicationCategory: 'FinanceApplication',
+          publisher: { '@id': 'https://allthatsnext.com/#organization' },
+          isPartOf: { '@id': 'https://allthatsnext.com/#website' },
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'AUD' },
+        }, {
+          '@type': 'FAQPage', '@id': 'https://allthatsnext.com/hecs-debt-calculator#faq',
+          mainEntity: faqs.map((item) => ({ '@type': 'Question', name: item.q,
+            acceptedAnswer: { '@type': 'Answer', text: visibleText(item.a) } })),
+        }],
+      }).replace(/</g, '\u003c') }} />
       <div className="mb-6 flex items-start gap-3">
         <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--mb-yellow)]/25 text-[var(--mb-ink)]">
           <CircleHelp size={20} aria-hidden="true" />
