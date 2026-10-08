@@ -1056,11 +1056,12 @@ body {
   flex-direction: column;
   align-items: flex-start;
   margin: 0;
-  font-family: var(--font-archivo-black), Impact, sans-serif;
+  font-family: var(--font-anybody), Arial, Helvetica, sans-serif;
+  font-weight: 800;
   font-size: clamp(52px, 5.5vw, 80px);
   line-height: 0.94;
-  letter-spacing: -0.045em;
-  text-transform: uppercase;
+  letter-spacing: -0.035em;
+  text-transform: none;
 }
 .help-hero__title-degree { color: #fff; }
 .help-hero__title-accent { color: var(--mb-mint); }
