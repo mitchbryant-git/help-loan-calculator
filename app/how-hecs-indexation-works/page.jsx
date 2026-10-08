@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import Link from 'next/link';
 import { INDEXATION_HISTORY, REPAYMENT_THRESHOLD } from '../../lib/hecsRates';
+import GuideSchema from '../../components/help/GuideSchema';
 import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
@@ -33,6 +34,7 @@ export const metadata = {
     siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
+    images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg', alt: 'HECS Debt Calculator Life Console' }],
   },
 };
 
@@ -41,6 +43,7 @@ export default function GuideIndexation() {
     <div className="guide-article-page min-h-screen pb-20">
       <div className="guide-article-background" aria-hidden="true" />
 
+      <GuideSchema metadata={metadata} />
       <GuideSiteHeader />
 
       <main className="max-w-3xl mx-auto px-4 py-8 relative z-10 app-fade-in">
