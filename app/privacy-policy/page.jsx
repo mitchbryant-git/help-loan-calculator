@@ -6,6 +6,8 @@ import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 export const metadata = {
   title: 'Privacy Policy | HECS Debt Calculator',
   description: 'How the All That’s Next HECS Debt Calculator handles calculator inputs, shared plans, analytics and standard website data.',
+  openGraph: { title: "Privacy Policy | HECS Debt Calculator", description: "How the All That’s Next HECS Debt Calculator handles calculator inputs, shared plans, analytics and standard website data.", url: "https://allthatsnext.com/hecs-debt-calculator/privacy-policy", siteName: "All That's Next", type: 'website', images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg', alt: 'HECS Debt Calculator Life Console' }] },
+  twitter: { card: 'summary_large_image', title: "Privacy Policy | HECS Debt Calculator", description: "How the All That’s Next HECS Debt Calculator handles calculator inputs, shared plans, analytics and standard website data.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
   alternates: {
     canonical: 'https://allthatsnext.com/hecs-debt-calculator/privacy-policy',
   },
