@@ -5,14 +5,15 @@ import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
 export const metadata = {
-  title: 'HECS Indexation 2026: The 2.8% Rate Explained',
-  description: 'HECS-HELP debts were indexed by 2.8% on 1 June 2026, the lowest rate since 2021. See what it added to your balance, why the rate fell, and when the next window is.',
+  twitter: { card: 'summary_large_image', title: "HECS Indexation 2026 | The 2.8% Rate Explained", description: "See what the 2.8% indexation rate meant for eligible HECS debt on 1 June 2026.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  title: "HECS Indexation 2026 | The 2.8% Rate Explained",
+  description: "See what the 2.8% indexation rate meant for eligible HECS debt on 1 June 2026.",
   alternates: {
     canonical: 'https://allthatsnext.com/hecs-debt-calculator/hecs-indexation-2026',
   },
   openGraph: {
-    title: 'HECS Indexation 2026: The 2.8% Rate Explained',
-    description: 'HECS-HELP debts were indexed by 2.8% on 1 June 2026, the lowest rate since 2021. See what it added to your balance, why the rate fell, and when the next window is.',
+    title: "HECS Indexation 2026 | The 2.8% Rate Explained",
+    description: "See what the 2.8% indexation rate meant for eligible HECS debt on 1 June 2026.",
     url: 'https://allthatsnext.com/hecs-debt-calculator/hecs-indexation-2026',
     siteName: 'All That’s Next',
     locale: 'en_AU',
@@ -21,7 +22,6 @@ export const metadata = {
   },
 };
 
-const updatedDate = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
 
 export default function GuideIndexation2026() {
   return (
@@ -36,9 +36,7 @@ export default function GuideIndexation2026() {
           code="02"
           accent="mint"
           title="HECS Indexation 2026: The 2.8% Rate and What It Added to Your Debt"
-          summary="See what the 2.8% indexation rate added to different HELP balances, why the rate fell, and what the timing means for voluntary repayments."
-          updated={updatedDate}
-        />
+          summary="See what the 2.8% indexation rate added to different HELP balances, why the rate fell, and what the timing means for voluntary repayments."        />
 
         {/* Article */}
         <article className="space-y-8">

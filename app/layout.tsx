@@ -32,10 +32,11 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
+  twitter: { card: 'summary_large_image', title: "HECS Calculator | Repayments and Payoff", description: "See how your income, life changes, and extra repayments could affect your HECS debt.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
   metadataBase: new URL('https://allthatsnext.com'),
   // 1. Google & Browser Tab
-  title: "HECS Debt Calculator Australia | 2026-27 Repayments & Payoff",
-  description: "Free Australian HECS debt calculator for HECS-HELP, FEE-HELP and other HELP debts. Model income growth, indexation, career breaks and extra repayments to estimate your payoff path.",
+  title: "HECS Calculator | Repayments and Payoff",
+  description: "See how your income, life changes, and extra repayments could affect your HECS debt.",
 
   // 2. SEO Keywords
   keywords: [
@@ -50,8 +51,8 @@ export const metadata: Metadata = {
 
   // 3. Social Media Cards (Facebook, LinkedIn, iMessage)
   openGraph: {
-    title: "HECS Debt Calculator Australia | All That’s Next",
-    description: "See how HECS-HELP, FEE-HELP and other HELP debt could move over time. Test income growth, indexation, career breaks and extra repayments.",
+    title: "HECS Calculator | Repayments and Payoff",
+    description: "See how your income, life changes, and extra repayments could affect your HECS debt.",
     url: 'https://allthatsnext.com/hecs-debt-calculator',
     siteName: 'All That’s Next',
     locale: 'en_AU',

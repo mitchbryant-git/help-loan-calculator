@@ -5,14 +5,15 @@ import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
 export const metadata = {
-  title: 'HECS Repayment Thresholds 2026-27 | $69,528 Threshold Explained',
-  description: 'The HECS-HELP repayment threshold is $69,528 for the 2026-27 financial year. See the full rates table, worked examples, and what it means for your repayments.',
+  twitter: { card: 'summary_large_image', title: "HECS Repayment Thresholds 2026-27", description: "See when HECS repayments start, how the rates work and what they could mean for you.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  title: "HECS Repayment Thresholds 2026-27",
+  description: "See when HECS repayments start, how the rates work and what they could mean for you.",
   alternates: {
     canonical: 'https://allthatsnext.com/hecs-debt-calculator/hecs-repayment-thresholds-2026-27',
   },
   openGraph: {
-    title: 'HECS Repayment Thresholds 2026-27 | $69,528 Threshold Explained',
-    description: 'The HECS-HELP repayment threshold is $69,528 for the 2026-27 financial year. See the full rates table, worked examples, and what it means for your repayments.',
+    title: "HECS Repayment Thresholds 2026-27",
+    description: "See when HECS repayments start, how the rates work and what they could mean for you.",
     url: 'https://allthatsnext.com/hecs-debt-calculator/hecs-repayment-thresholds-2026-27',
     siteName: 'All That’s Next',
     locale: 'en_AU',
@@ -21,7 +22,6 @@ export const metadata = {
   },
 };
 
-const updatedDate = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
 
 export default function GuideRepaymentThresholds2026() {
   return (
@@ -36,18 +36,14 @@ export default function GuideRepaymentThresholds2026() {
           code="01"
           accent="sky"
           title="HECS-HELP Repayment Thresholds 2026–27: What You Pay This Year"
-          summary="Understand the $69,528 starting threshold, the new marginal repayment formula, and how much compulsory repayment different incomes produce."
-          updated={updatedDate}
-        />
+          summary="Understand the $69,528 starting threshold, the new marginal repayment formula, and how much compulsory repayment different incomes produce."        />
 
         {/* Article */}
         <article className="space-y-8">
           {/* Section: The Short Version */}
           <section className="space-y-4">
             <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">The Short Version</h3>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              For the 2026-27 financial year, the minimum repayment threshold is <strong className="text-white">$69,528</strong>. If your repayment income is at or below $69,528, you make no compulsory repayment. Above it, the marginal system introduced in 2025-26 keeps doing its thing: you only pay on the income above the threshold, never on your whole salary.
-            </p>
+            <p className="text-[#CFCFCF] leading-relaxed">In 2026-27, compulsory repayments start when your repayment income goes above $69,528. Marginal rates apply above the threshold, with a 10% cap on total repayment income at higher incomes.</p>
           </section>
 
           {/* Section: The 2026-27 Repayment Rates */}
@@ -131,7 +127,7 @@ export default function GuideRepaymentThresholds2026() {
               This guide is for educational purposes only and is not financial advice. Always verify figures with the ATO.
             </p>
           </section>
-        </article>
+        <p className="text-[#CFCFCF] leading-relaxed">Repayment income can include more than your salary. Check the ATO rules if you have other income or salary packaging.</p></article>
 
         <GuideRelatedGuides guides={[
           { href: '/hecs-indexation-2026', title: 'HECS Indexation 2026' },

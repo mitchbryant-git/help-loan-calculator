@@ -22,14 +22,15 @@ const OLDER_HISTORY = [
 const FULL_HISTORY = [...RECENT_HISTORY, ...OLDER_HISTORY];
 
 export const metadata = {
-  title: 'How HECS Indexation Works | CPI, WPI Cap & Historical Rates',
-  description: 'Learn how HECS-HELP indexation works in Australia. See historical rates, the CPI/WPI cap reform, and why "your debt won\'t outgrow your wages" isn\'t the full story.',
+  twitter: { card: 'summary_large_image', title: "How HECS Indexation Works", description: "Find out when indexation applies, how the rate is set and why your balance can grow.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  title: "How HECS Indexation Works",
+  description: "Find out when indexation applies, how the rate is set and why your balance can grow.",
   alternates: {
     canonical: 'https://allthatsnext.com/hecs-debt-calculator/how-hecs-indexation-works',
   },
   openGraph: {
-    title: 'How HECS Indexation Works | CPI, WPI Cap & Historical Rates',
-    description: 'Learn how HECS-HELP indexation works in Australia. See historical rates, the CPI/WPI cap reform, and why "your debt won\'t outgrow your wages" isn\'t the full story.',
+    title: "How HECS Indexation Works",
+    description: "Find out when indexation applies, how the rate is set and why your balance can grow.",
     url: 'https://allthatsnext.com/hecs-debt-calculator/how-hecs-indexation-works',
     siteName: 'All That’s Next',
     locale: 'en_AU',
@@ -147,9 +148,7 @@ export default function GuideIndexation() {
             <p className="text-[#CFCFCF] leading-relaxed">
               If the WPI rises 3.4% in a given year, that doesn't mean you got a 3.4% pay rise. You might have received nothing. You might have changed jobs and taken a pay cut. You might be in an industry where wages are flat. You might be working part-time, freelancing, or just starting out in a role where pay rises aren't on the table yet.
             </p>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              But your HECS debt? It's <strong className="text-white">guaranteed</strong> to be indexed by that rate on 1 June. No exceptions.
-            </p>
+            <p className="text-[#CFCFCF] leading-relaxed">Indexation can add to your HECS debt on 1 June. It applies to the part that is more than 11 months old.</p>
             <p className="text-[#CFCFCF] leading-relaxed">
               So while the cap is a genuine improvement over the old system (where debt could grow at 7.1% in a single year), the idea that "your debt can't outgrow your wages" only holds true if your personal wage growth keeps pace with the national average. For plenty of people, especially in the early years of their career, it won't.
             </p>
@@ -179,9 +178,7 @@ export default function GuideIndexation() {
                 Australian Taxation Office
               </a>
             </p>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              Rates stayed between 1-2% for years, then spiked hard in 2022-23 when inflation took off. The CPI/WPI cap now prevents those extreme spikes from happening again, but even at a "normal" 3% rate, the compounding effect over several years is significant.
-            </p>
+            <p className="text-[#CFCFCF] leading-relaxed">The rate uses the lower of CPI, which tracks prices, and WPI, which tracks wages. That can limit the increase, but it does not follow your own pay or guarantee a low rate.</p>
           </section>
 
           {/* Section: What You Can Actually Do About It */}

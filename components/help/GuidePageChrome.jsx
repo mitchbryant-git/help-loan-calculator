@@ -95,7 +95,7 @@ export function GuidePageFooter() {
         <span>MB-01</span>
         <div>
           <strong>HECS Debt Calculator</strong>
-          <small>Built by All That&apos;s Next</small>
+          <small>Prepared by All That&apos;s Next</small>
         </div>
       </div>
 
