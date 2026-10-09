@@ -4,14 +4,15 @@ import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
 export const metadata = {
-  title: 'The Real Cost of Starting Uni Before You\'re Ready | HECS Debt Scenarios',
-  description: 'What happens financially when you jump into a degree before you\'re sure? See real scenarios comparing the cost of switching degrees, dropping out, or taking a gap year first.',
+  twitter: { card: 'summary_large_image', title: "Starting Uni Before You Are Ready | Costs and Choices", description: "Before you commit to a course, explore the costs of changing direction and what you could test first.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  title: "Starting Uni Before You Are Ready | Costs and Choices",
+  description: "Before you commit to a course, explore the costs of changing direction and what you could test first.",
   alternates: {
     canonical: 'https://allthatsnext.com/hecs-debt-calculator/real-cost-of-starting-uni-before-youre-ready',
   },
   openGraph: {
-    title: 'The Real Cost of Starting Uni Before You\'re Ready | HECS Debt Scenarios',
-    description: 'What happens financially when you jump into a degree before you\'re sure? See real scenarios comparing the cost of switching degrees, dropping out, or taking a gap year first.',
+    title: "Starting Uni Before You Are Ready | Costs and Choices",
+    description: "Before you commit to a course, explore the costs of changing direction and what you could test first.",
     url: 'https://allthatsnext.com/hecs-debt-calculator/real-cost-of-starting-uni-before-youre-ready',
     siteName: 'All That’s Next',
     locale: 'en_AU',

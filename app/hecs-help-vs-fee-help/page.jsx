@@ -5,14 +5,15 @@ import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
 export const metadata = {
-  title: 'HECS-HELP vs FEE-HELP | What\'s the Difference?',
-  description: 'Understand the difference between HECS-HELP and FEE-HELP in Australia. Which loan you get, why it matters, and how it changes what you\'ll owe.',
+  twitter: { card: 'summary_large_image', title: "HECS-HELP vs FEE-HELP | What's the Difference?", description: "Know which loan applies to your study, what it covers and whether extra loan fees could apply.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  title: "HECS-HELP vs FEE-HELP | What's the Difference?",
+  description: "Know which loan applies to your study, what it covers and whether extra loan fees could apply.",
   alternates: {
     canonical: 'https://allthatsnext.com/hecs-debt-calculator/hecs-help-vs-fee-help',
   },
   openGraph: {
-    title: 'HECS-HELP vs FEE-HELP | What\'s the Difference?',
-    description: 'Understand the difference between HECS-HELP and FEE-HELP in Australia. Which loan you get, why it matters, and how it changes what you\'ll owe.',
+    title: "HECS-HELP vs FEE-HELP | What's the Difference?",
+    description: "Know which loan applies to your study, what it covers and whether extra loan fees could apply.",
     url: 'https://allthatsnext.com/hecs-debt-calculator/hecs-help-vs-fee-help',
     siteName: 'All That’s Next',
     locale: 'en_AU',
@@ -53,9 +54,7 @@ export default function GuideHecsVsFeeHelp() {
             <p className="text-[#CFCFCF] leading-relaxed">
               This is what most students get. It's for <strong className="text-white">Commonwealth Supported Places (CSPs)</strong> at public universities, where the government subsidises a large chunk of your tuition. You only pay the leftover portion, called the "student contribution."
             </p>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              A typical 3-year degree on HECS-HELP costs between <strong className="text-white">$16,000 and $55,000</strong> depending on what you study. No hidden fees. You borrow $30,000, you owe $30,000 (before indexation).
-            </p>
+            <p className="text-[#CFCFCF] leading-relaxed">Check the student contribution for your actual course before you enrol.</p>
           </section>
 
           {/* Section: FEE-HELP */}
@@ -64,38 +63,16 @@ export default function GuideHecsVsFeeHelp() {
             <p className="text-[#CFCFCF] leading-relaxed">
               This is for students who <strong className="text-white">don't</strong> have a Commonwealth Supported Place. That usually means you're at a private university (like Bond or Torrens) or doing a postgraduate degree at a public uni that doesn't offer CSPs for that course.
             </p>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              There's no government subsidy, so you're paying the full cost of tuition. FEE-HELP debts are almost always <strong className="text-white">significantly larger</strong> than HECS-HELP debts for a similar degree.
-            </p>
+            <p className="text-[#CFCFCF] leading-relaxed">With FEE-HELP, you pay the full tuition cost. Check the fees for your actual course.</p>
           </section>
 
           {/* Section: Same Degree, Very Different Debt */}
-          <section className="space-y-4">
-            <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Same Degree, Very Different Debt</h3>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              Here's where it hits home. A law degree at a public university like the University of Queensland in a CSP would cost roughly <strong className="text-white">$40,000 to $50,000</strong> in student contributions through HECS-HELP.
-            </p>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              A law degree at Bond University costs approximately <strong className="text-white">$142,720</strong> through FEE-HELP.
-            </p>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              Same career outcome. The debt is 3x larger.
-            </p>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              Bond runs on an accelerated system so you finish faster, which is a genuine advantage. But the raw cost difference is massive, and it's worth understanding before you commit.
-            </p>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              There's also a <strong className="text-white">lifetime borrowing limit</strong> on all HELP loans. In some cases, the degree costs more than you're even allowed to borrow.{' '}
-              <Link href="/help-borrowing-limit" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors underline underline-offset-2">
-                Learn more about the HELP borrowing limit →
-              </Link>
-            </p>
-          </section>
+          <section className="space-y-4"><h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Same Degree, Very Different Debt</h3><p className="text-[#CFCFCF] leading-relaxed">You need enough available HELP balance to cover your study. Check it before you commit, especially if the course costs more than you can borrow.</p><Link href="/help-borrowing-limit" className="underline underline-offset-2">Check the HELP borrowing limit</Link></section>
 
           {/* Section: Quick Comparison Table */}
           <section className="space-y-4">
             <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">The Quick Comparison</h3>
-            <div className="overflow-x-auto rounded-xl border border-white/10">
+            <div className="overflow-x-auto rounded-xl border border-white/10" tabIndex={0} role="region" aria-label="HECS-HELP and FEE-HELP comparison table">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/10 bg-white/[0.03]">
@@ -108,9 +85,7 @@ export default function GuideHecsVsFeeHelp() {
                   {[
                     { label: 'Who it\'s for', hecs: 'Students in Commonwealth Supported Places', fee: 'Full fee-paying students (no CSP)' },
                     { label: 'Where', hecs: 'Most undergrad degrees at public unis', fee: 'Private unis, most postgrad degrees' },
-                    { label: 'Government subsidy', hecs: 'Yes', fee: 'No' },
-                    { label: 'Typical debt (3-year degree)', hecs: '$16,000 to $55,000', fee: '$60,000 to $150,000+' },
-                    { label: 'Repayment rules', hecs: 'Same', fee: 'Same' },
+                    { label: 'Government subsidy', hecs: 'Yes', fee: 'No' },                    { label: 'Repayment rules', hecs: 'Same', fee: 'Same' },
                     { label: 'Indexation', hecs: 'Same', fee: 'Same' },
                   ].map((row) => (
                     <tr key={row.label}>
@@ -127,9 +102,7 @@ export default function GuideHecsVsFeeHelp() {
           {/* Section: Both Get Repaid the Same Way */}
           <section className="space-y-4">
             <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">Both Get Repaid the Same Way</h3>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              Once the debt exists, the ATO treats them identically. Same thresholds, same marginal rates, same indexation. The only difference is how much you start with.
-            </p>
+            <p className="text-[#CFCFCF] leading-relaxed">HECS-HELP helps cover your student contribution in a Commonwealth supported place. FEE-HELP helps cover eligible full-fee study. Some undergraduate FEE-HELP study has a loan fee, with exemptions.</p>
           </section>
 
           {/* Section: The Bottom Line */}
@@ -143,7 +116,7 @@ export default function GuideHecsVsFeeHelp() {
               <a href="https://allthatsnext.com/hecs-debt-calculator" className="text-[#0081CB] hover:text-[#62FFDA] transition-colors font-bold underline underline-offset-2">
                 Use the HECS Debt Calculator →
               </a>{' '}
-              Try $45,000 (public uni, HECS-HELP) vs $130,000 (private uni, FEE-HELP) and see how the repayment timeline changes.
+              Use the actual balance you expect to borrow and explore how the repayment timeline changes.
             </p>
           </section>
 
@@ -171,7 +144,7 @@ export default function GuideHecsVsFeeHelp() {
               This guide is for educational purposes only. It is not financial or career advice. Always check current fees with your chosen university.
             </p>
           </section>
-        </article>
+        <p className="text-[#CFCFCF] leading-relaxed">Both become part of your HELP debt and use the same repayment system. Check your course fees and loan eligibility before you enrol.</p></article>
 
         <GuideRelatedGuides guides={[
           { href: '/help-borrowing-limit', title: 'The HELP Borrowing Limit 2026' },

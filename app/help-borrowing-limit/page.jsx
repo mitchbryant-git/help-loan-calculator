@@ -4,14 +4,15 @@ import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
 export const metadata = {
-  title: 'HELP Borrowing Limit 2026 | How Much Can You Borrow?',
-  description: 'There\'s a cap on how much you can borrow for uni in Australia. Learn the 2026 HELP loan limit, what counts toward it, and what happens when your degree costs more than the limit.',
+  twitter: { card: 'summary_large_image', title: "HELP Loan Limit 2026 | What You Can Borrow", description: "Check what counts towards your HELP limit and how repayments can restore your available balance.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  title: "HELP Loan Limit 2026 | What You Can Borrow",
+  description: "Check what counts towards your HELP limit and how repayments can restore your available balance.",
   alternates: {
     canonical: 'https://allthatsnext.com/hecs-debt-calculator/help-borrowing-limit',
   },
   openGraph: {
-    title: 'HELP Borrowing Limit 2026 | How Much Can You Borrow?',
-    description: 'There\'s a cap on how much you can borrow for uni in Australia. Learn the 2026 HELP loan limit, what counts toward it, and what happens when your degree costs more than the limit.',
+    title: "HELP Loan Limit 2026 | What You Can Borrow",
+    description: "Check what counts towards your HELP limit and how repayments can restore your available balance.",
     url: 'https://allthatsnext.com/hecs-debt-calculator/help-borrowing-limit',
     siteName: 'All That’s Next',
     locale: 'en_AU',
@@ -41,17 +42,13 @@ export default function GuideBorrowingLimit() {
           {/* Section: There's a Cap */}
           <section className="space-y-4">
             <h3 className="text-xl font-bold font-montserrat text-[#62FFDA]">There's a Cap on How Much You Can Borrow</h3>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              A lot of students assume they can borrow whatever their degree costs. That's not always true. The Australian Government sets a <strong className="text-white">lifetime HELP loan limit</strong>, and once you hit it, you can't borrow any more.
-            </p>
+            <p className="text-[#CFCFCF] leading-relaxed">Your HELP loan limit caps your available borrowing balance. Repayments can restore that balance, so it is not a fixed lifetime total.</p>
             <p className="text-[#CFCFCF] leading-relaxed">In 2026, the limits are:</p>
             <ul className="list-disc list-inside text-[#CFCFCF] leading-relaxed space-y-2 pl-2">
               <li><strong className="text-white">$129,883</strong> for most students</li>
               <li><strong className="text-white">$186,544</strong> for students studying medicine, dentistry, veterinary science, or certain aviation courses</li>
             </ul>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              This limit covers <strong className="text-white">all</strong> HELP loan types combined: HECS-HELP, FEE-HELP, VET Student Loans, and VET FEE-HELP. It's not per degree. It's the total you can ever borrow across your entire study history.
-            </p>
+            <p className="text-[#CFCFCF] leading-relaxed">It includes FEE-HELP, VET loans and HECS-HELP study with a census date from 1 January 2020. Some loans and fees do not count. Check your available balance on myHELPbalance before you enrol.</p>
           </section>
 
           {/* Section: What Happens When the Degree Costs More */}
@@ -60,9 +57,7 @@ export default function GuideBorrowingLimit() {
             <p className="text-[#CFCFCF] leading-relaxed">
               Some degrees, particularly at private universities, cost more than the limit. When that happens, you need to pay the difference out of pocket during the course.
             </p>
-            <p className="text-[#CFCFCF] leading-relaxed">
-              For example, Bond University's Bachelor of Laws costs approximately <strong className="text-white">$142,720</strong> for domestic students. The FEE-HELP limit is $129,883. That leaves a gap of roughly <strong className="text-white">$13,000</strong> you'd need to cover yourself.
-            </p>
+
             <p className="text-[#CFCFCF] leading-relaxed">
               This isn't uncommon at private institutions. If you're considering one, check the total degree cost against the current loan limit before you enrol so you know what you'll need to fund independently.
             </p>
