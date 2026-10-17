@@ -373,8 +373,9 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-[1480px] grid-cols-1 gap-8 px-4 pb-8 pt-5 relative z-10 app-fade-in sm:pt-8">
+      <main className="relative z-10 app-fade-in">
         <HelpHero onOpenHelp={() => setShowHelpModal(true)} />
+        <div className="mx-auto grid max-w-[1480px] grid-cols-1 gap-8 px-4 pb-8 pt-8">
 
         {/* RESPONSIVE PLANNING WORKSPACE
             Mobile: planner → result → timeline → scenarios → share.
@@ -552,6 +553,7 @@ export default function App() {
             </div>
           </div>
         </div>
+      </div>
       </main>
 
       <ShareResult

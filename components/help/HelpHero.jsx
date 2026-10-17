@@ -1,10 +1,11 @@
 "use client";
 
-import Image from 'next/image';
+import HeroConsole from './HeroConsole';
+import './hero-depth.css';
 
 export default function HelpHero({ onOpenHelp }) {
   return (
-    <section className="help-hero col-span-full" aria-labelledby="help-hero-title">
+    <section className="help-hero help-hero--depth col-span-full" aria-labelledby="help-hero-title">
       <div className="help-hero__top-band" aria-hidden="true">
         <div className="help-hero__stripes"><span /><span /><span /><span /></div>
       </div>
@@ -29,17 +30,7 @@ export default function HelpHero({ onOpenHelp }) {
           </div>
         </div>
         <div className="help-hero__visual">
-          <div className="help-hero__image-frame">
-            <Image
-              src="/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg"
-              alt="Cream MB-01 Life Console with the mint HECS Debt Calculator cartridge inserted"
-              width={1280}
-              height={653}
-              priority
-              sizes="(max-width: 900px) 100vw, 52vw"
-              className="help-hero__image"
-            />
-          </div>
+          <HeroConsole />
         </div>
       </div>
     </section>
