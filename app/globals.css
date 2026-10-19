@@ -3346,3 +3346,6 @@ input[type=number] {
     padding-top: 14px;
   }
 }
+
+/* Compact full lockup only. Keep the existing calculator action row. */
+@media (max-width: 767px) { .hecs-atn-lockup img { width: 140px; } }

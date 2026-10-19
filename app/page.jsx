@@ -1,4 +1,6 @@
 "use client";
+
+import { ATN_LOGO } from '../lib/brand';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import {
@@ -232,7 +234,7 @@ export default function App() {
       <header className="site-header" aria-label="HECS Debt Calculator" data-nosnippet>
         <div className="site-header__inner">
           <a className="hecs-atn-lockup" href="https://allthatsnext.com" aria-label="All That's Next home">
-            <Image src="/hecs-debt-calculator/brand/all-thats-next-lockup-web-v1.png" alt="All That's Next" width={212} height={40} priority />
+            <Image src={ATN_LOGO} unoptimized alt="All That's Next" width={1651} height={324} priority />
           </a>
 
 

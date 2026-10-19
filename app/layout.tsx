@@ -70,7 +70,7 @@ export const metadata: Metadata = {
 
   // 5. Favicon
   icons: {
-    icon: 'https://allthatsnext.com/favicon-atn-cream-v1.png',
+    icon: '/hecs-debt-calculator/brand/atn-light-cream-48-v2.png',
   },
 
   // 6. Canonical URL
