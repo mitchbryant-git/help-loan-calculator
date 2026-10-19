@@ -27,7 +27,7 @@ export function GuidePageIntro({
         style={{ '--guide-accent': ACCENTS[accent] || ACCENTS.mint }}
       >
         <div className="guide-intro__system-bar">
-          <span>MB-01 // RESOURCE LIBRARY</span>
+          <span>ATN-01 // RESOURCE LIBRARY</span>
           <span><i aria-hidden="true" /> GUIDE FILE {code}</span>
         </div>
 
@@ -92,7 +92,7 @@ export function GuidePageFooter() {
   return (
     <footer className="guide-footer">
       <div className="guide-footer__brand">
-        <span>MB-01</span>
+        <span>ATN-01</span>
         <div>
           <strong>HECS Debt Calculator</strong>
           <small>Prepared by All That&apos;s Next</small>

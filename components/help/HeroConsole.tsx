@@ -16,9 +16,9 @@ export default function HeroConsole() {
   return (
     <div className="hecs-depth-stage">
       <Image ref={imageRef} className="hecs-depth-console"
-        src="/hecs-debt-calculator/brand/help/header/hecs-console.svg"
-        data-fallback="/hecs-debt-calculator/brand/help/header/hecs-console-static.png"
-        alt="Cream MB-01 Life Console with the mint HECS Debt Calculator cartridge inserted"
+        src="/hecs-debt-calculator/brand/help/header/hecs-console-atn-lettering-v3.svg"
+        data-fallback="/hecs-debt-calculator/brand/help/header/hecs-console-atn-lettering-v3-static.png"
+        alt="Cream ATN-01 Life Console with the mint HECS Debt Calculator cartridge inserted"
         width={1280} height={960} priority unoptimized draggable={false} />
     </div>
   );

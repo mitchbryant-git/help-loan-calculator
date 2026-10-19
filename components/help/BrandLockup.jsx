@@ -7,7 +7,7 @@ export default function BrandLockup({ className = '' }) {
       className={`brand-lockup ${className}`}
       aria-label="HECS Debt Calculator home"
     >
-      <span className="brand-lockup__mark">MB-01</span>
+      <span className="brand-lockup__mark">ATN-01</span>
       <span className="brand-lockup__copy">
         <strong>HECS Debt Calculator</strong>
         <small>Financial utility module</small>

@@ -22,7 +22,7 @@ const OLDER_HISTORY = [
 const FULL_HISTORY = [...RECENT_HISTORY, ...OLDER_HISTORY];
 
 export const metadata = {
-  twitter: { card: 'summary_large_image', title: "How HECS Indexation Works", description: "Find out when indexation applies, how the rate is set and why your balance can grow.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  twitter: { card: 'summary_large_image', title: "How HECS Indexation Works", description: "Find out when indexation applies, how the rate is set and why your balance can grow.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png'] },
   title: "How HECS Indexation Works",
   description: "Find out when indexation applies, how the rate is set and why your balance can grow.",
   alternates: {
@@ -35,7 +35,7 @@ export const metadata = {
     siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
-    images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg', alt: 'HECS Debt Calculator Life Console' }],
+    images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png', alt: 'HECS Debt Calculator Life Console' }],
   },
 };
 

@@ -363,7 +363,7 @@ export default function App() {
                     onMouseEnter={e => e.currentTarget.style.background = 'var(--mb-cream)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <span style={{ width: 28, height: 28, borderRadius: 8, border: '1.5px solid var(--mb-ink)', background: 'var(--mb-sky)', color: 'var(--mb-paper)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-archivo-black), sans-serif', fontSize: 8, flexShrink: 0 }}>MB</span>
+                    <span style={{ width: 28, height: 28, borderRadius: 8, border: '1.5px solid var(--mb-ink)', background: 'var(--mb-sky)', color: 'var(--mb-paper)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-archivo-black), sans-serif', fontSize: 8, flexShrink: 0 }}>ATN</span>
                     <span style={{ fontFamily: 'var(--font-instrument-sans), sans-serif', fontSize: 13, fontWeight: 600, color: 'var(--mb-ink)' }}>All That&apos;s Next</span>
                   </a>
                 </div>

@@ -5,7 +5,7 @@ import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
 export const metadata = {
-  twitter: { card: 'summary_large_image', title: "HECS Repayment Thresholds 2026-27", description: "See when HECS repayments start, how the rates work and what they could mean for you.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  twitter: { card: 'summary_large_image', title: "HECS Repayment Thresholds 2026-27", description: "See when HECS repayments start, how the rates work and what they could mean for you.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png'] },
   title: "HECS Repayment Thresholds 2026-27",
   description: "See when HECS repayments start, how the rates work and what they could mean for you.",
   alternates: {
@@ -18,7 +18,7 @@ export const metadata = {
     siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
-    images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg', alt: 'HECS Debt Calculator Life Console' }],
+    images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png', alt: 'HECS Debt Calculator Life Console' }],
   },
 };
 

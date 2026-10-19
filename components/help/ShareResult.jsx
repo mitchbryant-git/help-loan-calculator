@@ -166,7 +166,7 @@ export default function ShareResult({
           <div className="share-centre__heading">
             <span className="share-centre__number" aria-hidden="true">EX</span>
             <div>
-              <p>MB-01 export module</p>
+              <p>ATN-01 export module</p>
               <h2 id="share-result-title">Share your HECS debt estimate</h2>
             </div>
           </div>
@@ -188,7 +188,7 @@ export default function ShareResult({
 
           <div ref={cardRef} className="share-pass">
             <div className="share-pass__system-bar">
-              <span>MB-01 // HECS // RESULT FILE</span>
+              <span>ATN-01 // HECS // RESULT FILE</span>
               <span><i /> Projection generated</span>
             </div>
 

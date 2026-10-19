@@ -6,8 +6,8 @@ import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 export const metadata = {
   title: 'Privacy Policy | HECS Debt Calculator',
   description: 'How the All That’s Next HECS Debt Calculator handles calculator inputs, shared plans, analytics and standard website data.',
-  openGraph: { title: "Privacy Policy | HECS Debt Calculator", description: "How the All That’s Next HECS Debt Calculator handles calculator inputs, shared plans, analytics and standard website data.", url: "https://allthatsnext.com/hecs-debt-calculator/privacy-policy", siteName: "All That's Next", type: 'website', images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg', alt: 'HECS Debt Calculator Life Console' }] },
-  twitter: { card: 'summary_large_image', title: "Privacy Policy | HECS Debt Calculator", description: "How the All That’s Next HECS Debt Calculator handles calculator inputs, shared plans, analytics and standard website data.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  openGraph: { title: "Privacy Policy | HECS Debt Calculator", description: "How the All That’s Next HECS Debt Calculator handles calculator inputs, shared plans, analytics and standard website data.", url: "https://allthatsnext.com/hecs-debt-calculator/privacy-policy", siteName: "All That's Next", type: 'website', images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png', alt: 'HECS Debt Calculator Life Console' }] },
+  twitter: { card: 'summary_large_image', title: "Privacy Policy | HECS Debt Calculator", description: "How the All That’s Next HECS Debt Calculator handles calculator inputs, shared plans, analytics and standard website data.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png'] },
   alternates: {
     canonical: 'https://allthatsnext.com/hecs-debt-calculator/privacy-policy',
   },
@@ -110,7 +110,7 @@ export default function PrivacyPolicy() {
               <LockKeyhole size={23} />
             </span>
             <div>
-              <p>MB-01 · Privacy file</p>
+              <p>ATN-01 · Privacy file</p>
               <h1>Privacy policy</h1>
               <span>Last updated 11 August 2026</span>
             </div>

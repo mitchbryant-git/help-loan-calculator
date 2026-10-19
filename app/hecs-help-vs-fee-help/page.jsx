@@ -5,7 +5,7 @@ import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
 export const metadata = {
-  twitter: { card: 'summary_large_image', title: "HECS-HELP vs FEE-HELP | What's the Difference?", description: "Know which loan applies to your study, what it covers and whether extra loan fees could apply.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  twitter: { card: 'summary_large_image', title: "HECS-HELP vs FEE-HELP | What's the Difference?", description: "Know which loan applies to your study, what it covers and whether extra loan fees could apply.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png'] },
   title: "HECS-HELP vs FEE-HELP | What's the Difference?",
   description: "Know which loan applies to your study, what it covers and whether extra loan fees could apply.",
   alternates: {
@@ -18,7 +18,7 @@ export const metadata = {
     siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
-    images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg', alt: 'HECS Debt Calculator Life Console' }],
+    images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png', alt: 'HECS Debt Calculator Life Console' }],
   },
 };
 

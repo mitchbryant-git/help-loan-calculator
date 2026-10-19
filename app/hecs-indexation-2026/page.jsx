@@ -5,7 +5,7 @@ import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
 export const metadata = {
-  twitter: { card: 'summary_large_image', title: "HECS Indexation 2026 | The 2.8% Rate Explained", description: "See what the 2.8% indexation rate meant for eligible HECS debt on 1 June 2026.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  twitter: { card: 'summary_large_image', title: "HECS Indexation 2026 | The 2.8% Rate Explained", description: "See what the 2.8% indexation rate meant for eligible HECS debt on 1 June 2026.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png'] },
   title: "HECS Indexation 2026 | The 2.8% Rate Explained",
   description: "See what the 2.8% indexation rate meant for eligible HECS debt on 1 June 2026.",
   alternates: {
@@ -18,7 +18,7 @@ export const metadata = {
     siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
-    images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg', alt: 'HECS Debt Calculator Life Console' }],
+    images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png', alt: 'HECS Debt Calculator Life Console' }],
   },
 };
 

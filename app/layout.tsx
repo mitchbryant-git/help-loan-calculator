@@ -32,7 +32,7 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
-  twitter: { card: 'summary_large_image', title: "HECS Calculator | Repayments and Payoff", description: "See how your income, life changes, and extra repayments could affect your HECS debt.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  twitter: { card: 'summary_large_image', title: "HECS Calculator | Repayments and Payoff", description: "See how your income, life changes, and extra repayments could affect your HECS debt.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png'] },
   metadataBase: new URL('https://allthatsnext.com'),
   // 1. Google & Browser Tab
   title: "HECS Calculator | Repayments and Payoff",
@@ -58,8 +58,8 @@ export const metadata: Metadata = {
     locale: 'en_AU',
     type: 'website',
     images: [{
-      url: '/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg',
-      alt: 'MB-01 Life Console with the mint HECS Debt Calculator cartridge inserted',
+      url: '/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png',
+      alt: 'ATN-01 Life Console with the mint HECS Debt Calculator cartridge inserted',
     }],
   },
 

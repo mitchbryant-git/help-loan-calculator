@@ -4,7 +4,7 @@ import GuideSiteHeader from '../../components/help/GuideSiteHeader';
 import { GuidePageFooter, GuidePageIntro, GuideRelatedGuides } from '../../components/help/GuidePageChrome';
 
 export const metadata = {
-  twitter: { card: 'summary_large_image', title: "Starting Uni Before You Are Ready | Costs and Choices", description: "Before you commit to a course, explore the costs of changing direction and what you could test first.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg'] },
+  twitter: { card: 'summary_large_image', title: "Starting Uni Before You Are Ready | Costs and Choices", description: "Before you commit to a course, explore the costs of changing direction and what you could test first.", images: ['https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png'] },
   title: "Starting Uni Before You Are Ready | Costs and Choices",
   description: "Before you commit to a course, explore the costs of changing direction and what you could test first.",
   alternates: {
@@ -17,7 +17,7 @@ export const metadata = {
     siteName: 'All That’s Next',
     locale: 'en_AU',
     type: 'article',
-    images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/mb01-hecs-debt-loaded-hero-v1.jpg', alt: 'HECS Debt Calculator Life Console' }],
+    images: [{ url: 'https://allthatsnext.com/hecs-debt-calculator/brand/help/hecs-loaded-social-atn-lettering-v3.png', alt: 'HECS Debt Calculator Life Console' }],
   },
 };
 
